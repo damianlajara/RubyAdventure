@@ -146,3 +146,146 @@ class Character
   end
 
 end
+
+class Hero < Character
+  attr_reader :inventory, :dungeon_level
+
+  def initialize(health, lvl, att, defense, money = 0, exp = 0)
+    super
+    @max_hp = 100
+    @dungeon_level = 1
+    @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
+  end
+
+  def exp=experience
+    @experience = experience
+    case experience
+      when 0..50
+        self.level +=1
+    end
+  end
+
+  def add_to_inventory(item)
+    if item.class == Weapon
+      #check weapon to see if hero class can use it
+      @inventory[:current_weapons].push(item)
+    elsif item.class == Armor
+      #check armor
+      @inventory[:current_armor].push(item)
+    elsif item.class == Potion
+      @inventory[:current_potions].push(item)
+    else
+      error("item inside add_to_inventory()")
+    end
+  end
+
+end
+
+#Soldier Classes
+class Barbarian < Hero
+  #super
+end
+
+class Knight < Hero
+end
+
+class Paladin < Hero
+end
+
+class Samurai < Hero
+end
+
+
+#Mage Classes
+class Necromancer < Hero
+end
+
+class Wizard < Hero
+end
+
+class Illusionist < Hero
+end
+
+class Alchemist < Hero
+end
+
+
+#Archer Classes (projectiles)
+
+class Elf < Hero
+end
+
+class Gunner < Hero
+end
+
+class Tamer  < Hero# uses pets to attack
+end
+
+class Poet < Hero
+end
+
+
+
+
+
+class Monster < Character
+
+  def initialize(health, lvl, att, defense, money, exp)
+    super
+  end
+
+end
+
+class Wolf < Monster
+  def initialize
+
+  end
+end
+
+class Golem < Monster
+  def initialize
+
+  end
+end
+
+class FleshHunter < Monster
+  def initialize
+
+  end
+end
+
+class BoneReaver < Monster
+  def initialize
+
+  end
+end
+
+class MageLord < Monster
+  def initialize
+
+  end
+end
+
+class Executioner < Monster
+  def initialize
+
+  end
+end
+
+class DarkVessel < Monster
+  def initialize
+
+  end
+end
+
+class TorturedSoul < Monster
+  def initialize
+
+  end
+end
+
+class DarkCultist < Monster
+  def initialize
+
+  end
+end
