@@ -2,13 +2,33 @@ class Character
   attr_accessor :attack, :defense, :hp, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender
 
-  #TODO maybe make these into class variables
-  @fighter  = %w[Barbarian Knight Paladin Samurai]
-  @mage  = %w[Necromancer Wizard Illusionist Alchemist]
-  @archer  = %w[Elf Gunner Tamer Poet]
+  def display_hash_option(hash, saying="")
+    print saying
+    hash.each_with_index { |(key, value), index| print "#{index.next}) #{key} "}
+  end
 
-  CLASSES = ["Soldier","Mage","Archer"]
-  GENDER = ["Male", "Female"]
+  def display_array(array)
+    array.each_with_index { |value, index| puts "#{index.next}) #{value}"}
+  end
+
+  def choose_array_option(classes_array)
+    display_array classes_array
+    choice = gets.chomp.to_i
+    classes_array[choice.pred]
+  end
+
+  #TODO maybe make these into class variables
+
+  @@classes = {
+    :soldier => %w(Barbarian Knight Paladin Samurai),
+    :mage => %w(Necromancer Wizard Illusionist Alcheemist),
+    :archer => %w(Elf Gunner Tamer Poet)
+  }
+  p @@classes
+
+  CLASS = %w(Soldier Mage Archer)
+  #GENDER = %w(Male Female)
+  GENDER = { male: "Male", female: "Female" }
 
   def initialize(health, lvl, att, defense, money, exp)
     @health = health
@@ -25,37 +45,38 @@ class Character
   end
 
   def customize_gender
-    print "What is your gender? 1) #{GENDER[0]} 2) #{GENDER[1]} 3) Other "
-    @gender = gets.chomp.to_i
-    case @gender
+    display_hash_option GENDER, "What is your gender? "
+    choice = gets.chomp.to_i
+    @gender =
+      case choice
       when 1
-        @gender = GENDER[0]
+        GENDER[:male]
       when 2
-        @gender = GENDER[1]
+        GENDER[:female]
       when 3
         print "Enter your preferred gender: "
-        @gender = gets.chomp.downcase
+        gets.chomp.downcase
       else
         error
-    end
+      end
   end
 
   def customize_class
-    print "What class Would you like to choose your character from? 1) #{CLASSES[0]} 2) #{CLASSES[1]} 3) #{CLASSES[2]} "
-    @class = gets.chomp.to_i
-    case @class
+    display_hash_option @@classes, "What class would you like to choose your character from? "
+    #print "What class would you like to choose your character from? 1) #{CLASS[0]} 2) #{CLASS[1]} 3) #{CLASS[2]} "
+    choice = gets.chomp.to_i
+    @class =
+      case choice
       when 1
-        #@figher.each { |weapon|  }
-        @class = CLASSES[0]
+        choose_array_option @@classes[:soldier]
+        #@@classes.
       when 2
-        @class = CLASSES[1]
-
+        choose_array_option @@classes[:mage]
       when 3
-        @class = CLASSES[2]
-
+        choose_array_option @@classes[:archer]
       else
         error
-    end
+      end
   end
   def game_options
     puts "#{"*" * 4} Game Options #{"*" * 4}\n"
@@ -181,7 +202,7 @@ class Hero < Character
 
 end
 
-#Soldier Classes
+#Soldier CLASS
 class Barbarian < Hero
   #super
 end
@@ -196,7 +217,7 @@ class Samurai < Hero
 end
 
 
-#Mage Classes
+#Mage CLASS
 class Necromancer < Hero
 end
 
@@ -210,7 +231,7 @@ class Alchemist < Hero
 end
 
 
-#Archer Classes (projectiles)
+#Archer CLASS (projectiles)
 
 class Elf < Hero
 end
