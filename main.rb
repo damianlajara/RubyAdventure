@@ -1,5 +1,5 @@
 require './items.rb'
-require './rpg.rb'
+require './mods.rb'
 require './shops.rb'
 require './characters.rb'
 require './dungeon.rb'
