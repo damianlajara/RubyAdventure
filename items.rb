@@ -10,3 +10,11 @@ class Item
     @name
   end
 end
+
+class Potion < Item
+  attr_reader :health
+  def initialize(name, health=0, price=0, sell_value=0)
+    super(name, price, sell_value)
+    @health = health
+  end
+end
