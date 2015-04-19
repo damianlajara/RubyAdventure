@@ -55,7 +55,7 @@ module MageWeaponAttributes
   SELL_VALUE_OFFSET = 50
 end
 
-module ArcherWeaponAttributes
+module RangedWeaponAttributes
 
   BASE_EFFECT = 14
   BASE_PRICE = 134
