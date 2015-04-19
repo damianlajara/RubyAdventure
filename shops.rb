@@ -10,7 +10,7 @@ class Shop
 
   def self.weapons(class_name="all")
     case class_name
-      when "all" then [@@soldier_weapons_names,mage_weapon_names,archer_weapon_names]
+    when "all" then [@@soldier_weapons_names, @@mage_weapon_names, @@archer_weapon_names]
       when "soldier" then @@soldier_weapons_names
       when "mage" then @@mage_weapon_names
       when "archer" then @@archer_weapon_names
@@ -20,7 +20,7 @@ class Shop
 
   def self.armor(class_name="all")
     case class_name
-      when "all" then [@@soldier_armor_names,mage_armor_names,archer_armor_names]
+    when "all" then [@@soldier_armor_names, @@mage_armor_names, @@archer_armor_names]
       when "soldier" then @@soldier_armor_names
       when "mage" then @@mage_armor_names
       when "archer" then @@archer_armor_names
@@ -41,11 +41,11 @@ class SoldierWeaponShop < Shop
     price = BASE_PRICE
     sell_value = BASE_SELL_VALUE
 
-    @@soldier_weapon_names.length.times do |i|
+    @@soldier_weapon_names.each do |name|
       effect += EFFECT_OFFSET
       price += PRICE_OFFSET
       sell_value += SELL_VALUE_OFFSET
-      @soldier_weapons.push(Weapon.new(@@soldier_weapon_names[i], effect, price, sell_value))
+      @soldier_weapons.push(Weapon.new(name, { damage: effect }, price: price, sell_value: sell_value))
     end
   end
 
@@ -65,11 +65,12 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@mage_weapon_names.length.times do |i|
+      #use each with index
+      @@mage_weapon_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @mage_weapons.push(Weapon.new(@@mage_weapon_names[i], effect, price, sell_value))
+        @mage_weapons.push(Weapon.new(name, { damage: effect }, price: price, sell_value: sell_value))
       end
     end
 
@@ -89,11 +90,11 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@archer_weapon_names.length.times do |i|
+      @@archer_weapon_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @archer_weapons.push(Weapon.new(@@archer_weapon_names[i], effect, price, sell_value))
+        @archer_weapons.push(Weapon.new(name, { damage: effect }, price: price, sell_value: sell_value))
       end
     end
 
@@ -103,7 +104,8 @@ end
 
   end
 
-#TODO
+# TODO include the mods for these also
+
   class SoldierArmorShop < Shop
     def initialize
       @soldier_armor = []
@@ -112,11 +114,11 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@soldier_armor_names.length.times do |i|
+      @@soldier_armor_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @soldier_armor.push(Armor.new(@@soldier_armor_names[i], effect, price, sell_value))
+        @soldier_armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
   end
@@ -129,11 +131,11 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@mage_armor_names.length.times do |i|
+      @@mage_armor_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @mage_armor.push(Armor.new(@@mage_armor_names[i], effect, price, sell_value))
+        @mage_armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
   end
@@ -146,11 +148,11 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@archer_armor_names.length.times do |i|
+      @@archer_armor_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @archer_armor.push(Armor.new(@@archer_armor_names[i], effect, price, sell_value))
+        @archer_armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
   end
@@ -163,11 +165,11 @@ end
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
 
-      @@potion_names.length.times do |i|
+      @@potion_names.each do |name|
         effect += EFFECT_OFFSET
         price += PRICE_OFFSET
         sell_value += SELL_VALUE_OFFSET
-        @potions.push(Potion.new(@@potion_names[i], effect, price, sell_value))
+        @potions.push(Potion.new(name, { health: effect }, price: price, sell_value: sell_value))
       end
     end
   end

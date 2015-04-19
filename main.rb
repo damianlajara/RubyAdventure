@@ -4,14 +4,29 @@ require './shops.rb'
 require './characters.rb'
 require './dungeon.rb'
 
-monster = Monster.new(100,1,100, 20,100, 25)
-hero = Hero.new(100, 1, 25, 40)
+monster = Monster.new(
+  health: 100,
+  level: 1,
+  attack: 100,
+  defense: 20,
+  money: 100,
+  exp: 25
+)
+
+hero = Hero.new(
+  health: 100,
+  level: 1,
+  attack: 25,
+  defense: 40,
+  money: 0,
+  exp: 0
+)
 
 puts "Welcome! Let's get you comfy! Create your custom character!"
-hero.customize
+#hero.customize
 
-shop = Shop.new()
-p shop
+shop1 = SoldierWeaponShop.new()
+p shop1
 
 loop do
   puts "Enter 'r' to roll, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game "

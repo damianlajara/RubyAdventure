@@ -82,9 +82,9 @@ end
 if $debug then puts monster.inspect end
 if $debug then puts hero.inspect end
 
-arondight = Weapon.new("Arondight",50, 100, 50)
-valkyrie = Armor.new("Valkyrie", 30, 60, 30)
-elixir = Potion.new("Elixir", 100, 99, 60)
+#arondight = Weapon.new("Arondight",50, 100, 50)
+#valkyrie = Armor.new("Valkyrie", 30, 60, 30)
+#elixir = Potion.new("Elixir", 100, 99, 60)
 
 if $debug then puts arondight.inspect end
 if $debug then puts valkyrie.inspect end
