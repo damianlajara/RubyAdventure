@@ -25,19 +25,23 @@ hero = Hero.new(
 puts "Welcome! Let's get you comfy! Create your custom character!"
 #hero.customize
 
-shop1 = SoldierWeaponShop.new()
-p shop1
+#shop1 = SoldierWeaponShop.new()
+#p shop1
 
 loop do
-  puts "Enter 'r' to roll, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game "
+  puts "\nEnter 'r' to roll, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game "
   option = gets.chomp.downcase
   case option
     when 'q'
       break
     when 'r'
-      random = rand(1..6)
-      puts "You rolled a #{random}!"
-      puts random.even? ? battle_monster(hero) : "Missed!"
+      random_dice1 = rand(1..6)
+      random_dice2 = rand(1..6)
+      total = random_dice1 + random_dice2
+      puts "You rolled a #{random_dice1} and a #{random_dice2} for a total of #{total}!"
+      puts total.even? ? battle_monster(hero) : "Missed!"
+    when 's'
+      Shop.new.goto_shop(hero)
     when 'i'
       hero.check_inventory
     when 'o'
