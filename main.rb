@@ -9,7 +9,6 @@ hero = Hero.new(100, 1, 25, 40)
 
 puts "Welcome! Let's get you comfy! Create your custom character!"
 hero.customize
-hero.game_options
 
 shop = Shop.new()
 p shop

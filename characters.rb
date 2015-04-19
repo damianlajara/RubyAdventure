@@ -20,7 +20,7 @@ class Character
   CLASSES = {
     :soldier => %w(Barbarian Knight Paladin Samurai),
     :mage => %w(Necromancer Wizard Illusionist Alcheemist),
-    :archer => %w(Elf Gunner Tamer Poet)
+    :ranged => %w(Archer Gunner Tamer Elf)
   }
 
   GENDER = { male: "Male", female: "Female" }
@@ -52,7 +52,7 @@ class Character
         print "Enter your preferred gender: "
         gets.chomp.downcase
       else
-        error
+        error "Character -> customize_gender()"
       end
   end
 
@@ -64,7 +64,7 @@ class Character
       when 1 then choose_array_option CLASSES[:soldier]
       when 2 then choose_array_option CLASSES[:mage]
       when 3 then choose_array_option CLASSES[:archer]
-      else error
+      else error "customize_class() -> case statement"
       end
   end
 
@@ -88,7 +88,7 @@ class Character
         skip = false
         puts "Battle scenes have been enabled."
       else
-        error
+        error "game_options -> first case when 1 -> second case"
       end
     when 2
       puts "Are you sure you want to change your class?\n";
@@ -102,7 +102,7 @@ class Character
       when 2
         puts "Good! I thought the #{@class} was better anyway."
       else
-        error
+        error "game_options -> first case when 2 -> second case"
       end
     when 3
       puts "Are you sure you want to change your gender?"
@@ -115,7 +115,7 @@ class Character
       when 2
         puts "Hmmm...I guess it was hard converting to something your not."
       else
-        error
+        error"game_options -> first case when 3 -> second case"
       end
     when 4
       puts "Are you sure you want to change your name?"
@@ -128,12 +128,12 @@ class Character
       when 2
         puts "Awww man...I was looking forward to see the weird name you were going to choose!"
       else
-        error
+        error"game_options -> first case when 4 -> second case"
       end
     when 5
       puts "Exiting options menu..."
     else
-      error
+      error"game_options -> first case when 5"
     end
   end
 
@@ -186,7 +186,7 @@ class Hero < Character
     elsif item.class == Potion
       @inventory[:current_potions].push(item)
     else
-      error("item inside add_to_inventory()")
+      error "add_to_inventory() -> item"
     end
   end
 
@@ -194,45 +194,80 @@ end
 
 #Soldier CLASS
 class Barbarian < Hero
-  #super
+  def initialize
+    #super
+  end
 end
 
 class Knight < Hero
+  def initialize
+
+  end
 end
 
 class Paladin < Hero
+  def initialize
+
+  end
 end
 
 class Samurai < Hero
+  def initialize
+
+  end
 end
 
 
 #Mage CLASS
 class Necromancer < Hero
+  def initialize
+
+  end
 end
 
 class Wizard < Hero
+  def initialize
+
+  end
 end
 
 class Illusionist < Hero
+  def initialize
+
+  end
 end
 
 class Alchemist < Hero
+  def initialize
+
+  end
 end
 
 
-#Archer CLASS (projectiles)
+#Ranged CLASS
 
-class Elf < Hero
+class Archer < Hero
+  def initialize
+
+  end
 end
 
 class Gunner < Hero
+  def initialize
+
+  end
 end
 
-class Tamer  < Hero# uses pets to attack
+class Tamer  < Hero # uses pets to attack
+  def initialize
+
+  end
 end
 
-class Poet < Hero
+class Elf < Hero
+  def initialize
+
+  end
 end
 
 

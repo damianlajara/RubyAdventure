@@ -1,8 +1,8 @@
 class Shop
   #attr_reader :soldier_weapons, :mage_weapons, :archer_weapons, :soldier_armor, :mage_armor, :archer_armor, :potions
- @@soldier_weapon_names = %w[Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur]
- @@mage_weapon_names = %w[Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist]
- @@archer_weapon_names = %w[Arondight Gugnir Susano' Longinus Hrunting Clarent Shinigami Caliburn]
+ @@soldier_weapon_names = %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur)
+ @@mage_weapon_names = %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist)
+ @@archer_weapon_names = %w(Arondight Gugnir Susano' Longinus Hrunting Clarent Shinigami Caliburn)
 
   def initialize
     puts "Initializing shop items ..."
@@ -107,7 +107,7 @@ end
   class SoldierArmorShop < Shop
     def initialize
       @soldier_armor = []
-      @@soldier_armor_names = %w[Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override]
+      @@soldier_armor_names = %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override)
       effect = BASE_EFFECT
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
@@ -124,7 +124,7 @@ end
   class MageArmorShop < Shop
     def initialize
       @mage_armor = []
-      @@mage_armor_names = %w[Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer]
+      @@mage_armor_names = %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer)
       effect = BASE_EFFECT
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
@@ -141,7 +141,7 @@ end
   class ArcherArmorShop < Shop
     def initialize
       @archer_armor = []
-      @@archer_armor_names = %w[Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement]
+      @@archer_armor_names = %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
       effect = BASE_EFFECT
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
@@ -158,7 +158,7 @@ end
   class PotionShop < Shop
     def initialize
       @potions = []
-      @@potion_names = %w[Mommy's_Tea Antidote_of_Life Red_Potion' Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir]
+      @@potion_names = %w(Mommy's_Tea Antidote_of_Life Red_Potion' Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
       effect = BASE_EFFECT
       price = BASE_PRICE
       sell_value = BASE_SELL_VALUE
