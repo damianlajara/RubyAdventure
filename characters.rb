@@ -1,33 +1,28 @@
+def display_hash_option(hash, saying="")
+  print saying
+  hash.each_with_index { |(key, value), index| print "#{index.next}) #{key} "}
+end
+
+def display_array_value_with_index(array)
+  array.each_with_index { |value, index| puts "#{index.next}) #{value}"}
+end
+
+def choose_array_option(classes_array)
+  display_array_value_with_index classes_array
+  choice = gets.chomp.to_i
+  classes_array[choice.pred]
+end
+
 class Character
   attr_accessor :attack, :defense, :hp, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender
 
-  def display_hash_option(hash, saying="")
-    print saying
-    hash.each_with_index { |(key, value), index| print "#{index.next}) #{key} "}
-  end
-
-  def display_array(array)
-    array.each_with_index { |value, index| puts "#{index.next}) #{value}"}
-  end
-
-  def choose_array_option(classes_array)
-    display_array classes_array
-    choice = gets.chomp.to_i
-    classes_array[choice.pred]
-  end
-
-  #TODO maybe make these into class variables
-
-  @@classes = {
+  CLASSES = {
     :soldier => %w(Barbarian Knight Paladin Samurai),
     :mage => %w(Necromancer Wizard Illusionist Alcheemist),
     :archer => %w(Elf Gunner Tamer Poet)
   }
-  p @@classes
 
-  CLASS = %w(Soldier Mage Archer)
-  #GENDER = %w(Male Female)
   GENDER = { male: "Male", female: "Female" }
 
   def initialize(health, lvl, att, defense, money, exp)
@@ -62,24 +57,19 @@ class Character
   end
 
   def customize_class
-    display_hash_option @@classes, "What class would you like to choose your character from? "
-    #print "What class would you like to choose your character from? 1) #{CLASS[0]} 2) #{CLASS[1]} 3) #{CLASS[2]} "
+    display_hash_option CLASSES, "What class would you like to choose your character from? "
     choice = gets.chomp.to_i
     @class =
       case choice
-      when 1
-        choose_array_option @@classes[:soldier]
-        #@@classes.
-      when 2
-        choose_array_option @@classes[:mage]
-      when 3
-        choose_array_option @@classes[:archer]
-      else
-        error
+      when 1 then choose_array_option CLASSES[:soldier]
+      when 2 then choose_array_option CLASSES[:mage]
+      when 3 then choose_array_option CLASSES[:archer]
+      else error
       end
   end
+
   def game_options
-    puts "#{"*" * 4} Game Options #{"*" * 4}\n"
+    puts "\n#{"*" * 4} Game Options #{"*" * 4}\n"
     puts "1) Toggle Battle Scenes"
     puts "2) Change Class"
     puts "3) Change Gender"
@@ -87,63 +77,63 @@ class Character
     puts "5) Exit"
     option = gets.chomp.to_i
     case option
+    when 1
+      puts "Do you want to disable all of the battle scenes? 1) Yes 2) No"
+      scene_option = gets.chomp.to_i
+      case scene_option
       when 1
-        puts "Do you want to disable all of the battle scenes? 1) Yes 2) No"
-        scene_option = gets.chomp.to_i
-        case scene_option
-          when 1
-            skip = true
-            puts "Battle scenes have been disabled."
-          when 2
-            skip = false
-            puts "Battle scenes have been enabled."
-          else
-            error
-        end
+        skip = true
+        puts "Battle scenes have been disabled."
       when 2
-        puts "Are you sure you want to change your class?\n";
-        puts "You will lose all of your current weapons and armor!\n";
-        puts "1) Yes 2) No "
-        class_choice = gets.chomp.to_i
-        case class_choice
-          when 1
-            customize_class
-            puts "Congratulations! You're class has changed to #{@class}!"
-          when 2
-            puts "Good! I thought the #{@class} was better anyway."
-          else
-            error
-        end
-      when 3
-        puts "Are you sure you want to change your gender?"
-        puts "1) Yes 2) No "
-        gender_choice = gets.chomp.to_i
-        case gender_choice
-          when 1
-            customize_gender
-            puts "Congratulations! You're gender has changed to #{@gender}!"
-          when 2
-            puts "Hmmm...I guess it was hard converting to something your not."
-          else
-            error
-        end
-      when 4
-        puts "Are you sure you want to change your name?"
-        puts "1) Yes 2) No "
-        name_choice = gets.chomp.to_i
-        case name_choice
-          when 1
-            customize_name
-            puts "Congratulations! You're name has changed to #{@name}!"
-          when 2
-            puts "Awww man...I was looking forward to see the weird name you were going to choose!"
-          else
-            error
-        end
-      when 5
-        puts "Exiting options menu..."
+        skip = false
+        puts "Battle scenes have been enabled."
       else
         error
+      end
+    when 2
+      puts "Are you sure you want to change your class?\n";
+      puts "You will lose all of your current weapons and armor!\n";
+      puts "1) Yes 2) No "
+      class_choice = gets.chomp.to_i
+      case class_choice
+      when 1
+        customize_class
+        puts "Congratulations! You're class has changed to #{@class}!"
+      when 2
+        puts "Good! I thought the #{@class} was better anyway."
+      else
+        error
+      end
+    when 3
+      puts "Are you sure you want to change your gender?"
+      puts "1) Yes 2) No "
+      gender_choice = gets.chomp.to_i
+      case gender_choice
+      when 1
+        customize_gender
+        puts "Congratulations! You're gender has changed to #{@gender}!"
+      when 2
+        puts "Hmmm...I guess it was hard converting to something your not."
+      else
+        error
+      end
+    when 4
+      puts "Are you sure you want to change your name?"
+      puts "1) Yes 2) No "
+      name_choice = gets.chomp.to_i
+      case name_choice
+      when 1
+        customize_name
+        puts "Congratulations! You're name has changed to #{@name}!"
+      when 2
+        puts "Awww man...I was looking forward to see the weird name you were going to choose!"
+      else
+        error
+      end
+    when 5
+      puts "Exiting options menu..."
+    else
+      error
     end
   end
 
@@ -153,9 +143,9 @@ class Character
 
   def print_welcome_message
     if @gender.index(/[aeiou]/) == 0
-      puts "Hello #{@name}, I see you are an #{@gender} with a class of #{@class}!"
+      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@class}!"
     else
-      puts "Hello #{@name}, I see you are a #{@gender} with a class of #{@class}!"
+      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@class}!"
     end
   end
 
