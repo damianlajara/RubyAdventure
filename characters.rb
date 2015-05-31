@@ -15,7 +15,7 @@ end
 
 class Character
   attr_accessor :attack, :defense, :hp, :max_hp, :level, :money, :experience
-  attr_reader :name, :class, :gender
+  attr_reader :name, :class, :gender, :base_class, :main_class
 
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
@@ -68,12 +68,19 @@ class Character
   def customize_class
     display_hash_option CLASSES, 'What class would you like to choose your character from? '
     choice = gets.chomp.to_i
-    @class =
+    @base_class =
+      case choice
+      when 1 then "soldier"
+      when 2 then "mage"
+      when 3 then "ranged"
+      else error 'customize_class() -> hero_class case statement'
+      end
+    @main_class =
       case choice
       when 1 then choose_array_option CLASSES[:soldier]
       when 2 then choose_array_option CLASSES[:mage]
       when 3 then choose_array_option CLASSES[:ranged]
-      else error 'customize_class() -> case statement'
+      else error 'customize_class() -> hero_class case statement'
       end
   end
 
@@ -107,9 +114,9 @@ class Character
       case class_choice
       when 1
         customize_class
-        puts "Congratulations! You're class has changed to #{@class}!"
+        puts "Congratulations! You're class has changed to #{@main_class}!"
       when 2
-        puts "Good! I thought the #{@class} was better anyway."
+        puts "Good! I thought the #{@main_class} was better anyway."
       else
         error 'game_options -> first case when 2 -> second case'
       end
@@ -152,9 +159,9 @@ class Character
 
   def print_welcome_message
     if @gender.index(/[aeiou]/) == 0
-      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@class}!"
+      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
     else
-      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@class}!"
+      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
     end
   end
 

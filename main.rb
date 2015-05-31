@@ -23,7 +23,7 @@ hero = Hero.new(
 )
 
 puts "Welcome! Let's get you comfy! Create your custom character!"
-#hero.customize
+hero.customize
 
 #shop1 = SoldierWeaponShop.new()
 #p shop1

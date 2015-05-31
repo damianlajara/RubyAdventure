@@ -191,7 +191,7 @@ end
     end
   end
 
-public
+ public
   def display_weapon_choice(class_name)
     shop =
     case class_name.downcase
@@ -231,13 +231,15 @@ public
     main_choice = gets.chomp.to_i
     case main_choice
     when 1
-      display_weapon_choice('soldier')
-      display_weapon_choice('mage')
-      display_weapon_choice('ranged')
+      display_weapon_choice(hero.base_class)
+      #display_weapon_choice('soldier')
+      #display_weapon_choice('mage')
+      #display_weapon_choice('ranged')
     when 2
-      display_armor_choice('soldier')
-      display_armor_choice('mage')
-      display_armor_choice('ranged')
+      display_armor_choice(hero.base_class)
+      #display_armor_choice('soldier')
+      #display_armor_choice('mage')
+      #display_armor_choice('ranged')
     when 3
       display_potion_choice
     else error "shop -> display_shop_items"
