@@ -254,15 +254,7 @@ end
     shop.weapons.each_with_index { |weapon, index| puts "#{index.next}) #{sprintf("%-23s", weapon)} #{sprintf("%-10d", weapon.damage)} #{sprintf("%-10d", weapon.price)} #{sprintf("%-5d", weapon.sell_value)} #{weapon.description}" }
     puts "\n"
 
-    #TODO Put into a function so you can call it in armor as well!
-    display_purchase_option
-    purchase_choice = gets.chomp
-    item = shop.weapons.values_at(purchase_choice.to_i - 1)[0]
-    if !item.nil?
-      hero.buy(item)
-    else
-      error "display_weapon_choice() -> Error that is not a valid answer!"
-    end
+    purchase_item(hero, shop.weapons)
   end
 
   def display_armor_choice(hero)
@@ -273,15 +265,24 @@ end
     when 'ranged'  then RangedArmorShop.new
     else error "display_armor_choice() -> case statement"
     end
+
     puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Armor Name")}#{sprintf("%10s", "Defense")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
     puts "#{("*~"*29).chop}"
+
     shop.armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf("%-23s", armor)} #{sprintf("%-10d", armor.defense)} #{sprintf("%-10d", armor.price)} #{sprintf("%-5d", armor.sell_value)} #{armor.description}" }
+
+    purchase_item(hero, shop.armor)
+
   end
 
-  def display_potion_choice
+  def display_potion_choice(hero)
     puts "\n# #{sprintf("%12s", "Potion Name")}#{sprintf("%17s", "Health")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
     puts "#{("*~"*29).chop}"
-    PotionShop.new.potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf("%-23s", potion)} #{sprintf("%-10d", potion.health)} #{sprintf("%-10d", potion.price)} #{sprintf("%-5d", potion.sell_value)} #{potion.description}" }
+    shop = PotionShop.new
+
+    shop.potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf("%-23s", potion)} #{sprintf("%-10d", potion.health)} #{sprintf("%-10d", potion.price)} #{sprintf("%-5d", potion.sell_value)} #{potion.description}" }
+
+    purchase_item(hero, shop.potions)
   end
 
   def display_shop_items(hero)
@@ -301,7 +302,8 @@ end
       #display_armor_choice('mage')
       #display_armor_choice('ranged')
     when 3
-      display_potion_choice
+      display_potion_choice(hero)
+
     else error "shop -> display_shop_items"
     end
 
@@ -309,6 +311,17 @@ end
 
   def display_purchase_option
     puts "To purchase an item, enter the number that corresponds with item you want\n"
+  end
+
+  def purchase_item(hero, items)
+    display_purchase_option
+    purchase_choice = gets.chomp
+    item = items.values_at(purchase_choice.to_i - 1)[0]
+    if !item.nil?
+      hero.buy(item)
+    else
+      error "purchase_item_from() -> Error that is not a valid answer!"
+    end
   end
 
   def confirm_purchase(item)
