@@ -191,6 +191,17 @@ class Hero < Character
     end
   end
 
+  def buy(item)
+    if self.money >= item.price
+      self.money -= item.price
+      add_to_inventory(item)
+      puts "Succesfully purchased #{item.to_s}!"
+      puts "It has been added to your inventory!"
+    else
+      error "hero.buy() -> Error! You do not have enough money!"
+    end
+  end
+
   def add_to_inventory(item)
     if item.class == Weapon
       # check weapon to see if hero class can use it

@@ -34,7 +34,6 @@ class Shop
     else error "shop -> self.armor()"
     end
   end
-
 end
 
 class SoldierWeaponShop < Shop
@@ -54,6 +53,10 @@ class SoldierWeaponShop < Shop
       sell_value += SELL_VALUE_OFFSET
       @weapons.push(Weapon.new(name, { damage: effect }, price: price, sell_value: sell_value))
     end
+  end
+
+  def weapon_count
+    SOLDIER_WEAPON_NAMES.length
   end
 
   def display_weapons
@@ -82,6 +85,10 @@ end
       end
     end
 
+    def weapon_count
+      MAGE_WEAPON_NAMES.length
+    end
+
     def display_weapons
       @weapons.each_with_index(&Procs::DISPLAY)
     end
@@ -105,6 +112,10 @@ end
         sell_value += SELL_VALUE_OFFSET
         @weapons.push(Weapon.new(name, { damage: effect }, price: price, sell_value: sell_value))
       end
+    end
+
+    def weapon_count
+      RANGED_WEAPON_NAMES.length
     end
 
     def display_weapons
@@ -132,6 +143,14 @@ end
         @armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
+
+    def armor_count
+      SOLDIER_ARMOR_NAMES.length
+    end
+
+    def display_armor
+      @armor.each_with_index(&Procs::DISPLAY)
+    end
   end
 
   class MageArmorShop < Shop
@@ -151,6 +170,15 @@ end
         @armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
+
+    def armor_count
+      MAGE_WEAPON_NAMES.length
+    end
+
+    def display_armor
+      @armor.each_with_index(&Procs::DISPLAY)
+    end
+
   end
 
   class RangedArmorShop < Shop
@@ -170,6 +198,15 @@ end
         @armor.push(Armor.new(name, { defense: effect }, price: price, sell_value: sell_value))
       end
     end
+
+    def armor_count
+      RANGED_WEAPON_NAMES.length
+    end
+
+    def display_armor
+      @armor.each_with_index(&Procs::DISPLAY)
+    end
+
   end
 
   class PotionShop < Shop
@@ -189,21 +226,41 @@ end
         @potions.push(Potion.new(name, { health: effect }, price: price, sell_value: sell_value))
       end
     end
+
+    def potion_count
+      POTION_NAMES.length
+    end
+
+    def display_potions
+      @potions.each_with_index(&Procs::DISPLAY)
+    end
+
   end
 
  public
-  def display_weapon_choice(class_name)
+  def display_weapon_choice(hero)
     shop =
-    case class_name.downcase
+    case hero.base_class.downcase
     when 'soldier' then SoldierWeaponShop.new
     when 'mage'    then MageWeaponShop.new
     when 'ranged'  then RangedWeaponShop.new
     else error "display_weapon_choice() -> case statement"
     end
-    puts "\n# #{sprintf("%19s", class_name.capitalize << " Weapon Name")}#{sprintf("%10s", "Damage")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
+
+    puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Weapon Name")}#{sprintf("%10s", "Damage")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
     puts "#{("*~"*29).chop}"
     shop.weapons.each_with_index { |weapon, index| puts "#{index.next}) #{sprintf("%-23s", weapon)} #{sprintf("%-10d", weapon.damage)} #{sprintf("%-10d", weapon.price)} #{sprintf("%-5d", weapon.sell_value)} #{weapon.description}" }
     puts "\n"
+
+    #TODO Put into a function so you can call it in armor as well!
+    display_purchase_option
+    purchase_choice = gets.chomp
+    item = shop.weapons.values_at(purchase_choice.to_i - 1)[0]
+    if !item.nil?
+      hero.buy(item)
+    else
+      error "display_weapon_choice() -> Error that is not a valid answer!"
+    end
   end
 
   def display_armor_choice(class_name)
@@ -231,10 +288,11 @@ end
     main_choice = gets.chomp.to_i
     case main_choice
     when 1
-      display_weapon_choice(hero.base_class)
+      display_weapon_choice(hero)
       #display_weapon_choice('soldier')
       #display_weapon_choice('mage')
       #display_weapon_choice('ranged')
+
     when 2
       display_armor_choice(hero.base_class)
       #display_armor_choice('soldier')
@@ -245,6 +303,14 @@ end
     else error "shop -> display_shop_items"
     end
 
+  end
+
+  def display_purchase_option
+    puts "To purchase an item, enter the number that corresponds with item you want\n"
+  end
+
+  def confirm_purchase(item)
+    puts "Are you sure you want to buy #{item} ? Y/N"
   end
 
   def goto_shop(hero)
