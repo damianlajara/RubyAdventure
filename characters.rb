@@ -8,13 +8,14 @@ def display_array_value_with_index(array)
 end
 
 def choose_array_option(classes_array)
-  display_array_value_with_index classes_array
+  display_array_value_with_index(classes_array)
+  print "To choose a specification, enter the number that corresponds with the class you want: "
   choice = gets.chomp.to_i
   classes_array[choice.pred]
 end
 
 class Character
-  attr_accessor :attack, :defense, :hp, :max_hp, :level, :money, :experience
+  attr_accessor :attack, :defense, :health, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender, :base_class, :main_class
 
   CLASSES = {
@@ -68,19 +69,21 @@ class Character
   def customize_class
     display_hash_option CLASSES, 'What class would you like to choose your character from? '
     choice = gets.chomp.to_i
+
     @base_class =
       case choice
       when 1 then "soldier"
       when 2 then "mage"
       when 3 then "ranged"
-      else error 'customize_class() -> hero_class case statement'
+      else error 'customize_class() -> base_class case statement'
       end
+
     @main_class =
       case choice
       when 1 then choose_array_option CLASSES[:soldier]
       when 2 then choose_array_option CLASSES[:mage]
       when 3 then choose_array_option CLASSES[:ranged]
-      else error 'customize_class() -> hero_class case statement'
+      else error 'customize_class() -> main_class case statement'
       end
   end
 
@@ -153,15 +156,11 @@ class Character
     end
   end
 
-  def check_inventory
-    puts 'Inside inventory! Let\'s see what you got!'
-  end
-
   def print_welcome_message
     if @gender.index(/[aeiou]/) == 0
-      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
+      puts "\nWelcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
     else
-      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
+      puts "\nWelcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
     end
   end
 
@@ -201,6 +200,54 @@ class Hero < Character
       error "hero.buy() -> Error! You do not have enough money!"
     end
   end
+
+  def check_inventory
+    puts "Inside inventory! Let's see what you got!"
+    puts "Health: #{self.health}"
+    puts "Level: #{self.level}"
+    puts "Attack: #{self.attack}"
+    puts "Defense: #{self.defense}"
+    puts "Money: #{self.money}"
+    puts "Experience: #{self.experience}\n"
+
+    print "\nWeapons: "
+    if self.inventory[:current_weapons].length > 0
+      puts "\n"
+      self.display_weapons
+    else
+      print "Empty!\n"
+    end
+
+    print "Armor: "
+    if self.inventory[:current_armor].length > 0
+      puts "\n"
+      self.display_armor
+    else
+      print "Empty!\n"
+    end
+
+    print "Potions: "
+    if self.inventory[:current_potions].length > 0
+      puts "\n"
+      self.display_potions
+    else
+      print "Empty!\n"
+    end
+  end
+
+  #TODO Make private, since only check_inventory should be using these methods
+  def display_weapons
+    self.inventory[:current_weapons].each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
+  end
+
+  def display_armor
+    self.inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)
+  end
+
+  def display_potions
+    self.inventory[:current_potions].each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)
+  end
+
 
   def add_to_inventory(item)
     if item.class == Weapon

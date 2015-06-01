@@ -18,7 +18,7 @@ hero = Hero.new(
   level: 1,
   attack: 25,
   defense: 40,
-  money: 0,
+  money: 210,
   exp: 0
 )
 

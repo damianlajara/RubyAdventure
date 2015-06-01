@@ -31,6 +31,9 @@ end
 
 module Procs
   DISPLAY = Proc.new { |item, index| puts "#{index.next}) #{item.to_s}" }
+  DISPLAY_WEAPON_WITH_STATUS = Proc.new { |weapon, index| puts "#{index.next}) #{sprintf("%-12s", weapon)} Damage: #{sprintf("%-8d", weapon.damage)} Price: #{sprintf("%-8d", weapon.price)} Sell_Value: #{sprintf("%-8d", weapon.sell_value)} Description: #{weapon.description}" }
+  DISPLAY_ARMOR_WITH_STATUS  = Proc.new { |armor,  index| puts "#{index.next}) #{sprintf("%-12s", armor)} Defense: #{sprintf("%-8d", armor.defense)} Price: #{sprintf("%-8d", armor.price)} Sell_Value: #{sprintf("%-8d", armor.sell_value)} Description: #{armor.description}" }
+  DISPLAY_POTION_WITH_STATUS = Proc.new { |potion, index| puts "#{index.next}) #{sprintf("%-12s", potion)} Health: #{sprintf("%-8d", potion.health)} Price: #{sprintf("%-8d", potion.price)} Sell_Value: #{sprintf("%-8d", potion.sell_value)} Description: #{potion.description}" }
 end
 
 module SoldierWeaponAttributes

@@ -249,6 +249,8 @@ end
 
     puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Weapon Name")}#{sprintf("%10s", "Damage")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
     puts "#{("*~"*29).chop}"
+
+    #TODO use the proc from mods.rb with DISPLAY_WITH_STATUS for this
     shop.weapons.each_with_index { |weapon, index| puts "#{index.next}) #{sprintf("%-23s", weapon)} #{sprintf("%-10d", weapon.damage)} #{sprintf("%-10d", weapon.price)} #{sprintf("%-5d", weapon.sell_value)} #{weapon.description}" }
     puts "\n"
 
@@ -263,15 +265,15 @@ end
     end
   end
 
-  def display_armor_choice(class_name)
+  def display_armor_choice(hero)
     shop =
-    case class_name.downcase
+    case hero.base_class.downcase
     when 'soldier' then SoldierArmorShop.new
     when 'mage'    then MageArmorShop.new
     when 'ranged'  then RangedArmorShop.new
     else error "display_armor_choice() -> case statement"
     end
-    puts "\n# #{sprintf("%19s", class_name.capitalize << " Armor Name")}#{sprintf("%10s", "Defense")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
+    puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Armor Name")}#{sprintf("%10s", "Defense")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
     puts "#{("*~"*29).chop}"
     shop.armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf("%-23s", armor)} #{sprintf("%-10d", armor.defense)} #{sprintf("%-10d", armor.price)} #{sprintf("%-5d", armor.sell_value)} #{armor.description}" }
   end
@@ -294,7 +296,7 @@ end
       #display_weapon_choice('ranged')
 
     when 2
-      display_armor_choice(hero.base_class)
+      display_armor_choice(hero)
       #display_armor_choice('soldier')
       #display_armor_choice('mage')
       #display_armor_choice('ranged')
