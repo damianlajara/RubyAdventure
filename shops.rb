@@ -3,18 +3,18 @@ class Shop
  #@@soldier_weapon_names = %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur)
  SOLDIER_WEAPON_NAMES = %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur)
  MAGE_WEAPON_NAMES = %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist)
- RANGED_WEAPON_NAMES = %w(Arondight Gugnir Susano' Longinus Hrunting Clarent Shinigami Caliburn)
+ RANGED_WEAPON_NAMES = %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
 
  SOLDIER_ARMOR_NAMES = %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override)
  MAGE_ARMOR_NAMES = %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer)
  RANGED_ARMOR_NAMES = %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
 
- POTION_NAMES = %w(Mommy's_Tea Antidote_of_Life Red_Potion' Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
+ POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
 
   def initialize
     puts "Initializing shop items ..."
   end
-
+  
   def self.weapons(class_name = "all")
     case class_name
     when "all" then [SOLDIER_WEAPON_NAMES, MAGE_WEAPON_NAMES, RANGED_WEAPON_NAMES]
@@ -199,6 +199,9 @@ end
       end
     end
 
+    "hello'"
+    'hello"'
+    "hi'"
     def armor_count
       RANGED_WEAPON_NAMES.length
     end
@@ -316,11 +319,11 @@ end
   def purchase_item(hero, items)
     display_purchase_option
     purchase_choice = gets.chomp
-    item = items.values_at(purchase_choice.to_i - 1)[0]
-    if !item.nil?
+    item = (items.values_at(purchase_choice.to_i.pred)[0] || nil)
+    if purchase_choice.to_s =~ %r{[0-9]} && !item.nil?
       hero.buy(item)
     else
-      error "purchase_item_from() -> Error that is not a valid answer!"
+      error "purchase_item() -> Error that is not a valid answer!"
     end
   end
 
