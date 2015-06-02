@@ -44,6 +44,19 @@ class Character
     @experience = hero_args[:exp] || 0
   end
 
+  def reset_stats
+    #TODO Create validation in these methods which is why I called self inseat of accessing the var directly
+    self.health = 100
+    self.level = 1
+    self.attack = 0
+    self.defense = 0
+    self.money = 0
+    self.experience = 0
+    self.max_hp = 100
+    #self.dungeon_level = 1
+    @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
+  end
+  
   def customize_name
     print 'What would you like your character to be called? '
     @name = gets.chomp.capitalize
@@ -111,11 +124,12 @@ class Character
       end
     when 2
       puts "Are you sure you want to change your class?\n"
-      puts "You will lose all of your current weapons and armor!\n"
+      puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
       puts '1) Yes 2) No '
       class_choice = gets.chomp.to_i
       case class_choice
       when 1
+        self.reset_stats
         customize_class
         puts "Congratulations! You're class has changed to #{@main_class}!"
       when 2
@@ -182,9 +196,9 @@ class Hero < Character
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
   end
 
-  def exp=(experience)
-    @experience = experience
-    case experience
+  def experience=(xp)
+    @experience = xp
+    case xp
     when 0..50
       self.level += 1
     end
@@ -201,6 +215,17 @@ class Hero < Character
     end
   end
 
+  # def sell(item)
+  #   if self.money >= item.price
+  #     self.money += item.sell_value
+  #     remove_from_inventory(item)
+  #     puts "Succesfully sold #{item.to_s}!"
+  #     puts "It has been removed from your inventory!"
+  #   else
+  #     error "hero.sell() -> Error! You do not have enough money!"
+  #   end
+  # end
+  
   def check_inventory
     puts "Inside inventory! Let's see what you got!"
     puts "Health: #{self.health}"
