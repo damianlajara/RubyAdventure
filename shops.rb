@@ -24,7 +24,7 @@ class Shop
     else error "shop -> self.weapons()"
     end
   end
-
+  
   def self.armor(class_name = "all")
     case class_name
     when "all" then [SOLDIER_ARMOR_NAMES, MAGE_WEAPON_NAMES, RANGED_WEAPON_NAMES]
@@ -199,9 +199,6 @@ end
       end
     end
 
-    "hello'"
-    'hello"'
-    "hi'"
     def armor_count
       RANGED_WEAPON_NAMES.length
     end

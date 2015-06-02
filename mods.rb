@@ -22,10 +22,22 @@ module Formulas
     rand(index+15..15+index**4/2).to_i
   end
   def m_experience(index)
-    rand(index*8..index*8+index**4 +3 /2).to_i
+    rand((index*8)..(index*8 + index**4 + (3 / 2))).to_i
   end
   def m_money(index)
     rand(index+120..120+index**2*index+1)
+  end
+end
+
+#TODO Make every string a constant and put it here, so it can be easily maintained
+module StringConstants
+  ITEM_ADDED_SUCCESFULLY = "Item has been succesfully added to your inventory!"
+  ITEM_REMOVED_SUCCESFULLY = "Item was succesfully removed from the inventory"
+end
+
+module Validate
+  def validate_num(integer,max=9)
+    integer.to_s =~ %r{[0-max]}
   end
 end
 
@@ -115,6 +127,7 @@ end
 
 def error(item="answer")
   puts "Invalid #{item}!"
+  return
 end
 
 # monster = Monster.new(100,1,100, 20,100, 25)
