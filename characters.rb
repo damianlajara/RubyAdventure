@@ -18,7 +18,7 @@ class Character
   include Validate
   attr_accessor :attack, :defense, :health, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count, 
-  :equipped_weapon, :equipped_armor
+  :equipped_weapons, :equipped_armor
 
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
@@ -44,6 +44,8 @@ class Character
     @defense = hero_args[:defense] || 0
     @money = hero_args[:money] || 0
     @experience = hero_args[:exp] || 0
+    @equipped_weapons = []
+    @equipped_armor = []
     @weapon_count = 0
     @armor_count = 0
     @potion_count = 0
@@ -228,7 +230,7 @@ class Hero < Character
   end
   
   def weapon_equipped?
-    if !@equipped_weapon.nil?
+    if !@equipped_weapons.empty? || !@equipped_weapons.any? {|weapon| weapon.nil?}
       true
     else
       false
@@ -245,17 +247,17 @@ class Hero < Character
   
   def equip(item)
     if item.class == Weapon && !self.weapon_equipped?
-      @equipped_weapon = item
+      @equipped_weapons.push(item)
       puts "Succesfully Equipped #{item.to_s}"
     elsif item.class == Armor && !self.armor_equipped?
-      @equipped_armor = item
+      @equipped_armor.push(item)
       puts "Succesfully Equipped #{item.to_s}"
     else
       error "equip() -> Error! You already have a weapon equipped"
     end
   end
   
-  #TODO Make equipped_weapon and armor an array so you can use the mods instead of display_weapon_attributes (Bonus: You get to use index)
+  #TODO Make equipped_weapons and armor an array so you can use the mods instead of display_weapon_attributes (Bonus: You get to use index)
   def display_weapon_attributes(weapon)
     puts "#{sprintf("%-16s", weapon)} Damage: #{sprintf("%-8d", weapon.damage)} Price: #{sprintf("%-8d", weapon.price)} Sell_Value: #{sprintf("%-8d", weapon.sell_value)} Description: #{weapon.description}"
   end
@@ -275,7 +277,7 @@ class Hero < Character
     print "\nWeapons In Inventory: "
     if self.inventory[:current_weapons].length > 0
       puts "\n"
-      self.display_weapons
+      self.display_inventory_weapons
     else
       print "Empty!\n"
     end
@@ -300,7 +302,8 @@ class Hero < Character
     print "Weapon: "
     if self.weapon_equipped?
       puts "\n"
-      puts display_weapon_attributes(@equipped_weapon)
+      #puts display_weapon_attributes(@equipped_weapons)
+      self.display_equipped_weapons
     else
       print "No Weapon Equipped!\n"
     end
@@ -319,7 +322,7 @@ class Hero < Character
     equip_choice = gets.chomp.to_i
     case equip_choice
     when 1 
-       self.display_weapons
+       self.display_inventory_weapons
        puts "To select a weapon to equip, enter the number that corresponds with the weapon you want: "
        weapon_option = gets.chomp.to_i
       item = (self.inventory[:current_weapons].values_at(weapon_option.pred)[0]) || nil
@@ -329,11 +332,11 @@ class Hero < Character
         error "equip_items() -> Error! Unable to equip weapon!"
       end
     when 2
-      self.display_armor
+      self.display_inventory_armor
       puts "To select an armor to equip, enter the number that corresponds with the armor you want: "
       armor_option = gets.chomp.to_i
       item = (self.inventory[:current_armor].values_at(armor_option.pred)[0]) || nil
-    else error "equip_items() -> Error! Invalid Option!" #change to __method__ in each error
+    else error "equip_items() -> Error! Invalid Option!" #TODO change to __method__ in each error
     end
   end
 
@@ -358,14 +361,22 @@ class Hero < Character
   end
 
   #TODO Make private, since only check_inventory should be using these methods
-  def display_weapons()
+  def display_inventory_weapons
     self.inventory[:current_weapons].each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
   end
 
-  def display_armor
+  def display_inventory_armor
     self.inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)
   end
 
+  def display_equipped_weapons
+    self.equipped_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
+  end
+  
+  def display_equipped_armor
+    self.inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)
+  end
+  
   def display_potions
     self.inventory[:current_potions].each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)
   end
