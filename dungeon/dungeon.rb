@@ -1,3 +1,5 @@
+require_relative "../helpers/formulas"
+
 class Dungeon
   attr_accessor :monsters
   include Formulas

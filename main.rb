@@ -1,8 +1,10 @@
-require './items.rb'
-require './mods.rb'
-require './shops.rb'
-require './characters.rb'
-require './dungeon.rb'
+#!/usr/bin/env ruby
+
+# Require all files
+Dir[File.join(File.dirname(__FILE__), '**', '*.rb')].each { |file| require file }
+
+# Set the debug flag to make output more verbose
+$debug = true
 
 monster = Monster.new(
   health: 100,
@@ -25,6 +27,7 @@ hero = Hero.new(
 puts "Welcome! Let's get you comfy! Create your custom character!"
 hero.customize
 
+shop = Shop.new
 #shop1 = SoldierWeaponShop.new()
 #p shop1
 
@@ -41,7 +44,7 @@ loop do
       puts "You rolled a #{random_dice1} and a #{random_dice2} for a total of #{total}!"
       puts total.even? ? battle_monster(hero) : "Missed!"
     when 's'
-      Shop.new.goto_shop(hero)
+      shop.goto_shop(hero)
     when 'i'
       hero.check_inventory
     when 'o'
@@ -50,3 +53,4 @@ loop do
       error
   end
 end
+puts "Goodbye!"
