@@ -6,6 +6,7 @@ class Character
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count,
   :equipped_weapons, :equipped_armor
 
+  #FIXME Make this more dynamic by reading in the files from the heros dir
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
     mage: %w(Necromancer Wizard Illusionist Alcheemist),
@@ -14,22 +15,13 @@ class Character
 
   GENDER = { male: 'Male', female: 'Female' }
 
-  # def initialize(health, lvl, att, defense, money, exp)
-  #   @health = health
-  #   @level = lvl
-  #   @attack = att
-  #   @defense = defense
-  #   @money = money
-  #   @experience = exp
-  # end
-
-  def initialize(hero_args = {})
-    @health = hero_args[:health] || 100
-    @level = hero_args[:level] || 1
-    @attack = hero_args[:attack] || 0
-    @defense = hero_args[:defense] || 0
-    @money = hero_args[:money] || 0
-    @experience = hero_args[:exp] || 0
+  def initialize(character_args = {})
+    @health = character_args[:health] || 100
+    @level = character_args[:level] || 1
+    @attack = character_args[:attack] || 10
+    @defense = character_args[:defense] || 10
+    @money = character_args[:money] || 0
+    @experience = character_args[:exp] || 0
     @equipped_weapons = []
     @equipped_armor = []
     @weapon_count = 0
@@ -93,73 +85,25 @@ class Character
       end
   end
 
-  def game_options
+  def print_game_options
     puts "\n#{'*' * 4} Game Options #{'*' * 4}\n"
     puts '1) Toggle Battle Scenes'
     puts '2) Change Class'
     puts '3) Change Gender'
     puts '4) Change Name'
     puts '5) Exit'
+  end
+
+  def game_options
+    print_game_options
     option = gets.chomp.to_i
     case option
-    when 1
-      puts 'Do you want to disable all of the battle scenes? 1) Yes 2) No'
-      scene_option = gets.chomp.to_i
-      case scene_option
-      when 1
-        @skip = true
-        puts 'Battle scenes have been disabled.'
-      when 2
-        @skip = false
-        puts 'Battle scenes have been enabled.'
-      else
-        error 'game_options -> first case when 1 -> second case'
-      end
-    when 2
-      puts "Are you sure you want to change your class?\n"
-      puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
-      puts '1) Yes 2) No '
-      class_choice = gets.chomp.to_i
-      case class_choice
-      when 1
-        self.reset_stats
-        customize_class
-        puts "Congratulations! You're class has changed to #{@main_class}!"
-      when 2
-        puts "Good! I thought the #{@main_class} was better anyway."
-      else
-        error 'game_options -> first case when 2 -> second case'
-      end
-    when 3
-      puts 'Are you sure you want to change your gender?'
-      puts '1) Yes 2) No '
-      gender_choice = gets.chomp.to_i
-      case gender_choice
-      when 1
-        customize_gender
-        puts "Congratulations! You're gender has changed to #{@gender}!"
-      when 2
-        puts 'Hmmm...I guess it was hard converting to something your not.'
-      else
-        error 'game_options -> first case when 3 -> second case'
-      end
-    when 4
-      puts 'Are you sure you want to change your name?'
-      puts '1) Yes 2) No '
-      name_choice = gets.chomp.to_i
-      case name_choice
-      when 1
-        customize_name
-        puts "Congratulations! You're name has changed to #{@name}!"
-      when 2
-        puts 'Awww man...I was looking forward to see the weird name you were going to choose!'
-      else
-        error 'game_options -> first case when 4 -> second case'
-      end
-    when 5
-      puts 'Exiting options menu...'
-    else
-      error 'game_options -> first case when 5'
+    when 1 then toggle_battle_scenes
+    when 2 then change_class
+    when 3 then change_gender
+    when 4 then change_name
+    when 5 then puts 'Exiting options menu...'
+    else error 'game_options -> first case when 5'
     end
   end
 
@@ -177,4 +121,67 @@ class Character
     customize_class
     print_welcome_message
   end
+
+  def toggle_battle_scenes
+    puts 'Do you want to disable all of the battle scenes? 1) Yes 2) No'
+    scene_option = gets.chomp.to_i
+    case scene_option
+    when 1
+      @skip = true
+      puts 'Battle scenes have been disabled.'
+    when 2
+      @skip = false
+      puts 'Battle scenes have been enabled.'
+    else
+      error 'game_options -> first case when 1 -> second case'
+    end
+  end
+
+  def change_class
+    puts "Are you sure you want to change your class?\n"
+    puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
+    puts '1) Yes 2) No '
+    class_choice = gets.chomp.to_i
+    case class_choice
+    when 1
+      self.reset_stats
+      customize_class
+      puts "Congratulations! You're class has changed to #{@main_class}!"
+    when 2
+      puts "Good! I thought the #{@main_class} was better anyway."
+    else
+      error 'game_options -> first case when 2 -> second case'
+    end
+  end
+
+  def change_gender
+    puts 'Are you sure you want to change your gender?'
+    puts '1) Yes 2) No '
+    gender_choice = gets.chomp.to_i
+    case gender_choice
+    when 1
+      customize_gender
+      puts "Congratulations! You're gender has changed to #{@gender}!"
+    when 2
+      puts 'Hmmm...I guess it was hard converting to something you\'re not.'
+    else
+      error 'game_options -> first case when 3 -> second case'
+    end
+  end
+
+  def change_name
+    puts 'Are you sure you want to change your name?'
+    puts '1) Yes 2) No '
+    name_choice = gets.chomp.to_i
+    case name_choice
+    when 1
+      customize_name
+      puts "Congratulations! You're name has changed to #{@name}!"
+    when 2
+      puts 'Awww man...I was looking forward to seeing the weird name you were going to choose!'
+    else
+      error 'game_options -> first case when 4 -> second case'
+    end
+  end
+
 end

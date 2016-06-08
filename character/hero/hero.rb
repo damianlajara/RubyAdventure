@@ -2,7 +2,6 @@ require_relative "character"
 
 class Hero < Character
   attr_reader :inventory, :dungeon_level
-  #include Validate
   def initialize(hero_args = {})
     super
     @max_hp = 100
