@@ -4,27 +4,35 @@ require_relative "../shop"
 class PotionShop < Shop
   include Attributes::Potion
   attr_reader :potions
+
   def initialize
     @potions = []
-    #@@potion_names = %w(Mommy's_Tea Antidote_of_Life Red_Potion' Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
-    effect = BASE_EFFECT
-    price = BASE_PRICE
-    sell_value = BASE_SELL_VALUE
-
-    POTION_NAMES.each do |name|
-      effect += EFFECT_OFFSET
-      price += PRICE_OFFSET
-      sell_value += SELL_VALUE_OFFSET
-      @potions.push(Potion.new(name, { health: effect }, price: price, sell_value: sell_value))
-    end
+    @effect = BASE_EFFECT
+    @price = BASE_PRICE
+    @sell_value = BASE_SELL_VALUE
+    initialize_potion_values
   end
 
   def potion_count
-    POTION_NAMES.length
+    POTION_NAMES.count
   end
 
   def display_potions
     @potions.each_with_index(&Procs::DISPLAY)
+  end
+
+  def display_formatted_potions
+    @potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf("%-23s", potion)} #{sprintf("%-10d", potion.health)} #{sprintf("%-10d", potion.price)} #{sprintf("%-5d", potion.sell_value)} #{potion.description}" }
+  end
+
+  private
+  def initialize_potion_values
+    POTION_NAMES.each do |name|
+      @effect += EFFECT_OFFSET
+      @price += PRICE_OFFSET
+      @sell_value += SELL_VALUE_OFFSET
+      @potions.push(Potion.new(name, { health: @effect }, price: @price, sell_value: @sell_value))
+    end
   end
 
 end

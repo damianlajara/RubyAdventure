@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 # Require all files
-Dir[File.join(File.dirname(__FILE__), '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'character', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'dungeon', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'shop' ,'**', '*.rb')].each { |file| require file }
 
 # Set the debug flag to make output more verbose
 $debug = true

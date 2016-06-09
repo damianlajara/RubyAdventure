@@ -1,7 +1,12 @@
 require_relative "../helpers/validator"
+require_relative "../helpers/mixins"
+require_relative "../helpers/utility"
 
 class Character
   include Validator
+  include Mixin
+  include Procs
+  include Utility
   attr_accessor :attack, :defense, :health, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count,
   :equipped_weapons, :equipped_armor

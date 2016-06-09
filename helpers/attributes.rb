@@ -7,7 +7,6 @@ module Attributes
     BASE_EFFECT = 10
     BASE_PRICE = 60
     BASE_SELL_VALUE = 35
-
     EFFECT_OFFSET = 12
     PRICE_OFFSET = 220
     SELL_VALUE_OFFSET = 80
@@ -18,7 +17,6 @@ module Attributes
       BASE_EFFECT = 12
       BASE_PRICE = 100
       BASE_SELL_VALUE = 50
-
       EFFECT_OFFSET = 12
       PRICE_OFFSET = 110
       SELL_VALUE_OFFSET = 65
@@ -27,7 +25,6 @@ module Attributes
       BASE_EFFECT = 10
       BASE_PRICE = 92
       BASE_SELL_VALUE = 64
-
       EFFECT_OFFSET = 8
       PRICE_OFFSET = 130
       SELL_VALUE_OFFSET = 50
@@ -36,7 +33,6 @@ module Attributes
       BASE_EFFECT = 14
       BASE_PRICE = 134
       BASE_SELL_VALUE = 86
-
       EFFECT_OFFSET = 7
       PRICE_OFFSET = 150
       SELL_VALUE_OFFSET = 60
@@ -48,7 +44,6 @@ module Attributes
       BASE_EFFECT = 12
       BASE_PRICE = 100
       BASE_SELL_VALUE = 50
-
       EFFECT_OFFSET = 12
       PRICE_OFFSET = 110
       SELL_VALUE_OFFSET = 65
@@ -57,7 +52,6 @@ module Attributes
       BASE_EFFECT = 10
       BASE_PRICE = 92
       BASE_SELL_VALUE = 64
-
       EFFECT_OFFSET = 8
       PRICE_OFFSET = 130
       SELL_VALUE_OFFSET = 50
@@ -66,7 +60,6 @@ module Attributes
       BASE_EFFECT = 14
       BASE_PRICE = 134
       BASE_SELL_VALUE = 86
-
       EFFECT_OFFSET = 7
       PRICE_OFFSET = 150
       SELL_VALUE_OFFSET = 60

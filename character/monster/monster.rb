@@ -1,4 +1,4 @@
-require_relative "character"
+require_relative "../character"
 # TODO add different categories of monsters like with heros
 
 class Monster < Character

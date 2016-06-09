@@ -1,85 +1,85 @@
+require 'pry'
+require_relative "../helpers/formatters"
+require_relative "../helpers/utility"
+require_relative "../items/armor"
+require_relative "../items/weapon"
+require_relative "../items/potion"
+
 class Shop
-  #attr_reader :soldier_weapons, :mage_weapons, :archer_weapons, :soldier_armor, :mage_armor, :archer_armor, :potions
- #@@soldier_weapon_names = %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur)
- SOLDIER_WEAPON_NAMES = %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur)
- MAGE_WEAPON_NAMES = %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist)
- RANGED_WEAPON_NAMES = %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
+  class << self
+    def weapons(class_name = "all")
+      case class_name
+      when "all" then weapon_names.values
+      when "soldier" then weapon_names["soldier"]
+      when "mage" then weapon_names["mage"]
+      when "ranged" then weapon_names["ranged"]
+      else error "shop -> self.weapons()"
+      end
+    end
 
- SOLDIER_ARMOR_NAMES = %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override)
- MAGE_ARMOR_NAMES = %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer)
- RANGED_ARMOR_NAMES = %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
+    def armor(class_name = "all")
+      case class_name
+      when "all" then armor_names.values
+      when "soldier" then armor_names["soldier"]
+      when "mage" then armor_names["mage"]
+      when "ranged" then armor_names["ranged"]
+      else error "shop -> self.armor()"
+      end
+    end
 
- POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
+    def potions
+      POTION_NAMES
+    end
+  end
+
+  include Formatter
+  include Utility
+
+  # TODO Try to refactor this like the armor_names and weapon_names method
+  POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
 
   def initialize
     puts "Initializing shop items ..."
   end
 
-  def self.weapons(class_name = "all")
-    case class_name
-    when "all" then [SOLDIER_WEAPON_NAMES, MAGE_WEAPON_NAMES, RANGED_WEAPON_NAMES]
-    when "soldier" then SOLDIER_WEAPON_NAMES
-    when "mage" then MAGE_WEAPON_NAMES
-    when "ranged" then RANGED_WEAPON_NAMES
-    else error "shop -> self.weapons()"
-    end
+  def armor_names
+    {
+      "soldier" => %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override),
+      "mage" => %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer),
+      "ranged" => %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
+    }
   end
 
-  def self.armor(class_name = "all")
-    case class_name
-    when "all" then [SOLDIER_ARMOR_NAMES, MAGE_WEAPON_NAMES, RANGED_WEAPON_NAMES]
-    when "soldier" then SOLDIER_ARMOR_NAMES
-    when "mage" then MAGE_WEAPON_NAMES
-    when "ranged" then RANGED_WEAPON_NAMES
-    else error "shop -> self.armor()"
-    end
+  def weapon_names
+    {
+      "soldier" => %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur),
+      "mage" => %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist),
+      "ranged" => %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
+    }
   end
 
   public
    def display_weapon_choice(hero)
-     shop =
-     case hero.base_class.downcase
-     when 'soldier' then SoldierWeaponShop.new
-     when 'mage'    then MageWeaponShop.new
-     when 'ranged'  then RangedWeaponShop.new
-     else error "display_weapon_choice() -> case statement"
-     end
-
-     puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Weapon Name")}#{sprintf("%10s", "Damage")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
-     puts "#{("*~"*29).chop}"
-
-     #TODO use the proc from mods.rb with DISPLAY_WITH_STATUS for this
-     shop.weapons.each_with_index { |weapon, index| puts "#{index.next}) #{sprintf("%-23s", weapon)} #{sprintf("%-10d", weapon.damage)} #{sprintf("%-10d", weapon.price)} #{sprintf("%-5d", weapon.sell_value)} #{weapon.description}" }
-     puts "\n"
-
+     shop = WeaponShop.new(hero.base_class.downcase)
+     display_formatted_weapon_choice_header(hero.base_class.capitalize)
+     display_graphical_line_break
+     shop.display_formatted_weapons
      purchase_item(hero, shop.weapons)
    end
 
    def display_armor_choice(hero)
-     shop =
-     case hero.base_class.downcase
-     when 'soldier' then SoldierArmorShop.new
-     when 'mage'    then MageArmorShop.new
-     when 'ranged'  then RangedArmorShop.new
-     else error "display_armor_choice() -> case statement"
-     end
-
-     puts "\n# #{sprintf("%19s", hero.base_class.capitalize << " Armor Name")}#{sprintf("%10s", "Defense")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
-     puts "#{("*~"*29).chop}"
-
-     shop.armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf("%-23s", armor)} #{sprintf("%-10d", armor.defense)} #{sprintf("%-10d", armor.price)} #{sprintf("%-5d", armor.sell_value)} #{armor.description}" }
-
+     shop = ArmorShop.new(hero.base_class.downcase)
+     display_formatted_armor_choice_header(hero.base_class.capitalize)
+     display_graphical_line_break
+     shop.display_formatted_armor
      purchase_item(hero, shop.armor)
-
    end
 
    def display_potion_choice(hero)
-     puts "\n# #{sprintf("%12s", "Potion Name")}#{sprintf("%17s", "Health")} #{sprintf("%10s", "Price")} #{sprintf("%13s", "Sell_Value")}\n"
-     puts "#{("*~"*29).chop}"
      shop = PotionShop.new
-
-     shop.potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf("%-23s", potion)} #{sprintf("%-10d", potion.health)} #{sprintf("%-10d", potion.price)} #{sprintf("%-5d", potion.sell_value)} #{potion.description}" }
-
+     display_formatted_potion_choice_header
+     display_graphical_line_break
+     display_formatted_potions
      purchase_item(hero, shop.potions)
    end
 
@@ -88,27 +88,19 @@ class Shop
      print "1) Weapons 2) Armor 3) Potions "
      main_choice = gets.chomp.to_i
      case main_choice
-     when 1
-       display_weapon_choice(hero)
-       #display_weapon_choice('soldier')
-       #display_weapon_choice('mage')
-       #display_weapon_choice('ranged')
-
-     when 2
-       display_armor_choice(hero)
-       #display_armor_choice('soldier')
-       #display_armor_choice('mage')
-       #display_armor_choice('ranged')
-     when 3
-       display_potion_choice(hero)
-
+     when 1 then display_weapon_choice(hero)
+     when 2 then display_armor_choice(hero)
+     when 3 then display_potion_choice(hero)
      else error "shop -> display_shop_items"
      end
-
    end
 
    def display_purchase_option
      puts "To purchase an item, enter the number that corresponds with item you want\n"
+   end
+
+   def confirm_purchase(item)
+     puts "Are you sure you want to buy #{item} ? Y/N"
    end
 
    def purchase_item(hero, items)
@@ -120,10 +112,6 @@ class Shop
      else
        error "purchase_item() -> Error that is not a valid answer!"
      end
-   end
-
-   def confirm_purchase(item)
-     puts "Are you sure you want to buy #{item} ? Y/N"
    end
 
    def goto_shop(hero)

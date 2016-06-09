@@ -1,4 +1,4 @@
-require_relative "character"
+require_relative "../character"
 
 class Hero < Character
   attr_reader :inventory, :dungeon_level
@@ -63,7 +63,7 @@ class Hero < Character
     end
   end
 
-  #TODO Make equipped_weapons and armor an array so you can use the mods instead of display_weapon_attributes (Bonus: You get to use index)
+  # TODO Make equipped_weapons and armor an array so you can use the mods instead of display_weapon_attributes (Bonus: You get to use index)
   def display_weapon_attributes(weapon)
     puts "#{sprintf("%-16s", weapon)} Damage: #{sprintf("%-8d", weapon.damage)} Price: #{sprintf("%-8d", weapon.price)} Sell_Value: #{sprintf("%-8d", weapon.sell_value)} Description: #{weapon.description}"
   end
@@ -109,7 +109,7 @@ class Hero < Character
     if self.weapon_equipped?
       puts "\n"
       #puts display_weapon_attributes(@equipped_weapons)
-      self.display_equipped_weapons
+      display_equipped_weapons
     else
       print "No Weapon Equipped!\n"
     end
@@ -146,9 +146,11 @@ class Hero < Character
     end
   end
 
+  # TODO implement me
   def use_potions
   end
 
+  # TODO implement me
   def sell_items
   end
 
@@ -176,7 +178,7 @@ class Hero < Character
   end
 
   def display_equipped_weapons
-    self.equipped_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
+    @equipped_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
   end
 
   def display_equipped_armor
