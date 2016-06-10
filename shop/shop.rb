@@ -1,5 +1,6 @@
 require 'pry'
 require_relative "../helpers/formatters"
+require_relative "../helpers/mixins"
 require_relative "../helpers/utility"
 require_relative "../items/armor"
 require_relative "../items/weapon"
@@ -34,6 +35,7 @@ class Shop
 
   include Formatter
   include Utility
+  include Mixin
 
   # TODO Try to refactor this like the armor_names and weapon_names method
   POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
@@ -79,15 +81,13 @@ class Shop
      shop = PotionShop.new
      display_formatted_potion_choice_header
      display_graphical_line_break
-     display_formatted_potions
+     shop.display_formatted_potions
      purchase_item(hero, shop.potions)
    end
 
    def display_shop_items(hero)
-     print "What would you like to see? "
-     print "1) Weapons 2) Armor 3) Potions "
-     main_choice = gets.chomp.to_i
-     case main_choice
+     puts "What would you like to see?"
+     case choose_array_option(shop_item_options, true)
      when 1 then display_weapon_choice(hero)
      when 2 then display_armor_choice(hero)
      when 3 then display_potion_choice(hero)
@@ -95,18 +95,18 @@ class Shop
      end
    end
 
-   def display_purchase_option
-     puts "To purchase an item, enter the number that corresponds with item you want\n"
+   def shop_item_options
+     %w(Weapons Armor Potions)
    end
 
-   def confirm_purchase(item)
-     puts "Are you sure you want to buy #{item} ? Y/N"
+   def display_purchase_option
+     puts "To purchase an item, enter the number that corresponds with item you want\n"
    end
 
    def purchase_item(hero, items)
      display_purchase_option
      purchase_choice = gets.chomp
-     item = (items.values_at(purchase_choice.to_i.pred)[0] || nil)
+     item = (items.values_at(purchase_choice.to_i.pred).first || nil)
      if purchase_choice.to_s =~ %r{[0-9]} && !item.nil?
        hero.buy(item)
      else

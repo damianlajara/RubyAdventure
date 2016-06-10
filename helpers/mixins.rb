@@ -1,20 +1,23 @@
+# TODO Rename to something more semantic and meaningful instead of 'Mixin'
 module Mixin
   def display_hash_option(hash, saying = '')
     print saying
     hash.each_with_index { |(key, _value), index| print "#{index.next}) #{key} " }
   end
 
+  # Two options for result_as_num. If result_as_num is 'false'
+  # then return the item at the specified choice entered by the user
+  # If the result_as_num is true, then return the choice entered by the user
+  def choose_array_option(array_of_choices, result_as_num=false)
+    display_array_value_with_index(array_of_choices)
+    print "To choose a specification, enter the number that corresponds with the option you want: "
+    choice = gets.chomp.to_i
+    result_as_num ? choice : array_of_choices[choice.pred]
+  end
+
   def display_array_value_with_index(array)
     array.each_with_index { |value, index| puts "#{index.next}) #{value}" }
   end
-
-  def choose_array_option(classes_array)
-    display_array_value_with_index(classes_array)
-    print "To choose a specification, enter the number that corresponds with the class you want: "
-    choice = gets.chomp.to_i
-    classes_array[choice.pred]
-  end
-
   # monster = Monster.new(100,1,100, 20,100, 25)
   # hero = Hero.new(100, 1, 25, 40)
   # #hero.customize

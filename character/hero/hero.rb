@@ -36,26 +36,22 @@ class Hero < Character
   end
 
   def weapon_equipped?
-    if !@equipped_weapons.empty? || !@equipped_weapons.any? {|weapon| weapon.nil?}
-      true
-    else
-      false
-    end
+    items_exist? @equipped_weapons
   end
 
   def armor_equipped?
-    if @equipped_armor
-      true
-    else
-      false
-    end
+    items_exist? @equipped_armor
+  end
+
+  def items_exist?(items)
+    !(items.empty? || items.any?)
   end
 
   def equip(item)
-    if item.class == Weapon && !self.weapon_equipped?
+    if item.class == Weapon && !weapon_equipped?
       @equipped_weapons.push(item)
       puts "Succesfully Equipped #{item.to_s}"
-    elsif item.class == Armor && !self.armor_equipped?
+    elsif item.class == Armor && !armor_equipped?
       @equipped_armor.push(item)
       puts "Succesfully Equipped #{item.to_s}"
     else
@@ -63,85 +59,62 @@ class Hero < Character
     end
   end
 
-  # TODO Make equipped_weapons and armor an array so you can use the mods instead of display_weapon_attributes (Bonus: You get to use index)
-  def display_weapon_attributes(weapon)
-    puts "#{sprintf("%-16s", weapon)} Damage: #{sprintf("%-8d", weapon.damage)} Price: #{sprintf("%-8d", weapon.price)} Sell_Value: #{sprintf("%-8d", weapon.sell_value)} Description: #{weapon.description}"
+  def display_full_hero_status
+    display_stats
+    display_inventory_items
+    display_equipped_items
   end
 
-  def display_armor_attributes(armor)
-    puts "#{sprintf("%-16s", armor)} Defense: #{sprintf("%-7d", armor.defense)} Price: #{sprintf("%-8d", armor.price)} Sell_Value: #{sprintf("%-8d", armor.sell_value)} Description: #{armor.description}"
-  end
-
-  def display_status
-    puts "Health: #{self.health}"
+  # FIXME used self here so it can call the method instead of the instance var directly,
+  # just in case we have any validation in those methods
+  def display_stats
+    # TODO Display the heros name and class as well here with a nice header like ~~~~
+    puts "\nHealth: #{self.health}"
     puts "Level: #{self.level}"
     puts "Attack: #{self.attack}"
     puts "Defense: #{self.defense}"
     puts "Money: #{self.money}"
     puts "Experience: #{self.experience}\n"
+  end
 
+  def display_inventory_items
     print "\nWeapons In Inventory: "
-    if self.inventory[:current_weapons].length > 0
-      puts "\n"
-      self.display_inventory_weapons
-    else
-      print "Empty!\n"
-    end
+    @inventory[:current_weapons].empty? ? display_empty : display_inventory_weapons
 
-    print "Armor In Inventory: "
-    if self.inventory[:current_armor].length > 0
-      puts "\n"
-      self.display_armor
-    else
-      print "Empty!\n"
-    end
+    print "Armor In Inventory:   "
+    @inventory[:current_armor].empty?   ? display_empty : display_inventory_armor
 
     print "Potions In Inventory: "
-    if self.inventory[:current_potions].length > 0
-      puts "\n"
-      self.display_potions
-    else
-      print "Empty!\n"
-    end
+    @inventory[:current_potions].empty? ? display_empty : display_inventory_potions
+  end
 
+  def display_equipped_items
     puts "\nEquipped Items!"
     print "Weapon: "
-    if self.weapon_equipped?
-      puts "\n"
-      #puts display_weapon_attributes(@equipped_weapons)
-      display_equipped_weapons
-    else
-      print "No Weapon Equipped!\n"
-    end
-    puts "\n"
+    weapon_equipped? ? display_equipped_weapons : display_empty
     print "Armor: "
-    if self.armor_equipped?
-      puts "\n"
-      puts @equipped_armor.to_s
-    else
-      print "No Armor Equipped!\n"
-    end
+    armor_equipped? ? display_equipped_armor : display_empty
   end
 
   def equip_items
-    puts "What would you like to equip?\n1) Weapons\n2) Armor "
+    print "What would you like to equip?\n1) Weapons\n2) Armor "
     equip_choice = gets.chomp.to_i
     case equip_choice
     when 1
-       self.display_inventory_weapons
-       puts "To select a weapon to equip, enter the number that corresponds with the weapon you want: "
-       weapon_option = gets.chomp.to_i
-      item = (self.inventory[:current_weapons].values_at(weapon_option.pred)[0]) || nil
-      if validate_num(weapon_option,@weapon_count) && !item.nil?
+      display_inventory_weapons
+      print "To select a weapon to equip, enter the number that corresponds with the weapon you want: "
+      weapon_option = gets.chomp.to_i
+      item = (@inventory[:current_weapons].values_at(weapon_option.pred).first) || nil
+      if validate_num(weapon_option, @weapon_count) && !item.nil?
         self.equip(item)
       else
         error "equip_items() -> Error! Unable to equip weapon!"
       end
     when 2
-      self.display_inventory_armor
-      puts "To select an armor to equip, enter the number that corresponds with the armor you want: "
+      display_inventory_armor
+      print "To select an armor to equip, enter the number that corresponds with the armor you want: "
       armor_option = gets.chomp.to_i
-      item = (self.inventory[:current_armor].values_at(armor_option.pred)[0]) || nil
+      item = (@inventory[:current_armor].values_at(armor_option.pred).first) || nil
     else error "equip_items() -> Error! Invalid Option!" #TODO change to __method__ in each error
     end
   end
@@ -156,11 +129,12 @@ class Hero < Character
 
   def check_inventory
     puts "Inside inventory! What would you like to do?"
-    puts "1) Check Status\n2) Equip Items\n3) Use Potions\n4) Sell Items"
-    puts "To select an option, enter the number that corresponds with the option you want: "
-    inventory_option = gets.chomp.to_i
+    inventory_option = choose_array_option(inventory_options, true)
+    # puts "1) Check Status\n2) Equip Items\n3) Use Potions\n4) Sell Items"
+    # print "To select an option, enter the number that corresponds with the option you want: "
+    # inventory_option = gets.chomp.to_i
     case inventory_option
-    when 1 then display_status
+    when 1 then display_full_hero_status
     when 2 then equip_items
     when 3 then use_potions
     when 4 then sell_items
@@ -168,25 +142,29 @@ class Hero < Character
     end
   end
 
-  #TODO Make private, since only check_inventory should be using these methods
+  def inventory_options
+    ["Check Status", "Equip Items", "Use Potions", "Sell Items"]
+  end
+
+  # TODO Make private, since only check_inventory should be using these methods
   def display_inventory_weapons
-    self.inventory[:current_weapons].each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
+    "\n#{@inventory[:current_weapons].each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)}"
   end
 
   def display_inventory_armor
-    self.inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)
+    "\n#{@inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)}"
+  end
+
+  def display_inventory_potions
+    "\n#{@inventory[:current_potions].each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)}"
   end
 
   def display_equipped_weapons
-    @equipped_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)
+    "\n#{@equipped_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)}"
   end
 
   def display_equipped_armor
-    self.inventory[:current_armor].each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)
-  end
-
-  def display_potions
-    self.inventory[:current_potions].each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)
+    "\n#{@equipped_armor.each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)}"
   end
 
 
@@ -195,24 +173,22 @@ class Hero < Character
     if item.class == Weapon
       # check weapon to see if hero class can use it
       @inventory[:current_weapons].push(item)
-      puts "Item has been succesfully added to your inventory!"
       @weapon_count += 1
       success = true
     elsif item.class == Armor
       # check armor
       @inventory[:current_armor].push(item)
-      puts "Item has been succesfully added to your inventory!"
       @armor_count += 1
       success = true
     elsif item.class == Potion
       @inventory[:current_potions].push(item)
-       puts "Item has been succesfully added to your inventory!"
-       @potion_count += 1
-       success = true
+      @potion_count += 1
+      success = true
     else
       error 'add_to_inventory() -> item has no valid type (class)'
       success = false
     end
+    puts "Item has been succesfully added to your inventory!" if success
     success
   end
 
@@ -223,7 +199,6 @@ class Hero < Character
       # Delete the weapon that matches the item passed in
       @inventory[:current_weapons].delete_if { |weapon| weapon.to_s == item.to_s }
       if !@inventory[:current_weapons].include? item.to_s
-        puts "Item was succesfully removed from the inventory"
         success = true
         @weapon_count -= 1
       else
@@ -234,28 +209,27 @@ class Hero < Character
       # Delete the armor that matches the item passed in
       @inventory[:current_armor].delete_if { |armor| armor.to_s == item.to_s }
       if !@inventory[:current_armor].include? item.to_s
-        puts "Item was succesfully removed from the inventory"
         success = true
         @armor_count -= 1
       else
-        error 'remove_from_inventory() -> armor could not be removed'
-         success = false
+        error 'remove_from_inventory() -> 8armor could not be removed'
+        success = false
       end
     elsif item.class == Potion
     # Delete the potion that matches the item passed in
       @inventory[:current_potions].delete_if { |potion| potion.to_s == item.to_s }
       if !@inventory[:current_potions].include? item.to_s
-        puts "Item was succesfully removed from the inventory"
         success = true
         @potion_count -= 1
       else
         error 'remove_from_inventory() -> potion could not be removed'
-         success = false
+        success = false
       end
     else
       error 'remove_from_inventory() -> item has no valid type (class)'
       success = false
     end
+    puts "Item was succesfully removed from the inventory" if success
     success
   end
 

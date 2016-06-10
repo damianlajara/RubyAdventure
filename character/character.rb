@@ -11,7 +11,7 @@ class Character
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count,
   :equipped_weapons, :equipped_armor
 
-  #FIXME Make this more dynamic by reading in the files from the heros dir
+  #FIXME Make this more dynamic by reading in the files from the heros directory
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
     mage: %w(Necromancer Wizard Illusionist Alcheemist),
@@ -35,7 +35,7 @@ class Character
   end
 
   def reset_stats
-    #TODO Create validation in these methods which is why I called self inseat of accessing the var directly
+    #TODO Create validation in these methods which is why I called self insead of accessing the var directly
     self.health = 100
     self.level = 1
     self.attack = 0
@@ -49,7 +49,7 @@ class Character
 
   def customize_name
     print 'What would you like your character to be called? '
-    @name = gets.chomp.capitalize
+    @name = capitalize_words gets.chomp.capitalize
   end
 
   def customize_gender
@@ -90,19 +90,17 @@ class Character
       end
   end
 
-  def print_game_options
-    puts "\n#{'*' * 4} Game Options #{'*' * 4}\n"
-    puts '1) Toggle Battle Scenes'
-    puts '2) Change Class'
-    puts '3) Change Gender'
-    puts '4) Change Name'
-    puts '5) Exit'
+  def display_game_options(spacer_amount=4)
+    puts "\n#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
+    choose_array_option available_game_options, true
+  end
+
+  def available_game_options
+    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name", "Exit"]
   end
 
   def game_options
-    print_game_options
-    option = gets.chomp.to_i
-    case option
+    case display_game_options
     when 1 then toggle_battle_scenes
     when 2 then change_class
     when 3 then change_gender
@@ -127,10 +125,13 @@ class Character
     print_welcome_message
   end
 
+  def yes_or_no_option
+    ["yes", "no"]
+  end
+
   def toggle_battle_scenes
-    puts 'Do you want to disable all of the battle scenes? 1) Yes 2) No'
-    scene_option = gets.chomp.to_i
-    case scene_option
+    print 'Do you want to disable all of the battle scenes?'
+    case choose_array_option yes_or_no_option, true
     when 1
       @skip = true
       puts 'Battle scenes have been disabled.'
@@ -145,9 +146,7 @@ class Character
   def change_class
     puts "Are you sure you want to change your class?\n"
     puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
-    puts '1) Yes 2) No '
-    class_choice = gets.chomp.to_i
-    case class_choice
+    case choose_array_option yes_or_no_option, true
     when 1
       self.reset_stats
       customize_class
@@ -161,9 +160,7 @@ class Character
 
   def change_gender
     puts 'Are you sure you want to change your gender?'
-    puts '1) Yes 2) No '
-    gender_choice = gets.chomp.to_i
-    case gender_choice
+    case choose_array_option yes_or_no_option, true
     when 1
       customize_gender
       puts "Congratulations! You're gender has changed to #{@gender}!"
@@ -176,9 +173,7 @@ class Character
 
   def change_name
     puts 'Are you sure you want to change your name?'
-    puts '1) Yes 2) No '
-    name_choice = gets.chomp.to_i
-    case name_choice
+    case choose_array_option yes_or_no_option, true
     when 1
       customize_name
       puts "Congratulations! You're name has changed to #{@name}!"
