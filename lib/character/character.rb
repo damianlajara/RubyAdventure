@@ -9,18 +9,19 @@ class Character
   include Utility
   attr_accessor :attack, :defense, :health, :max_hp, :level, :money, :experience
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count,
-  :equipped_weapons, :equipped_armor
+  :equipped_weapons, :equipped_armor, :inventory
 
   #FIXME Make this more dynamic by reading in the files from the heros directory
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
-    mage: %w(Necromancer Wizard Illusionist Alcheemist),
+    mage: %w(Necromancer Wizard Illusionist Alchemist),
     ranged: %w(Archer Gunner Tamer Elf)
   }
 
-  GENDER = { male: 'Male', female: 'Female' }
+  GENDER = { male: 'Male', female: 'Female', other: 'Other'}
 
   def initialize(character_args = {})
+    @name = 'Nameless One'
     @health = character_args[:health] || 100
     @level = character_args[:level] || 1
     @attack = character_args[:attack] || 10
@@ -32,6 +33,7 @@ class Character
     @weapon_count = 0
     @armor_count = 0
     @potion_count = 0
+    @skip_battle_scenes = false
   end
 
   def reset_stats
@@ -45,6 +47,12 @@ class Character
     self.max_hp = 100
     #self.dungeon_level = 1
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
+    # TODO check if we have to reset these values as well
+    # equipped_weapons: [],
+    # equipped_armor: [],
+    # weapon_count: 0,
+    # armor_count: 0,
+    # potion_count: 0
   end
 
   def customize_name
@@ -63,36 +71,29 @@ class Character
         GENDER[:female]
       when 3
         print 'Enter your preferred gender: '
-        gets.chomp.downcase
+        second_choice = gets.chomp
+        second_choice.empty? ? GENDER[:other] : second_choice
       else
-        error 'Character -> customize_gender()'
+        'Genderless'
       end
   end
 
   def customize_class
     display_hash_option CLASSES, 'What class would you like to choose your character from? '
-    choice = gets.chomp.to_i
+    choice = gets.chomp
 
     @base_class =
-      case choice
-      when 1 then "soldier"
-      when 2 then "mage"
-      when 3 then "ranged"
-      else error 'customize_class() -> base_class case statement'
+      case choice.to_i
+      when 1 then :soldier
+      when 2 then :mage
+      when 3 then :ranged
+      else default_option(:soldier)
       end
-
-    @main_class =
-      case choice
-      when 1 then choose_array_option CLASSES[:soldier]
-      when 2 then choose_array_option CLASSES[:mage]
-      when 3 then choose_array_option CLASSES[:ranged]
-      else error 'customize_class() -> main_class case statement'
-      end
+    @main_class = choose_array_option CLASSES[@base_class]
   end
 
-  def display_game_options(spacer_amount=4)
+  def display_game_options_header(spacer_amount=4)
     puts "\n#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
-    choose_array_option available_game_options, true
   end
 
   def available_game_options
@@ -100,21 +101,26 @@ class Character
   end
 
   def game_options
-    case display_game_options
+    display_game_options_header
+    case choose_array_option available_game_options, true
     when 1 then toggle_battle_scenes
     when 2 then change_class
     when 3 then change_gender
     when 4 then change_name
-    when 5 then puts 'Exiting options menu...'
+    when 5 then display_exiting_game_options
     else error 'game_options -> first case when 5'
     end
   end
 
+  def display_exiting_game_options
+    puts 'Exiting options menu...'
+  end
+
   def print_welcome_message
     if @gender.index(/[aeiou]/) == 0
-      puts "\nWelcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
+      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
     else
-      puts "\nWelcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
+      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
     end
   end
 
@@ -130,17 +136,23 @@ class Character
   end
 
   def toggle_battle_scenes
-    print 'Do you want to disable all of the battle scenes?'
+    toggle = enable_toggle_skip
+    puts "Do you want to #{toggle} all of the battle scenes?"
     case choose_array_option yes_or_no_option, true
     when 1
-      @skip = true
-      puts 'Battle scenes have been disabled.'
-    when 2
-      @skip = false
-      puts 'Battle scenes have been enabled.'
+    puts "Battle scenes have been #{toggle}d."
+      @skip_battle_scenes = !@skip_battle_scenes
     else
-      error 'game_options -> first case when 1 -> second case'
+      puts "Battle scenes will stay #{disable_toggle_skip}d."
     end
+  end
+
+  def enable_toggle_skip
+    !@skip_battle_scenes ? "disable" : "enable"
+  end
+
+  def disable_toggle_skip
+    @skip_battle_scenes ? "disable" : "enable"
   end
 
   def change_class
@@ -151,10 +163,8 @@ class Character
       self.reset_stats
       customize_class
       puts "Congratulations! You're class has changed to #{@main_class}!"
-    when 2
-      puts "Good! I thought the #{@main_class} was better anyway."
     else
-      error 'game_options -> first case when 2 -> second case'
+      puts "Good! I thought the #{@main_class} was better anyway."
     end
   end
 
@@ -164,10 +174,8 @@ class Character
     when 1
       customize_gender
       puts "Congratulations! You're gender has changed to #{@gender}!"
-    when 2
-      puts 'Hmmm...I guess it was hard converting to something you\'re not.'
     else
-      error 'game_options -> first case when 3 -> second case'
+      puts 'Hmmm...I guess it was hard converting to something you\'re not.'
     end
   end
 
@@ -177,10 +185,8 @@ class Character
     when 1
       customize_name
       puts "Congratulations! You're name has changed to #{@name}!"
-    when 2
-      puts 'Awww man...I was looking forward to seeing the weird name you were going to choose!'
     else
-      error 'game_options -> first case when 4 -> second case'
+      puts 'Awww man...I was looking forward to seeing the weird name you were going to choose!'
     end
   end
 

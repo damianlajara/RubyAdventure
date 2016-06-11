@@ -11,8 +11,9 @@ module Mixin
   def choose_array_option(array_of_choices, result_as_num=false)
     display_array_value_with_index(array_of_choices)
     print "To choose a specification, enter the number that corresponds with the option you want: "
-    choice = gets.chomp.to_i
-    result_as_num ? choice : array_of_choices[choice.pred]
+    choice = gets.chomp
+    print "\n"
+    result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
   end
 
   def display_array_value_with_index(array)

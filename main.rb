@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
-
+# require "pry"
 # Require all files
-Dir[File.join(File.dirname(__FILE__), 'character', '**', '*.rb')].each { |file| require file }
-Dir[File.join(File.dirname(__FILE__), 'dungeon', '**', '*.rb')].each { |file| require file }
-Dir[File.join(File.dirname(__FILE__), 'shop' ,'**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'lib', 'character', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'lib', 'dungeon', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), 'lib', 'shop' ,'**', '*.rb')].each { |file| require file }
 
+# binding.pry
 # Set the debug flag to make output more verbose
 $debug = true
 
