@@ -19,31 +19,33 @@ module Mixin
   def display_array_value_with_index(array)
     array.each_with_index { |value, index| puts "#{index.next}) #{value}" }
   end
+
+
   # monster = Monster.new(100,1,100, 20,100, 25)
   # hero = Hero.new(100, 1, 25, 40)
   # #hero.customize
   # #hero.game_options
 
-  if $debug then puts monster.inspect end
-  if $debug then puts hero.inspect end
+  # if $debug then puts monster.inspect end
+  # if $debug then puts hero.inspect end
 
   #arondight = Weapon.new("Arondight",50, 100, 50)
   #valkyrie = Armor.new("Valkyrie", 30, 60, 30)
   #elixir = Potion.new("Elixir", 100, 99, 60)
 
-  if $debug then puts arondight.inspect end
-  if $debug then puts valkyrie.inspect end
-  if $debug then puts elixir.inspect end
+  # if $debug then puts arondight.inspect end
+  # if $debug then puts valkyrie.inspect end
+  # if $debug then puts elixir.inspect end
 
   #hero.add_to_inventory(arondight)
-  if $debug then puts hero.inventory.inspect end
+  # if $debug then puts hero.inventory.inspect end
 
-  if $debug
-    shop = Shop.new
-    shop.soldier_weapons.each do |weapon|
-      puts weapon.name
-    end
-  end
+  # if $debug
+  #   shop = Shop.new
+  #   shop.soldier_weapons.each do |weapon|
+  #     puts weapon.name
+  #   end
+  # end
 
   def battle_monster(hero)
     case hero.dungeon_level

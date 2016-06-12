@@ -22,6 +22,7 @@ class Character
 
   def initialize(character_args = {})
     @name = 'Nameless One'
+    @gender = 'genderless'
     @health = character_args[:health] || 100
     @level = character_args[:level] || 1
     @attack = character_args[:attack] || 10
@@ -97,7 +98,7 @@ class Character
   end
 
   def available_game_options
-    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name", "Exit"]
+    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"]
   end
 
   def game_options
@@ -107,8 +108,7 @@ class Character
     when 2 then change_class
     when 3 then change_gender
     when 4 then change_name
-    when 5 then display_exiting_game_options
-    else error 'game_options -> first case when 5'
+    else display_exiting_game_options
     end
   end
 
@@ -116,7 +116,7 @@ class Character
     puts 'Exiting options menu...'
   end
 
-  def print_welcome_message
+  def display_welcome_message
     if @gender.index(/[aeiou]/) == 0
       puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
     else
@@ -128,7 +128,7 @@ class Character
     customize_name
     customize_gender
     customize_class
-    print_welcome_message
+    display_welcome_message
   end
 
   def yes_or_no_option
@@ -160,7 +160,7 @@ class Character
     puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
     case choose_array_option yes_or_no_option, true
     when 1
-      self.reset_stats
+      reset_stats
       customize_class
       puts "Congratulations! You're class has changed to #{@main_class}!"
     else

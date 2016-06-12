@@ -190,49 +190,122 @@ describe Character do
     it "is defined" do
       expect(subject).to respond_to(:display_game_options_header).with(1).argument
     end
-    it "displays a header message" do
-      expect(subject).to receive(:puts).and_return a_string_matching(/Game Options/)
+    it "displays a message containing Game Options" do
+      expect(subject).to receive(:puts).with(a_string_matching(/Game Options/i))
       subject.display_game_options_header(1)
     end
   end
 
-  # Goes in the module spec
   describe "#game_options" do
-    let(:options) { ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name", "Exit"] }
+    let(:options) { ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"] }
+    after { subject.game_options }
+    it "displays a header message" do
+      expect(subject).to receive(:display_game_options_header).once
+    end
     context "when Toggle Battle Scenes is selected" do
       it "toggles battle scenes" do
         allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(1)
         expect(subject).to receive(:toggle_battle_scenes).once
-        subject.game_options
       end
     end
     context "when change class is selected" do
-      it "changes class" do
-        allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(2)
-        expect(subject).to receive(:change_class).once
-        subject.game_options
+      context "when it asks user for confirmation" do
+        context "when user selects to proceed" do
+          it "changes class" do
+            allow(subject).to receive(:choose_array_option).with(options, true).and_return(2)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
+            expect(subject).to receive(:reset_stats).once
+            expect(subject).to receive(:customize_class).once
+          end
+        end
+        context "when user selects to stop" do
+          it "class stays the same" do
+            allow(subject).to receive(:gets).and_return("1", "2")
+            subject.customize_class
+            main_class = subject.main_class
+            allow(subject).to receive(:choose_array_option).with(options, true).and_return(2)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
+            expect(subject.main_class).to eq main_class
+          end
+        end
       end
     end
     context "when change gender is selected" do
-      it "changes gender" do
-        allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(3)
-        expect(subject).to receive(:change_gender).once
-        subject.game_options
+      context "when it asks user for confirmation" do
+        context "when user selects to proceed" do
+          it "changes gender" do
+            allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(3)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
+            expect(subject).to receive(:customize_gender).once
+          end
+        end
+        context "when user selects to stop" do
+          it "gender stays the same" do
+            allow(subject).to receive(:gets).and_return("1", "2")
+            subject.customize_gender
+            gender = subject.gender
+            allow(subject).to receive(:choose_array_option).with(options, true).and_return(3)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
+            expect(subject.gender).to eq gender
+          end
+        end
       end
     end
-    context "when Change Names is selected" do
-      it "changes names" do
-        allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(4)
-        expect(subject).to receive(:change_name).once
-        subject.game_options
+
+    context "when change name is selected" do
+      context "when it asks user for confirmation" do
+        context "when user selects to proceed" do
+          it "changes name" do
+            allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(4)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
+            expect(subject).to receive(:customize_name).once
+          end
+        end
+        context "when user selects to stop" do
+          it "name stays the same" do
+            allow(subject).to receive(:gets).and_return("Damian")
+            subject.customize_name
+            name = subject.name
+            allow(subject).to receive(:choose_array_option).with(options, true).and_return(4)
+            allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
+            expect(subject.name).to eq name
+          end
+        end
       end
     end
-    context "when Exit is selected" do
-      it "displays message and returns to main menu" do
+    context "when any other type of input is entered" do
+      it "displays exiting message and returns to main menu" do
         allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(5)
-        expect(subject).to receive(:display_exiting_game_options).once
-        subject.game_options
+        allow(subject).to receive(:puts).with(a_string_matching(/Game Options/i))
+        expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
       end
+    end
+  end
+  describe "#display_welcome_message" do
+    it "should be defined" do
+      expect(subject).to respond_to(:display_welcome_message)
+    end
+    it "welcomes user" do
+      expect(subject).to receive(:puts).with(a_string_matching(/Welcome/i)).once
+      subject.display_welcome_message
+    end
+  end
+  describe "#customize" do
+    after { subject.customize }
+    it "is defined" do
+      expect(subject).to respond_to(:customize)
+    end
+    it "customizes name" do
+      expect(subject).to receive(:customize_name)
+    end
+    it "customizes gender" do
+      expect(subject).to receive(:customize_gender).once
+    end
+    it "customizes class" do
+      expect(subject).to receive(:customize_class).once
+    end
+    it "prints welcome message" do
+      expect(subject).to receive(:display_welcome_message).once
     end
   end
 end
@@ -254,7 +327,3 @@ end
 #     end
 #   end
 # end
-
-# allow(subject).to receive(:gets).and_return("5")
-# subject.choose_array_option(options, true)
-# expect(subject).to receive(:puts).and_return a_string_matching(/Exiting/)

@@ -104,14 +104,14 @@ RSpec.configure do |config|
   # Suppress the ouput during tests by redirecting it to a null file which does nothing
   # before every test and revert it back to it's original afterwards
   original_stderr = $stderr
-    original_stdout = $stdout
-    config.before(:all) do
-      # Redirect stderr and stdout
-      $stderr = File.open(File::NULL, "w")
-      $stdout = File.open(File::NULL, "w")
-    end
-    config.after(:all) do
-      $stderr = original_stderr
-      $stdout = original_stdout
-    end
+  original_stdout = $stdout
+  config.before(:all) do
+    # Redirect stderr and stdout
+    $stderr = File.open(File::NULL, "w")
+    $stdout = File.open(File::NULL, "w")
+  end
+  config.after(:all) do
+    $stderr = original_stderr
+    $stdout = original_stdout
+  end
 end
