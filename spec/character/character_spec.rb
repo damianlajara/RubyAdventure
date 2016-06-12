@@ -345,21 +345,3 @@ describe Character do
     end
   end
 end
-
-
-# # Goes in the module spec
-# describe "#choose_array_option" do
-#   let(:options) { ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name", "Exit"] }
-#   context "when passed in result_as_num as true" do
-#     it "returns valid option from array" do
-#       allow(subject).to receive(:gets).and_return("1")
-#       subject.choose_array_option(options, true)
-#     end
-#   end
-#   context "when passed in result_as_num as false" do
-#     it "returns valid option as num" do
-#       allow(subject).to receive(:gets).and_return("1")
-#       subject.choose_array_option(options, true)
-#     end
-#   end
-# end

@@ -9,9 +9,10 @@ module Mixin
   # then return the item at the specified choice entered by the user
   # If the result_as_num is true, then return the choice entered by the user
   def choose_array_option(array_of_choices, result_as_num=false)
+    raise "Array of choices is empty!" unless array_of_choices.any?
     display_array_value_with_index(array_of_choices)
     print "To choose a specification, enter the number that corresponds with the option you want: "
-    choice = gets.chomp
+    choice = (capture = gets.chomp.match /^([#{1}-#{array_of_choices.count}])$/) ? capture[0] : "1" # Default to 1
     print "\n"
     result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
   end
