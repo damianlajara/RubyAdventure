@@ -12,6 +12,7 @@ describe Character do
       exp: 0
     )
   end
+
   describe "#initialize" do
     context "when no arguments passed in" do
       it "has default values" do
@@ -31,6 +32,7 @@ describe Character do
         )
       end
     end
+
     context "when arguments passed in" do
       it "has passed in values" do
         expect(full_character).to have_attributes(
@@ -55,6 +57,7 @@ describe Character do
     it "is defined" do
       expect(subject).to respond_to(:reset_stats)
     end
+
     it "resets to default settings" do
       full_character.reset_stats
       expect(full_character).to have_attributes(
@@ -78,6 +81,7 @@ describe Character do
     it "is defined" do
       expect(subject).to respond_to(:customize_name)
     end
+
     it "sets name" do
       allow(subject).to receive(:gets).exactly(1).times.and_return('Damian')
       subject.customize_name
@@ -87,35 +91,41 @@ describe Character do
 
   describe "#customize_gender" do
     let(:gender) { {male: 'Male', female: 'Female', other: 'Other'} }
-      it "is defined" do
-        expect(subject).to respond_to(:customize_gender)
+
+    it "is defined" do
+      expect(subject).to respond_to(:customize_gender)
+    end
+
+    context "when Male as gender is selected" do
+      it 'returns Male' do
+        allow(subject).to receive(:gets).and_return('1')
+        subject.customize_gender
+        expect(subject.gender).to eq('Male')
       end
-      context "when Male as gender is selected" do
-        it 'returns Male' do
-          allow(subject).to receive(:gets).and_return('1')
-          subject.customize_gender
-          expect(subject.gender).to eq('Male')
-        end
+    end
+
+    context "when Female as gender is selected" do
+      it 'returns Female' do
+        allow(subject).to receive(:gets).and_return('2')
+        subject.customize_gender
+        expect(subject.gender).to eq('Female')
       end
-      context "when Female as gender is selected" do
-        it 'returns Female' do
-          allow(subject).to receive(:gets).and_return('2')
-          subject.customize_gender
-          expect(subject.gender).to eq('Female')
-        end
+    end
+
+    context "when custom gender choice is selected" do
+      it 'returns custom gender' do
+        allow(subject).to receive(:gets).exactly(2).times.and_return('3', 'Other')
+        subject.customize_gender
+        expect(subject.gender).to eq('Other')
       end
-      context "when custom gender choice is selected" do
-        it 'returns custom gender' do
-          allow(subject).to receive(:gets).exactly(2).times.and_return('3', 'Other')
-          subject.customize_gender
-          expect(subject.gender).to eq('Other')
-        end
-        it 'defaults to Other when invalid input' do
-          allow(subject).to receive(:gets).exactly(2).times.and_return('3', "")
-          subject.customize_gender
-          expect(subject.gender).to eq('Other')
-        end
+
+      it 'defaults to Other when invalid input' do
+        allow(subject).to receive(:gets).exactly(2).times.and_return('3', "")
+        subject.customize_gender
+        expect(subject.gender).to eq('Other')
       end
+    end
+
     context "when unknown choice is selected" do
       it "returns Genderless" do
         allow(subject).to receive(:gets).exactly(1).times.and_return('Genderless')
@@ -129,14 +139,16 @@ describe Character do
     it "is defined" do
       expect(subject).to respond_to(:customize_class)
     end
+
     context "when soldier is selected" do
+      let(:soldiers) { %w(Barbarian Knight Paladin Samurai) }
+
       it "sets base class to soldier" do
         allow(subject).to receive(:gets).and_return("1")
         subject.customize_class
         expect(subject.base_class).to eq(:soldier)
       end
 
-      let(:soldiers) { %w(Barbarian Knight Paladin Samurai) }
       it "sets main_class to a valid specification of soldier" do
         soldiers.count.times do |choice|
           allow(subject).to receive(:gets).exactly(2).times.and_return("1", choice.next.to_s)
@@ -145,13 +157,16 @@ describe Character do
         end
       end
     end
+
     context "when mage is selected" do
+      let(:mages) { %w(Necromancer Wizard Illusionist Alchemist) }
+
       it "sets base class to mage" do
         allow(subject).to receive(:gets).and_return("2")
         subject.customize_class
         expect(subject.base_class).to eq(:mage)
       end
-      let(:mages) { %w(Necromancer Wizard Illusionist Alchemist) }
+
       it "sets main_class to a valid specification of mage" do
         mages.count.times do |choice|
           allow(subject).to receive(:gets).exactly(2).times.and_return("2", choice.next.to_s)
@@ -160,13 +175,16 @@ describe Character do
         end
       end
     end
+
     context "when ranged is selected" do
+      let(:ranged) { %w(Archer Gunner Tamer Elf) }
+
       it "sets base class to ranged" do
         allow(subject).to receive(:gets).and_return("3")
         subject.customize_class
         expect(subject.base_class).to eq(:ranged)
       end
-      let(:ranged) { %w(Archer Gunner Tamer Elf) }
+
       it "sets main_class to a valid specification of ranged" do
         ranged.count.times do |choice|
           allow(subject).to receive(:gets).exactly(2).times.and_return("3", choice.next.to_s)
@@ -175,6 +193,7 @@ describe Character do
         end
       end
     end
+
     context "when invalid option is entered" do
       it "defaults to soldier" do
         ["4", "k", "", "hi"].each do |result|
@@ -190,6 +209,7 @@ describe Character do
     it "is defined" do
       expect(subject).to respond_to(:display_game_options_header).with(1).argument
     end
+
     it "displays a message containing Game Options" do
       expect(subject).to receive(:puts).with(a_string_matching(/Game Options/i))
       subject.display_game_options_header(1)
@@ -199,15 +219,18 @@ describe Character do
   describe "#game_options" do
     let(:options) { ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"] }
     after { subject.game_options }
+
     it "displays a header message" do
       expect(subject).to receive(:display_game_options_header).once
     end
+
     context "when Toggle Battle Scenes is selected" do
       it "toggles battle scenes" do
         allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(1)
         expect(subject).to receive(:toggle_battle_scenes).once
       end
     end
+
     context "when change class is selected" do
       context "when it asks user for confirmation" do
         context "when user selects to proceed" do
@@ -218,6 +241,7 @@ describe Character do
             expect(subject).to receive(:customize_class).once
           end
         end
+
         context "when user selects to stop" do
           it "class stays the same" do
             allow(subject).to receive(:gets).and_return("1", "2")
@@ -230,6 +254,7 @@ describe Character do
         end
       end
     end
+
     context "when change gender is selected" do
       context "when it asks user for confirmation" do
         context "when user selects to proceed" do
@@ -239,6 +264,7 @@ describe Character do
             expect(subject).to receive(:customize_gender).once
           end
         end
+
         context "when user selects to stop" do
           it "gender stays the same" do
             allow(subject).to receive(:gets).and_return("1", "2")
@@ -261,6 +287,7 @@ describe Character do
             expect(subject).to receive(:customize_name).once
           end
         end
+
         context "when user selects to stop" do
           it "name stays the same" do
             allow(subject).to receive(:gets).and_return("Damian")
@@ -273,6 +300,7 @@ describe Character do
         end
       end
     end
+
     context "when any other type of input is entered" do
       it "displays exiting message and returns to main menu" do
         allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(5)
@@ -281,29 +309,37 @@ describe Character do
       end
     end
   end
+
   describe "#display_welcome_message" do
     it "should be defined" do
       expect(subject).to respond_to(:display_welcome_message)
     end
+
     it "welcomes user" do
       expect(subject).to receive(:puts).with(a_string_matching(/Welcome/i)).once
       subject.display_welcome_message
     end
   end
+
   describe "#customize" do
     after { subject.customize }
+
     it "is defined" do
       expect(subject).to respond_to(:customize)
     end
+
     it "customizes name" do
       expect(subject).to receive(:customize_name)
     end
+
     it "customizes gender" do
       expect(subject).to receive(:customize_gender).once
     end
+
     it "customizes class" do
       expect(subject).to receive(:customize_class).once
     end
+
     it "prints welcome message" do
       expect(subject).to receive(:display_welcome_message).once
     end
