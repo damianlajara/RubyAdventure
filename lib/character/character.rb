@@ -7,9 +7,9 @@ class Character
   include Mixin
   include Procs
   include Utility
-  attr_accessor :attack, :defense, :health, :max_hp, :level, :money, :experience
+  attr_accessor :attack, :defense, :health, :level, :money, :experience
   attr_reader :name, :class, :gender, :base_class, :main_class, :weapon_count, :armor_count, :potion_count,
-  :equipped_weapons, :equipped_armor, :inventory
+  :equipped_weapons, :equipped_armor, :inventory, :skip_battle_scenes
 
   #FIXME Make this more dynamic by reading in the files from the heros directory
   CLASSES = {
@@ -28,7 +28,7 @@ class Character
     @attack = character_args[:attack] || 10
     @defense = character_args[:defense] || 10
     @money = character_args[:money] || 0
-    @experience = character_args[:exp] || 0
+    @experience = character_args[:experience] || 0
     @equipped_weapons = []
     @equipped_armor = []
     @weapon_count = 0
@@ -45,7 +45,6 @@ class Character
     self.defense = 0
     self.money = 0
     self.experience = 0
-    self.max_hp = 100
     #self.dungeon_level = 1
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
     # TODO check if we have to reset these values as well

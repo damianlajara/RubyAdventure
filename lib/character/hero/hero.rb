@@ -1,12 +1,18 @@
 require_relative "../character"
 
 class Hero < Character
+  attr_accessor :max_hp
   attr_reader :inventory, :dungeon_level
   def initialize(hero_args = {})
-    super
+    super(hero_args) # make sure to initialize stuff abstracted into the character class
     @max_hp = 100
     @dungeon_level = 1
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
+  end
+
+  def reset_stats
+    super
+    @max_hp = 100
   end
 
   def experience=(xp)

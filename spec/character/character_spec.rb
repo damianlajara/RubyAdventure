@@ -9,7 +9,7 @@ describe Character do
       attack: 25,
       defense: 40,
       money: 100,
-      exp: 0
+      experience: 10
     )
   end
 
@@ -18,6 +18,7 @@ describe Character do
       it "has default values" do
         expect(subject).to have_attributes(
           name: 'Nameless One',
+          gender: 'genderless',
           health: 100,
           level: 1,
           attack: 10,
@@ -28,7 +29,8 @@ describe Character do
           equipped_armor: [],
           weapon_count: 0,
           armor_count: 0,
-          potion_count: 0
+          potion_count: 0,
+          skip_battle_scenes: false
         )
       end
     end
@@ -37,17 +39,19 @@ describe Character do
       it "has passed in values" do
         expect(full_character).to have_attributes(
           name: 'Nameless One',
+          gender: 'genderless',
           health: 110,
           level: 2,
           attack: 25,
           defense: 40,
           money: 100,
-          experience: 0,
+          experience: 10,
           equipped_weapons: [],
           equipped_armor: [],
           weapon_count: 0,
           armor_count: 0,
-          potion_count: 0
+          potion_count: 0,
+          skip_battle_scenes: false
         )
       end
     end
@@ -67,7 +71,6 @@ describe Character do
         defense: 00,
         money: 0,
         experience: 0,
-        max_hp: 100,
         inventory: {
           current_potions: [],
           current_armor: [],
