@@ -54,7 +54,7 @@ describe Hero do
         end
       end
 
-      it "has passed in values" do
+      it "merges valid passed in values" do
         expect(full_hero).to have_attributes(
           # Character defaults + passed in values
           name: 'Nameless One',
@@ -83,4 +83,78 @@ describe Hero do
       end
     end
   end
+
+  describe "#add_to_inventory" do
+    let(:weapon) { Weapon.new("Sword", { damage: 10 }, price: 150, sell_value: 100) }
+    let(:armor) { Armor.new("Shield", { defense: 20 }, price: 200, sell_value: 150) }
+    let(:potion) { Potion.new("Elixir", { health: 30 }, price: 250, sell_value: 200) }
+
+    it "is defined" do
+      expect(subject).to respond_to(:add_to_inventory)
+    end
+
+    it "accepts an item as parameter" do
+      expect(subject).to respond_to(:add_to_inventory).with(1).argument
+    end
+
+    it "is of type Item" do
+      allow(subject).to receive(:add_to_inventory).with(weapon) do |weapon|
+        expect(weapon.class.to_s).to match /Weapon|Armor|Potion/i
+      end
+      subject.add_to_inventory(weapon)
+    end
+
+    context "when passed in item is of type Weapon" do
+      it "is of type Weapon" do
+
+      end
+      xit "adds item to inventory of current weapons" do
+
+      end
+      xit "increases the weapon count by 1" do
+
+      end
+
+      xit "returns true for successful" do
+
+      end
+    end
+
+    context "when passed in item is of type Armor" do
+      xit "adds item to inventory of current armor" do
+
+      end
+      xit "increases the armor count by 1" do
+
+      end
+
+      xit "returns true for successful" do
+
+      end
+    end
+
+    context "when passed in item is of type Potion" do
+      xit "adds item to inventory of current potions" do
+
+      end
+      xit "increases the potion count by 1" do
+
+      end
+
+      xit "returns true for successful" do
+
+      end
+    end
+
+    context "when item passed in is invalid" do
+      xit "does not add item to inventory" do
+
+      end
+      xit "returns false" do
+
+      end
+    end
+  end
+
+
 end

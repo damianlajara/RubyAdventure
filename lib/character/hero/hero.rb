@@ -173,23 +173,20 @@ class Hero < Character
     "\n#{@equipped_armor.each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)}"
   end
 
-
+  # TODO add a way to add other items to inventory like treasure.
   def add_to_inventory(item)
-    success = false
+    success = true
     if item.class == Weapon
       # check weapon to see if hero class can use it
       @inventory[:current_weapons].push(item)
-      @weapon_count += 1
-      success = true
+      @weapon_count += 1 #TODO do we really need this? Simple count the weapons inside the inventory
     elsif item.class == Armor
       # check armor
       @inventory[:current_armor].push(item)
-      @armor_count += 1
-      success = true
+      @armor_count += 1 #TODO do we really need this? Simple count the armor inside the inventory
     elsif item.class == Potion
       @inventory[:current_potions].push(item)
-      @potion_count += 1
-      success = true
+      @potion_count += 1 #TODO do we really need this? Simple count the potions inside the inventory
     else
       error 'add_to_inventory() -> item has no valid type (class)'
       success = false

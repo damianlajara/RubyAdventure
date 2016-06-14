@@ -116,11 +116,7 @@ class Character
   end
 
   def display_welcome_message
-    if @gender.index(/[aeiou]/) == 0
-      puts "Welcome #{@name}! I see you are an #{@gender}, with a class of #{@main_class}!"
-    else
-      puts "Welcome #{@name}! I see you are a #{@gender}, with a class of #{@main_class}!"
-    end
+    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{@main_class}!"
   end
 
   def customize
