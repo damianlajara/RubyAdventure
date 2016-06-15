@@ -20,60 +20,6 @@ module Mixin
   def display_array_value_with_index(array)
     array.each_with_index { |value, index| puts "#{index.next}) #{value}" }
   end
-
-
-  # monster = Monster.new(100,1,100, 20,100, 25)
-  # hero = Hero.new(100, 1, 25, 40)
-  # #hero.customize
-  # #hero.game_options
-
-  # if $debug then puts monster.inspect end
-  # if $debug then puts hero.inspect end
-
-  #arondight = Weapon.new("Arondight",50, 100, 50)
-  #valkyrie = Armor.new("Valkyrie", 30, 60, 30)
-  #elixir = Potion.new("Elixir", 100, 99, 60)
-
-  # if $debug then puts arondight.inspect end
-  # if $debug then puts valkyrie.inspect end
-  # if $debug then puts elixir.inspect end
-
-  #hero.add_to_inventory(arondight)
-  # if $debug then puts hero.inventory.inspect end
-
-  # if $debug
-  #   shop = Shop.new
-  #   shop.soldier_weapons.each do |weapon|
-  #     puts weapon.name
-  #   end
-  # end
-
-  def battle_monster(hero)
-    case hero.dungeon_level
-      when 1..3
-        puts "Level 1-3"
-       # battle
-      when 4..6
-        puts "Level 4-6"
-      when 7..10
-        puts "Level 7-10"
-      else
-        error
-    end
-  end
-
-  # d = Dungeon.new(2)
-  # p d
-
-  # weaponshop = SoldierWeaponShop.new
-  # weaponshop.display_weapons
-
-  # s1 = MageWeaponShop.new
-  # s1.display_weapons
-
-  # s2 = ArcherWeaponShop.new
-  # s2.display_weapons
-  #puts weaponshop.inspect
 end
 
 module Procs

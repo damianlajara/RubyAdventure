@@ -29,12 +29,8 @@ class ArmorShop < Shop
   private
   attr_reader :class_type
 
-  def armor_names
-    super[class_type]
-  end
-
   def initialize_armor_values
-    armor_names.each do |name|
+    armor_names[class_type].each do |name|
       @effect += EFFECT_OFFSET
       @price += PRICE_OFFSET
       @sell_value += SELL_VALUE_OFFSET

@@ -7,32 +7,6 @@ require_relative "../items/weapon"
 require_relative "../items/potion"
 
 class Shop
-  class << self
-    def weapons(class_name = "all")
-      case class_name
-      when "all" then weapon_names.values
-      when "soldier" then weapon_names["soldier"]
-      when "mage" then weapon_names["mage"]
-      when "ranged" then weapon_names["ranged"]
-      else error "shop -> self.weapons()"
-      end
-    end
-
-    def armor(class_name = "all")
-      case class_name
-      when "all" then armor_names.values
-      when "soldier" then armor_names["soldier"]
-      when "mage" then armor_names["mage"]
-      when "ranged" then armor_names["ranged"]
-      else error "shop -> self.armor()"
-      end
-    end
-
-    def potions
-      POTION_NAMES
-    end
-  end
-
   include Formatter
   include Utility
   include Mixin
@@ -46,17 +20,17 @@ class Shop
 
   def armor_names
     {
-      "soldier" => %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override),
-      "mage" => %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer),
-      "ranged" => %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
+      soldier: %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override),
+      mage: %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer),
+      ranged: %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
     }
   end
 
   def weapon_names
     {
-      "soldier" => %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur),
-      "mage" => %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist),
-      "ranged" => %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
+      soldier: %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur),
+      mage: %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist),
+      ranged: %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
     }
   end
 
