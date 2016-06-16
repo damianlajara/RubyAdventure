@@ -27,7 +27,8 @@ module Customize
 
   def customize_name
     print 'What would you like your character to be called? '
-    @name = capitalize_words gets.chomp.capitalize
+    name = capitalize_words gets.chomp.capitalize
+    @name = name.empty? ? @name : name
   end
 
   def customize_gender

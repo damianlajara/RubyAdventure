@@ -9,7 +9,7 @@ class Hero < Character
   include Equip
 
   attr_accessor :max_hp, :current_dungeon
-  attr_reader :inventory, :dungeon_level, :dungeons_conquered
+  attr_reader :inventory, :dungeon_level
   def initialize(hero_args = {})
     super(hero_args) # make sure to initialize stuff abstracted into the character class
     @max_hp = 100
@@ -18,7 +18,11 @@ class Hero < Character
     @skip_battle_scenes = false
     @dungeon_level = 1
     @current_dungeon = nil
-    @dungeons_conquered = []
+    @dungeons_conquered = [Dungeon.new(3), Dungeon.new(1), Dungeon.new(2)] #TODO Remove this dummy data. For debugging purposes
+  end
+
+  def dungeons_conquered
+    @dungeons_conquered.sort_by { |dungeon| dungeon.level }
   end
 
   def conquer_dungeon(dungeon)
@@ -27,6 +31,17 @@ class Hero < Character
     @dungeon_level += 1
     puts "Congratulations! You succesfully completed dungeon level #{dungeon.level}"
     # TODO Display a summary(statistics) of mosters killed and items collected from that dungeon
+  end
+
+  def steps_walked
+    @current_dungeon.steps_explored || 0
+  end
+
+  def walk(amount_of_steps)
+    @current_dungeon.steps_explored = amount_of_steps
+    if steps_walked >= @current_dungeon.total_steps
+      conquer_dungeon(@current_dungeon)
+    end
   end
 
   def reset_current_dungeon
