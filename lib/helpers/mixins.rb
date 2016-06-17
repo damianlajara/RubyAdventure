@@ -17,6 +17,10 @@ module Mixin
     result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
   end
 
+  def classify(string)
+    string.split('_').collect(&:capitalize).join
+  end
+
   def display_array_value_with_index(array)
     array.each_with_index { |value, index| puts "#{index.next}) #{value}" }
   end

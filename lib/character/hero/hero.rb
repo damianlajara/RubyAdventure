@@ -18,7 +18,7 @@ class Hero < Character
     @skip_battle_scenes = false
     @dungeon_level = 1
     @current_dungeon = nil
-    @dungeons_conquered = [Dungeon.new(3), Dungeon.new(1), Dungeon.new(2)] #TODO Remove this dummy data. For debugging purposes
+    @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
   end
 
   def dungeons_conquered

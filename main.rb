@@ -13,8 +13,17 @@ include Mixin
 # Set the debug flag to make output more verbose
 $debug = true
 
-binding.pry
-Monster.all
+# binding.pry
+# Monster.all.keys.map(&:classify)
+#
+# {"dragon"=>["executioner", "mage_lord"],
+#  "ghost"=>["raptured_abyss", "tortured_soul"],
+#  "goblin"=>["gnish", "ragnuk"],
+#  "golem"=>["ohm", "pyro_stone"],
+#  "ogre"=>["bone_reaver", "grendel"],
+#  "vampire"=>["dark_cultist", "flesh_hunter"],
+#  "wolf"=>["accalia", "leikos"],
+#  "zombie"=>["dark_vessel", "undead"]}
 
 monster = Monster.new(
   health: 100,
@@ -33,6 +42,8 @@ hero = Hero.new(
   money: 210000, #TODO Change this to a very small number for release. It's only this high for debug reasons
   exp: 0
 )
+
+# binding.pry
 
 puts "Welcome! Let's get you comfy! Create your custom character!"
 hero.customize
