@@ -36,7 +36,13 @@ class Dungeon
     # @number_of_monsters.times do
     #   @monsters.push(Monster.new(m_health(level), m_level(level), m_attack(level), m_defense(level), m_money(level), m_experience(level)))
     # end
+    # @boss = Monster.new() # TODO Every dungeon, has a boss. Should be created based on the level of the user
   end
+
+  def spawn_boss
+    Monster.spawn_boss()
+  end
+
   def self.enter(hero)
     unless hero.current_dungeon
       hero.current_dungeon = Dungeon.new(hero.dungeon_level)

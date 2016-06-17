@@ -1,6 +1,7 @@
 require_relative "../monster"
 
-class DarkCultist < Monster
+class Vampire < Monster
   def initialize
+    @dungeon_level = 2
   end
 end

@@ -39,9 +39,10 @@ class Hero < Character
 
   def walk(amount_of_steps)
     @current_dungeon.steps_explored = amount_of_steps
-    if steps_walked >= @current_dungeon.total_steps
-      conquer_dungeon(@current_dungeon)
-    end
+    # if steps_walked >= @current_dungeon.total_steps
+    #   # TODO Find a way to battle the boss of that level before conquering dungeon
+    #   conquer_dungeon(@current_dungeon)
+    # end
   end
 
   def reset_current_dungeon

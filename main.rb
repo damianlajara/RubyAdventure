@@ -13,6 +13,9 @@ include Mixin
 # Set the debug flag to make output more verbose
 $debug = true
 
+binding.pry
+Monster.all
+
 monster = Monster.new(
   health: 100,
   level: 1,
@@ -87,6 +90,12 @@ def roll_dice(hero, roll)
   if roll[:total].even?
     hero.walk(steps(roll))
     puts "Nice it's even. You took #{hero.steps_walked} steps"
+    if hero.steps_walked >= hero.current_dungeon.total_steps
+      # TODO Find a way to battle the boss of that level before conquering dungeon
+      puts "Congratulations! You have succesfully explored the whole dungeon!"
+      puts "However, you have awoken the beast with your victory cry! Prepare for battle!"
+      # battle_dungeon_boss(hero)
+    end
   else
     battle_monster(hero)
   end
