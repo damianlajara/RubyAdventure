@@ -91,6 +91,7 @@ module Customize
   end
 
   def customize
+    puts "Welcome! Let's create your custom character!"
     customize_name
     customize_gender
     customize_class

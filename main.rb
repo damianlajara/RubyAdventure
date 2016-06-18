@@ -20,7 +20,6 @@ hero = Hero.new(
 
 include Formulas
 
-puts "Welcome! Let's get you comfy! Create your custom character!"
 hero.customize
 
 shop = Shop.new
@@ -38,10 +37,10 @@ def roll
   }
 end
 
-def steps(roll)
+def steps(hero, roll)
   if roll[:double]
-    # TODO get hint here
     puts "Nice, you rolled a double #{roll[:die1]}!"
+    hero.unlock_secret_hint
   end
   random_steps(roll)
 end
@@ -49,7 +48,7 @@ end
 def roll_dice(hero, roll)
   dungeon = hero.current_dungeon
   if roll[:total].even?
-    steps = steps(roll)
+    steps = steps(hero, roll)
     hero.walk(steps)
     puts "Nice it's even. You took #{steps} steps"
     if hero.steps_walked >= dungeon.total_steps
@@ -71,16 +70,15 @@ def change_level(hero)
     hero.current_dungeon = hero.dungeons_conquered[option.pred]
     Dungeon.enter(hero)
   else
-    puts "You have no conqeuered any dungeons..yet! Go get em'!"
+    puts "You have not conqeuered any dungeons..yet! Go get em'!"
   end
 end
 
 def check_progress(hero)
-  # binding.pry
-  puts "In here you can check your progress thorughout the dungeon. Steps walked. Steps left. \nTreasures found. Total treasures in dungeon. Hints available. Hints until next key. \nAnd how many keys you currently possess."
-  ProgressBar.create(title: "Hints", total: 3, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
+  ProgressBar.create(title: "Hints", starting_at: hero.hints ,total: Hero::MAX_HINTS, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
   ProgressBar.create(title: "Treasures", total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
   ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)").stop
+  puts "Keys Obtained: #{hero.keys.count}"
 end
 
 def check_stats(hero)
@@ -88,6 +86,7 @@ def check_stats(hero)
   total_gold = hero.current_dungeon.total_monster_rewards[:money]
   exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(0, :+)
   total_exp = hero.current_dungeon.total_monster_rewards[:experience]
+
   if $debug
     puts "number of monsters killed: #{hero.current_dungeon.monsters_killed.count}"
     puts "number of total monsters: #{hero.current_dungeon.number_of_monsters}"
@@ -95,9 +94,9 @@ def check_stats(hero)
     puts "exp gained: #{exp_gained}, total exp to be gained: #{total_exp}"
   end
 
-  puts "In here you can check your stats. Monsters defeated. Amount of items used. Bonus of current weapon and armor. money and exp gained so far as well as basic info like health."
   hero.display_stats
-
+  puts "Weapon Bonus: + #{hero.equipped_weapons.map { |weapon| weapon.damage }.reduce(0, :+)} damage"
+  puts "Armor bonus: + #{hero.equipped_armor.map { |armor| armor.defense }.reduce(0, :+)} defense"
   ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)").stop
   ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)").stop
   ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)").stop

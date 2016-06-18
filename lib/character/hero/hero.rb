@@ -2,6 +2,7 @@ require_relative "../character"
 require_relative "../../helpers/customize"
 require_relative "../../helpers/inventory"
 require_relative "../../helpers/equip"
+require_relative "../../items/key"
 
 class Hero < Character
   include Customize
@@ -9,7 +10,10 @@ class Hero < Character
   include Equip
 
   attr_accessor :max_hp, :current_dungeon
-  attr_reader :inventory, :dungeon_level
+  attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes
+
+  MAX_HINTS = 3
+
   def initialize(hero_args = {})
     super(hero_args) # make sure to initialize stuff abstracted into the character class
     @max_hp = 100
@@ -19,6 +23,32 @@ class Hero < Character
     @dungeon_level = 1
     @current_dungeon = nil
     @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
+    @hints = 0 # Hints found by rolling a double with the dice
+    @keys = [] # keys attained when collecting all the hints
+  end
+
+  def unlock_secret_hint
+    puts "You have found a secret hint!"
+    add_hint
+    # reset hints and obtain a key
+    if @hints == MAX_HINTS
+      reset_hints
+      key = obtain_key(Key.unlock_with_hints)
+      puts "Congratulations! You found all #{MAX_HINTS} hints, and have now obtained a #{key.name} key"
+    end
+  end
+
+  def add_hint
+    @hints += 1
+  end
+
+  def reset_hints
+    @hints = 0
+  end
+
+  def obtain_key(key)
+    @keys.push(key)
+    key
   end
 
   def loot(monster)
