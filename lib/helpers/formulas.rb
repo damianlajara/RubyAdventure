@@ -23,11 +23,11 @@ module Formulas
     end
 
     def m_attack(level)
-        (67 + (level**5) / 6)
+        (173 + (level**5) / 3)
     end
 
     def m_defense(level)
-        rand(level+15..15+level**4/2).to_i
+        (25 + (level**4) / 8)
     end
 
     def m_experience(level)
