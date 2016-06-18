@@ -25,8 +25,6 @@ hero.customize
 
 shop = Shop.new
 
-$pr_logger = ProgressBar.create(length: 0, format: "") # For testing purposes. Make sure to remove
-
 def roll
   random_dice1 = rand(1..6)
   random_dice2 = rand(1..6)
@@ -79,24 +77,30 @@ end
 
 def check_progress(hero)
   # binding.pry
-  $pr_logger.log "In here you can check your progress thorughout the dungeon. Steps walked. Steps left. \nTreasures found. Total treasures in dungeon. Hints available. Hints until next key. \nAnd how many keys you currently possess."
-  ProgressBar.create(title: "Hints", total: 3, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)")
-  ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)")
-  ProgressBar.create(title: "Treasures", total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)")
+  puts "In here you can check your progress thorughout the dungeon. Steps walked. Steps left. \nTreasures found. Total treasures in dungeon. Hints available. Hints until next key. \nAnd how many keys you currently possess."
+  ProgressBar.create(title: "Hints", total: 3, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
+  ProgressBar.create(title: "Treasures", total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
+  ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)").stop
 end
 
 def check_stats(hero)
-  gold_found = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_money }.reduce(:+)
-  total_gold = hero.current_dungeon.monsters.map { |monster| monster.reward_money }.reduce(:+)
-  exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(:+)
-  total_exp = hero.current_dungeon.monsters.map { |monster| monster.reward_experience }.reduce(:+)
+  gold_found = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_money }.reduce(0, :+)
+  total_gold = hero.current_dungeon.total_monster_rewards[:money]
+  exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(0, :+)
+  total_exp = hero.current_dungeon.total_monster_rewards[:experience]
+  if $debug
+    puts "number of monsters killed: #{hero.current_dungeon.monsters_killed.count}"
+    puts "number of total monsters: #{hero.current_dungeon.number_of_monsters}"
+    puts "gold found: #{gold_found}, total gold to be found: #{total_gold}"
+    puts "exp gained: #{exp_gained}, total exp to be gained: #{total_exp}"
+  end
 
   puts "In here you can check your stats. Monsters defeated. Amount of items used. Bonus of current weapon and armor. money and exp gained so far as well as basic info like health."
   hero.display_stats
 
-  ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)")
-  ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)")
-  ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)")
+  ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)").stop
+  ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)").stop
+  ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)").stop
 end
 
 # Dungeon ideas:
@@ -122,7 +126,7 @@ end
 def enter_dungeon(hero)
   Dungeon.enter(hero)
   loop do
-    $pr_logger.log "\nEnter 'r' to roll dice, 'l' to change level, 'p' to check progress, 's' to check stats, or 'q' to leave the dungeon"
+    puts "\nEnter 'r' to roll dice, 'l' to change level, 'p' to check progress, 's' to check stats, or 'q' to leave the dungeon"
     option = gets.chomp.downcase
     case option
     when 'r' then roll_dice(hero, roll)

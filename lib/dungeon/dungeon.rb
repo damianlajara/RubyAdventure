@@ -16,7 +16,7 @@ require 'pry'
 
 class Dungeon
   attr_accessor :monsters, :steps_explored
-  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed
+  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards
   include Formulas
   TOTAL_LEVELS = 10
 
@@ -29,9 +29,10 @@ class Dungeon
     @exp_bonus = exp_bonus
     @money_bonus = money_bonus
     @monsters = []
+    @total_monster_rewards = { money: 0, experience: 0 } # Used for the progress bars in the dungeon menu. Keeps track of rewards of monsters before they are killed by the hero
     @monsters_killed = []
     @total_treasure_chests = random_treasures(level)
-    @number_of_monsters = random_monsters(level)
+    @number_of_monsters = 0
     create_monsters
     # @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
   end
@@ -64,7 +65,7 @@ class Dungeon
       monster = @monsters.shift
       commence_attack(hero, monster)
       battle_result(hero, monster)
-    elsif
+    else
       puts "nevermind..I'm being paranoid. I already killed all the monsters!"
       call_reinforcements
       puts "shouldve called for reinforcements" #debug
@@ -76,13 +77,14 @@ class Dungeon
   def call_reinforcements
     puts "Oh No! Those bastards called for reinforcements!"
     create_monsters
-    @number_of_monsters += random_monsters(@level)
   end
 
   def create_monsters
     puts "Creating monsters..." #debug
+    monster_count = random_monsters(@level)
+    @number_of_monsters += monster_count
     monsters = @all_monsters[@name].map { |monster| Object.const_get(monster) }
-    @number_of_monsters.times do
+    monster_count.times do
       random_monster = monsters.sample.new(
         health: m_health(@level),
         level: m_level(@level),
@@ -93,6 +95,8 @@ class Dungeon
       )
       @monsters.push(random_monster)
     end
+    @total_monster_rewards[:money] += @monsters.map { |monster| monster.reward_money }.reduce(0, :+)
+    @total_monster_rewards[:experience] += @monsters.map { |monster| monster.reward_experience }.reduce(0, :+)
     puts "Initialized dungeon with #{@monsters.count} monsters" #debug
   end
 
