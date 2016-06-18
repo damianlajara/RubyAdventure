@@ -20,4 +20,10 @@ class Character
     @experience = character_args[:experience] || 0
   end
 
+  def alive?
+    @health > 0
+  end
+  def dead?
+    !alive?
+  end
 end

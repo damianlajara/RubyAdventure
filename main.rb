@@ -108,7 +108,7 @@ def roll_dice(hero, roll)
       # battle_dungeon_boss(hero)
     end
   else
-    battle_monster(hero)
+    hero.current_dungeon.battle(hero)
   end
 end
 

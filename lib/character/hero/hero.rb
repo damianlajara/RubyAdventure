@@ -21,6 +21,11 @@ class Hero < Character
     @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
   end
 
+  def loot(monster)
+    @money += monster.reward_money
+    @experience += monster.reward_experience
+  end
+
   def dungeons_conquered
     @dungeons_conquered.sort_by { |dungeon| dungeon.level }
   end
@@ -39,10 +44,6 @@ class Hero < Character
 
   def walk(amount_of_steps)
     @current_dungeon.steps_explored = amount_of_steps
-    # if steps_walked >= @current_dungeon.total_steps
-    #   # TODO Find a way to battle the boss of that level before conquering dungeon
-    #   conquer_dungeon(@current_dungeon)
-    # end
   end
 
   def reset_current_dungeon
