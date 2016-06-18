@@ -4,35 +4,10 @@ require 'ruby-progressbar'
 Dir[File.join(File.dirname(__FILE__), 'lib', 'character', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'lib', 'dungeon', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'lib', 'shop' ,'**', '*.rb')].each { |file| require file }
+require File.join(File.dirname(__FILE__), 'lib', 'helpers', 'formulas.rb')
 
-
-#DEBUGGING PURPOSES - refactor code to own namespaces and remove this
-Dir[File.join(File.dirname(__FILE__), 'lib', 'helpers' ,'**', '*.rb')].each { |file| require file }
-include Mixin
-# binding.pry
 # Set the debug flag to make output more verbose
 $debug = true
-
-# binding.pry
-# Monster.all.keys.map(&:classify)
-#
-# {"dragon"=>["executioner", "mage_lord"],
-#  "ghost"=>["raptured_abyss", "tortured_soul"],
-#  "goblin"=>["gnish", "ragnuk"],
-#  "golem"=>["ohm", "pyro_stone"],
-#  "ogre"=>["bone_reaver", "grendel"],
-#  "vampire"=>["dark_cultist", "flesh_hunter"],
-#  "wolf"=>["accalia", "leikos"],
-#  "zombie"=>["dark_vessel", "undead"]}
-
-monster = Monster.new(
-  health: 100,
-  level: 1,
-  attack: 100,
-  defense: 20,
-  money: 100,
-  exp: 25
-)
 
 hero = Hero.new(
   health: 100,
@@ -43,7 +18,7 @@ hero = Hero.new(
   exp: 0
 )
 
-# binding.pry
+include Formulas
 
 puts "Welcome! Let's get you comfy! Create your custom character!"
 hero.customize
@@ -51,20 +26,6 @@ hero.customize
 shop = Shop.new
 
 $pr_logger = ProgressBar.create(length: 0, format: "") # For testing purposes. Make sure to remove
-
-def battle_monster(hero)
-  case hero.dungeon_level
-    when 1..3
-      puts "Level 1-3"
-     # battle
-    when 4..6
-      puts "Level 4-6"
-    when 7..10
-      puts "Level 7-10"
-    else
-      error
-  end
-end
 
 def roll
   random_dice1 = rand(1..6)
@@ -78,37 +39,29 @@ def roll
     double: random_dice1 == random_dice2
   }
 end
-# Formula for calculating steps
-# 2.upto(12) do |total|
-# 	# total is simulating the total dice roll
-# 	base_range = 1
-# 	max_range = total/2 + 1
-# 	random = "rand(#{base_range}..#{max_range})"
-# 	base1 = (total/4)**3
-# 	base2 = ((total*2)/4)**(2) + 1
-# 	bonus = base1+base2
-# 	puts "#{total}) #{random} + #{base1} + #{base2} = #{random} + #{bonus} = range(#{bonus + base_range} to #{bonus + max_range})"
-# end
+
 def steps(roll)
   if roll[:double]
     # TODO get hint here
     puts "Nice, you rolled a double #{roll[:die1]}!"
   end
-  rand(1..(roll[:total]/2 + 1)) + (roll[:total]/4)**3 + ((roll[:total]*2)/4)**(2) + 1
+  random_steps(roll)
 end
 
 def roll_dice(hero, roll)
+  dungeon = hero.current_dungeon
   if roll[:total].even?
-    hero.walk(steps(roll))
-    puts "Nice it's even. You took #{hero.steps_walked} steps"
-    if hero.steps_walked >= hero.current_dungeon.total_steps
+    steps = steps(roll)
+    hero.walk(steps)
+    puts "Nice it's even. You took #{steps} steps"
+    if hero.steps_walked >= dungeon.total_steps
       # TODO Find a way to battle the boss of that level before conquering dungeon
       puts "Congratulations! You have succesfully explored the whole dungeon!"
       puts "However, you have awoken the beast with your victory cry! Prepare for battle!"
       # battle_dungeon_boss(hero)
     end
   else
-    hero.current_dungeon.battle(hero)
+    dungeon.battle(hero)
   end
 end
 
@@ -128,13 +81,22 @@ def check_progress(hero)
   # binding.pry
   $pr_logger.log "In here you can check your progress thorughout the dungeon. Steps walked. Steps left. \nTreasures found. Total treasures in dungeon. Hints available. Hints until next key. \nAnd how many keys you currently possess."
   ProgressBar.create(title: "Hints", total: 3, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)")
-  ProgressBar.create(title: "Treasures", total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)")
   ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)")
+  ProgressBar.create(title: "Treasures", total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)")
 end
 
 def check_stats(hero)
-  puts "In here you can check your stats. Monsters defeated. Amount of items used. Bonus of current weapon and armor. moeny and exp gained so far as well as basic info like health."
+  gold_found = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_money }.reduce(:+)
+  total_gold = hero.current_dungeon.monsters.map { |monster| monster.reward_money }.reduce(:+)
+  exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(:+)
+  total_exp = hero.current_dungeon.monsters.map { |monster| monster.reward_experience }.reduce(:+)
+
+  puts "In here you can check your stats. Monsters defeated. Amount of items used. Bonus of current weapon and armor. money and exp gained so far as well as basic info like health."
   hero.display_stats
+
+  ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)")
+  ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)")
+  ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)")
 end
 
 # Dungeon ideas:

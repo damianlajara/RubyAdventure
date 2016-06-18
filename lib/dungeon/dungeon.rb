@@ -16,7 +16,7 @@ require 'pry'
 
 class Dungeon
   attr_accessor :monsters, :steps_explored
-  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters
+  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed
   include Formulas
   TOTAL_LEVELS = 10
 
@@ -33,7 +33,7 @@ class Dungeon
     @total_treasure_chests = random_treasures(level)
     @number_of_monsters = random_monsters(level)
     create_monsters
-    # @boss = create_boss('Dragon') # TODO Every dungeon, has a boss. Should be created based on the level of the user
+    # @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
   end
 
   def all_monsters
@@ -46,21 +46,6 @@ class Dungeon
       puts "Welcome to Dungeon level #{hero.dungeon_level}! May luck be on your side."
     else
       puts "Welcome back to dungeon level #{hero.current_dungeon.level}. Go finish what you started!"
-    end
-  end
-
-  def create_monsters
-    monsters = @all_monsters[@name].map { |monster| Object.const_get(monster) }
-    @number_of_monsters.times do
-      random_monster = monsters.sample.new(
-        health: m_health(@level),
-        level: m_level(@level),
-        attack: m_attack(@level),
-        defense: m_defense(@level),
-        money: m_money(@level),
-        exp: m_experience(@level)
-      )
-      @monsters.push(random_monster)
     end
   end
 
@@ -80,11 +65,39 @@ class Dungeon
       commence_attack(hero, monster)
       battle_result(hero, monster)
     elsif
-      puts "nevermind..I'm being paranoid. I already killed all the monsters."
+      puts "nevermind..I'm being paranoid. I already killed all the monsters!"
+      call_reinforcements
+      puts "shouldve called for reinforcements" #debug
     end
   end
 
+  private
+
+  def call_reinforcements
+    puts "Oh No! Those bastards called for reinforcements!"
+    create_monsters
+    @number_of_monsters += random_monsters(@level)
+  end
+
+  def create_monsters
+    puts "Creating monsters..." #debug
+    monsters = @all_monsters[@name].map { |monster| Object.const_get(monster) }
+    @number_of_monsters.times do
+      random_monster = monsters.sample.new(
+        health: m_health(@level),
+        level: m_level(@level),
+        attack: m_attack(@level),
+        defense: m_defense(@level),
+        money: m_money(@level),
+        exp: m_experience(@level)
+      )
+      @monsters.push(random_monster)
+    end
+    puts "Initialized dungeon with #{@monsters.count} monsters" #debug
+  end
+
   def commence_attack(hero, monster)
+    #TODO add a loop in here that gets user input on what ability he wants to attack with
     while hero.alive? && monster.alive?
       puts "The monster has attacked you!"
       puts "You received #{monster.attack} damage"
@@ -110,9 +123,8 @@ class Dungeon
     end
   end
 
-  private
   def create_boss(klass, level)
-    all_monsters.select { |monster| monsters.map(&:to_s).include? klass }.first.new
+    all_monsters.select { |monster| monsters.map(&:to_s).include? klass }.first.new()
   end
 
 end

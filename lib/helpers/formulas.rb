@@ -36,4 +36,19 @@ module Formulas
   def m_money(level)
     rand(level+120..120+level**2*level+1)
   end
+
+  # Formula for calculating steps
+  # 2.upto(12) do |total|
+  # 	# total is simulating the total dice roll
+  # 	base_range = 1
+  # 	max_range = total/2 + 1
+  # 	random = "rand(#{base_range}..#{max_range})"
+  # 	base1 = (total/4)**3
+  # 	base2 = ((total*2)/4)**(2) + 1
+  # 	bonus = base1+base2
+  # 	puts "#{total}) #{random} + #{base1} + #{base2} = #{random} + #{bonus} = range(#{bonus + base_range} to #{bonus + max_range})"
+  # end
+  def random_steps(roll)
+    rand(1..(roll[:total]/2 + 1)) + (roll[:total]/4)**3 + ((roll[:total]*2)/4)**(2) + 1
+  end
 end

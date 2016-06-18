@@ -24,6 +24,7 @@ class Hero < Character
   def loot(monster)
     @money += monster.reward_money
     @experience += monster.reward_experience
+    puts "You found #{monster.reward_money} gold and got #{monster.reward_experience} experience from slaying the enemy!"
   end
 
   def dungeons_conquered
@@ -43,7 +44,10 @@ class Hero < Character
   end
 
   def walk(amount_of_steps)
-    @current_dungeon.steps_explored = amount_of_steps
+    # puts "already walked #{@current_dungeon.steps_explored}"
+    @current_dungeon.steps_explored += amount_of_steps
+    # puts "Trying to walk #{amount_of_steps}"
+    # puts "walked #{@current_dungeon.steps_explored}"
   end
 
   def reset_current_dungeon
