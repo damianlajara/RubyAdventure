@@ -14,7 +14,7 @@ module Formulas
     def m_health(level)
         min = 1500 + (level**6 - (level * 5) / 2)
         max = min + (level**6 / 6).to_i
-        puts rand(min..max)
+        rand(min..max)
         # puts "Level - #{level}, Min: #{min}, Max: #{max}"
     end
 
@@ -23,7 +23,7 @@ module Formulas
     end
 
     def m_attack(level)
-        rand(level+30..30+level**3/2).to_i
+        (67 + (level**5) / 6)
     end
 
     def m_defense(level)
