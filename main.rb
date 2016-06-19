@@ -50,7 +50,7 @@ def roll_dice(hero, roll)
   if roll[:total].even?
     steps = steps(hero, roll)
     hero.walk(steps)
-    puts "Nice it's even. You took #{steps} steps"
+    puts "You took #{steps} steps"
     if hero.steps_walked >= dungeon.total_steps
       # TODO Find a way to battle the boss of that level before conquering dungeon
       puts "Congratulations! You have succesfully explored the whole dungeon!"
@@ -126,8 +126,9 @@ end
 def enter_dungeon(hero)
   Dungeon.enter(hero)
   loop do
-    puts "\nEnter 'r' to roll dice, 'l' to change level, 'p' to check progress, 's' to check stats, or 'q' to leave the dungeon"
+    print "\nEnter 'r' to roll dice, 'l' to change level, 's' to check stats, 'p' to check progress, or 'q' to leave the dungeon: "
     option = gets.chomp.downcase
+    puts "\n"
     case option
     when 'r' then roll_dice(hero, roll)
     when 'l' then change_level(hero)
@@ -139,8 +140,9 @@ def enter_dungeon(hero)
 end
 
 loop do
-  puts "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game "
+  print "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game: "
   option = gets.chomp.downcase
+  puts "\n"
   case option
   when 'd' then enter_dungeon(hero)
   when 's' then shop.goto_shop(hero)
@@ -149,4 +151,5 @@ loop do
   else break
   end
 end
-puts "Goodbye!"
+
+puts "\nThanks for playing Ruby Adventure!!"

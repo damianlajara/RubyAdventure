@@ -32,8 +32,8 @@ module Formulas
   end
 
   def m_experience(level)
-    min = level * 8
-    max = level*8 + level**4 + (3 / 2)
+    min = (level ** 3) * 7 - 4
+    max = (level**5) + level*7 + 8
     rand(min..max).to_i
   end
 

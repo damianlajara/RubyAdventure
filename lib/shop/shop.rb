@@ -15,7 +15,6 @@ class Shop
   POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)
 
   def initialize
-    puts "Initializing shop items ..."
   end
 
   def armor_names

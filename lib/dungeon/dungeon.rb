@@ -80,7 +80,6 @@ class Dungeon
   end
 
   def create_monsters
-    puts "Creating monsters..." #debug
     monster_count = random_monsters(@level)
     @number_of_monsters += monster_count
     monsters = @all_monsters[@name].map { |monster| Object.const_get(monster) }
@@ -91,13 +90,13 @@ class Dungeon
         attack: m_attack(@level),
         defense: m_defense(@level),
         money: m_money(@level),
-        exp: m_experience(@level)
+        experience: m_experience(@level)
       )
       @monsters.push(random_monster)
     end
     @total_monster_rewards[:money] += @monsters.map { |monster| monster.reward_money }.reduce(0, :+)
     @total_monster_rewards[:experience] += @monsters.map { |monster| monster.reward_experience }.reduce(0, :+)
-    puts "Initialized dungeon with #{@monsters.count} monsters" #debug
+    # binding.pry
   end
 
   def commence_attack(hero, monster)
