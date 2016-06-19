@@ -57,16 +57,24 @@ class Hero < Character
     puts "You found #{monster.reward_money} gold and got #{monster.reward_experience} experience from slaying the enemy!"
   end
 
+  def dungeon_explored?
+    @current_dungeon.steps_explored == @current_dungeon.total_steps
+  end
+
   def dungeons_conquered
     @dungeons_conquered.sort_by { |dungeon| dungeon.level }
   end
 
-  def conquer_dungeon(dungeon)
-    @dungeons_conquered.push(dungeon)
+  def conquered_dungeon?
+    @current_dungeon.conquered
+  end
+
+  def conquer_dungeon
+    @current_dungeon.conquered = true
+    @dungeons_conquered.push(@current_dungeon)
     reset_current_dungeon
     @dungeon_level += 1
-    puts "Congratulations! You succesfully completed dungeon level #{dungeon.level}"
-    # TODO Display a summary(statistics) of mosters killed and items collected from that dungeon
+    puts "Congratulations! You succesfully completed dungeon level #{@current_dungeon.level}"
   end
 
   def steps_walked
@@ -74,10 +82,7 @@ class Hero < Character
   end
 
   def walk(amount_of_steps)
-    # puts "already walked #{@current_dungeon.steps_explored}"
     @current_dungeon.steps_explored += amount_of_steps
-    # puts "Trying to walk #{amount_of_steps}"
-    # puts "walked #{@current_dungeon.steps_explored}"
   end
 
   def reset_current_dungeon

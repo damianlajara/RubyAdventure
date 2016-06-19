@@ -6,14 +6,15 @@ Dir[File.join(File.dirname(__FILE__), 'lib', 'dungeon', '**', '*.rb')].each { |f
 Dir[File.join(File.dirname(__FILE__), 'lib', 'shop' ,'**', '*.rb')].each { |file| require file }
 require File.join(File.dirname(__FILE__), 'lib', 'helpers', 'formulas.rb')
 
+include Mixin # DEBUG - using it for choose_array_option. Remove after refactoring
 # Set the debug flag to make output more verbose
 $debug = true
 
 hero = Hero.new(
-  health: 100,
+  health: 1000000,
   level: 1,
-  attack: 25,
-  defense: 40,
+  attack: 2500,
+  defense: 4000,
   money: 210000, #TODO Change this to a very small number for release. It's only this high for debug reasons
   exp: 0
 )
@@ -45,17 +46,22 @@ def steps(hero, roll)
   random_steps(roll)
 end
 
+# Once you conquery the dungeon, you have already explored the whole dungeon,
+# so the steps explored shouldn't increase and
+# you should'nt be able to battle the boss anymore since he's defeated.
+# You can, however, still get hints and defeat monsters to level up
 def roll_dice(hero, roll)
   dungeon = hero.current_dungeon
   if roll[:total].even?
     steps = steps(hero, roll)
-    hero.walk(steps)
     puts "You took #{steps} steps"
-    if hero.steps_walked >= dungeon.total_steps
-      # TODO Find a way to battle the boss of that level before conquering dungeon
-      puts "Congratulations! You have succesfully explored the whole dungeon!"
-      puts "However, you have awoken the beast with your victory cry! Prepare for battle!"
-      # battle_dungeon_boss(hero)
+    unless hero.conquered_dungeon?
+      hero.walk(steps) unless hero.dungeon_explored?
+      if hero.steps_walked >= dungeon.total_steps
+        puts "Congratulations! You have succesfully explored the whole dungeon!"
+        puts "However, you have awoken the beast with your victory cry! Prepare for battle!"
+        dungeon.battle_boss(hero)
+      end
     end
   else
     dungeon.battle(hero)

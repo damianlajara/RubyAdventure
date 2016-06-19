@@ -11,36 +11,38 @@ module Formulas
     rand(min..max)
   end
 
-  def m_health(level)
+  def m_health(level, is_boss={})
     min = 1500 + (level**6 - (level * 5) / 2)
     max = min + (level**6 / 6).to_i
-    rand(min..max)
+    is_boss[:boss] ? max : rand(min..max)
   end
 
-  def m_level(level)
+  def m_level(level, is_boss={})
     min = level
     max = level**2 + 1
-    rand(min..max)
+    is_boss[:boss] ? max : rand(min..max)
   end
 
-  def m_attack(level)
-    (173 + (level**5) / 3)
+  def m_attack(level, is_boss={})
+    base = (173 + (level**5) / 3)
+    is_boss[:boss] ? base * 2 : base
   end
 
-  def m_defense(level)
-    (25 + (level**4) / 8)
+  def m_defense(level, is_boss={})
+    base = (25 + (level**4) / 8)
+    is_boss[:boss] ? base * 2 : base
   end
 
-  def m_experience(level)
+  def m_experience(level, is_boss={})
     min = (level ** 3) * 7 - 4
     max = (level**5) + level*7 + 8
-    rand(min..max).to_i
+    is_boss[:boss] ? max * 3 : rand(min..max).to_i
   end
 
-  def m_money(level)
+  def m_money(level, is_boss={})
     min = level + 120
     max = 120 + level**2 * level + 1
-    rand(min..max)
+    is_boss[:boss] ? max : rand(min..max)
   end
 
   # Formula for calculating steps

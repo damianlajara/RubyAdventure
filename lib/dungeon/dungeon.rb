@@ -15,7 +15,7 @@ require 'pry'
   # Wolf
 
 class Dungeon
-  attr_accessor :monsters, :steps_explored
+  attr_accessor :monsters, :steps_explored, :conquered
   attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards
   include Formulas
   TOTAL_LEVELS = 10
@@ -28,13 +28,14 @@ class Dungeon
     @steps_explored = 0 #The number of steps the user has taken in this dungeon
     @exp_bonus = exp_bonus
     @money_bonus = money_bonus
+    @conquered = false
     @monsters = []
     @total_monster_rewards = { money: 0, experience: 0 } # Used for the progress bars in the dungeon menu. Keeps track of rewards of monsters before they are killed by the hero
     @monsters_killed = []
     @total_treasure_chests = random_treasures(level)
     @number_of_monsters = 0
     create_monsters
-    # @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
+    @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
   end
 
   def all_monsters
@@ -68,8 +69,13 @@ class Dungeon
     else
       puts "nevermind..I'm being paranoid. I already killed all the monsters!"
       call_reinforcements
-      puts "shouldve called for reinforcements" #debug
     end
+  end
+
+  def battle_boss(hero)
+    commence_attack(hero, @boss)
+    won_battle = battle_result(hero, @boss)
+    hero.conquer_dungeon if won_battle
   end
 
   private
@@ -96,7 +102,6 @@ class Dungeon
     end
     @total_monster_rewards[:money] += @monsters.map { |monster| monster.reward_money }.reduce(0, :+)
     @total_monster_rewards[:experience] += @monsters.map { |monster| monster.reward_experience }.reduce(0, :+)
-    # binding.pry
   end
 
   def commence_attack(hero, monster)
@@ -121,13 +126,23 @@ class Dungeon
       puts "Congratulations! You killed the enemy!"
       hero.loot(monster)
       @monsters_killed.push(monster)
+      true
     elsif hero.dead? && monster.alive?
       puts "You have died!"
+      # TODO do something to the hero after dying, like resetting stats or something then revive
+      false
     end
   end
 
   def create_boss(klass, level)
-    all_monsters.select { |monster| monsters.map(&:to_s).include? klass }.first.new()
+    all_monsters.find { |monster| monster.to_s == classify(klass) }.new(
+      health: m_health(@level, boss: true),
+      level: m_level(@level, boss: true),
+      attack: m_attack(@level, boss: true),
+      defense: m_defense(@level, boss: true),
+      money: m_money(@level, boss: true),
+      experience: m_experience(@level, boss: true)
+    )
   end
 
 end
