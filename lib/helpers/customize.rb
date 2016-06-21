@@ -1,28 +1,24 @@
 module Customize
+
   #FIXME Make this more dynamic by reading in the files from the heros directory
   CLASSES = {
     soldier: %w(Barbarian Knight Paladin Samurai),
     mage: %w(Necromancer Wizard Illusionist Alchemist),
     ranged: %w(Archer Gunner Tamer Elf)
   }
-  GENDER = { male: 'Male', female: 'Female', other: 'Other'}
-  def reset_stats
+
+  GENDER = { male: 'Male', female: 'Female', other: 'Other' }
+
+  # Called when user dies. Only lose money, exp and all items
+  def reset_stats_after_death
+    puts "You wake up in a hospital...not knowing where you are. Life has given you a second chance. Go get em'!"
     #TODO Create validation in these methods which is why I called self insead of accessing the var directly
     self.health = 100
-    self.level = 1
-    self.attack = 0
-    self.defense = 0
     self.money = 0
     self.experience = 0
-    @max_hp = 100
-    #self.dungeon_level = 1
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
-    # TODO check if we have to reset these values as well
-    # equipped_weapons: [],
-    # equipped_armor: [],
-    # weapon_count: 0,
-    # armor_count: 0,
-    # potion_count: 0
+    @equipped_weapons = []
+    @equipped_armor = []
   end
 
   def customize_name
