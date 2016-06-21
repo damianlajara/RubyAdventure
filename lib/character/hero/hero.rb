@@ -10,12 +10,13 @@ class Hero < Character
   include Equip
 
   attr_accessor :max_hp, :current_dungeon
-  attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes
+  attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
 
   MAX_HINTS = 3
 
   def initialize(hero_args = {})
     super(hero_args) # make sure to initialize stuff abstracted into the character class
+    @base_class = find_base_class # soldier, mage, ranged etc
     @max_hp = 100
     @gender = 'genderless'
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
@@ -25,6 +26,34 @@ class Hero < Character
     @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
     @hints = 0 # Hints found by rolling a double with the dice
     @keys = [] # keys attained when collecting all the hints
+  end
+
+  def find_base_class
+    if CLASSES.values.flatten.include? @main_class
+      CLASSES.map { |klass, types| klass if types.include? @main_class}.compact.first
+    else
+      :soldier # default value # TODO Maybe raise an error?
+    end
+  end
+
+  def self.create
+    puts "Inside Hero.create"
+    display_hash_option CLASSES, 'What class would you like to choose your hero from? '
+    choice = gets.chomp
+
+    base_class =
+      case choice.to_i
+      when 1 then :soldier
+      when 2 then :mage
+      when 3 then :ranged
+      else default_option(:soldier)
+      end
+      puts "Changing base_class to: #{base_class}"
+    main_class = choose_array_option CLASSES[base_class]
+    puts "Changing main_class to: #{main_class}"
+    new_hero = constantize(main_class).new
+    puts "Created new hero: #{new_hero}"
+    new_hero
   end
 
   def unlock_secret_hint
@@ -195,7 +224,9 @@ class Hero < Character
   # just in case we have any validation in those methods
   def display_stats
     # TODO Display the heros name and class as well here with a nice header like ~~~~
-    puts "\nHealth: #{self.health}"
+    puts "\nBase class: #{@base_class}"
+    puts "specialization: #{@main_class}"
+    puts "Health: #{self.health}"
     puts "Level: #{self.level}"
     puts "Attack: #{self.attack}"
     puts "Defense: #{self.defense}"

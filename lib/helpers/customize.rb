@@ -49,52 +49,9 @@ module Customize
       end
   end
 
-  def customize_class
-    display_hash_option CLASSES, 'What class would you like to choose your character from? '
-    choice = gets.chomp
-
-    @base_class =
-      case choice.to_i
-      when 1 then :soldier
-      when 2 then :mage
-      when 3 then :ranged
-      else default_option(:soldier)
-      end
-    @main_class = choose_array_option CLASSES[@base_class]
-  end
-
-  def display_game_options_header(spacer_amount=4)
-    puts "\n#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
-  end
-
-  def available_game_options
-    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"]
-  end
-
-  def game_options
-    display_game_options_header
-    case choose_array_option available_game_options, true
-    when 1 then toggle_battle_scenes
-    when 2 then change_class
-    when 3 then change_gender
-    when 4 then change_name
-    else display_exiting_game_options
-    end
-  end
-
-  def display_exiting_game_options
-    puts 'Exiting options menu...'
-  end
-
-  def display_welcome_message
-    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{@main_class}!"
-  end
-
   def customize
-    puts "Welcome! Let's create your custom character!"
     customize_name
     customize_gender
-    customize_class
     display_welcome_message
   end
 
@@ -122,14 +79,17 @@ module Customize
     @skip_battle_scenes ? "disable" : "enable"
   end
 
-  def change_class
+  def customize_class
+    puts "About to call Hero.create"
+    Hero.create
+  end
+
+  def create_new_hero
     puts "Are you sure you want to change your class?\n"
-    puts "Your stats will reset and you will lose all of your current weapons and armor!\n"
+    puts "Your stats will reset and you will lose all of your current weapons, armor and dungeon accomplishments!\n"
     case choose_array_option yes_or_no_option, true
     when 1
-      reset_stats
       customize_class
-      puts "Congratulations! You're class has changed to #{@main_class}!"
     else
       puts "Good! I thought the #{@main_class} was better anyway."
     end
@@ -156,4 +116,32 @@ module Customize
       puts 'Awww man...I was looking forward to seeing the weird name you were going to choose!'
     end
   end
+
+  def display_game_options_header(spacer_amount=4)
+    puts "\n#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
+  end
+
+  def available_game_options
+    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"]
+  end
+
+  def game_options
+    display_game_options_header
+    case choose_array_option available_game_options, true
+    when 1 then toggle_battle_scenes
+    when 2 then create_new_hero
+    when 3 then change_gender
+    when 4 then change_name
+    else display_exiting_game_options
+    end
+  end
+
+  def display_exiting_game_options
+    puts 'Exiting options menu...'
+  end
+
+  def display_welcome_message
+    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{@main_class}!"
+  end
+
 end

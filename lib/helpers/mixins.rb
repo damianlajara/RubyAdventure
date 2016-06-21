@@ -21,6 +21,10 @@ module Mixin
     string.split('_').collect(&:capitalize).join
   end
 
+  def constantize(klass)
+    Object.const_get(klass)
+  end
+
   def display_array_value_with_index(array)
     array.each_with_index { |value, index| puts "#{index.next}) #{value}" }
   end

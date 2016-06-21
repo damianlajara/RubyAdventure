@@ -10,17 +10,18 @@ include Mixin # DEBUG - using it for choose_array_option. Remove after refactori
 # Set the debug flag to make output more verbose
 $debug = true
 
-hero = Hero.new(
-  health: 1000000,
-  level: 1,
-  attack: 2500,
-  defense: 4000,
-  money: 210000, #TODO Change this to a very small number for release. It's only this high for debug reasons
-  exp: 0
-)
+# hero = Hero.new(
+#   health: 1000000,
+#   level: 1,
+#   attack: 2500,
+#   defense: 4000,
+#   money: 210000, #TODO Change this to a very small number for release. It's only this high for debug reasons
+#   exp: 0
+# )
 
 include Formulas
-
+puts "Welcome! Let's create your custom character!"
+hero = Hero.create
 hero.customize
 
 shop = Shop.new
@@ -109,6 +110,12 @@ def check_stats(hero)
   ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)").stop
 end
 
+def reset_character(hero)
+  hero = hero.create_new_hero
+  puts "Congratulations! You're class has changed to #{hero.main_class}!"
+  hero
+end
+
 # Dungeon ideas:
 # roll dice. If even, walk a rand number of steps depending on the num u rolled
 # if odd, you battle a random monster from that level
@@ -146,7 +153,7 @@ def enter_dungeon(hero)
 end
 
 loop do
-  print "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, or 'q' to exit game: "
+  print "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, 'c' to change hero(new class), or 'q' to exit game: "
   option = gets.chomp.downcase
   puts "\n"
   case option
@@ -154,8 +161,10 @@ loop do
   when 's' then shop.goto_shop(hero)
   when 'i' then hero.check_inventory
   when 'o' then hero.game_options
+  when 'c' then hero = reset_character(hero)
   else break
   end
 end
 
+#TODO save progress on exit
 puts "\nThanks for playing Ruby Adventure!!"

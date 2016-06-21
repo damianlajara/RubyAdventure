@@ -130,6 +130,7 @@ class Dungeon
     elsif hero.dead? && monster.alive?
       puts "You have died!"
       # TODO do something to the hero after dying, like resetting stats or something then revive
+      # Right now, the health will just go negative
       false
     end
   end
