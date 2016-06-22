@@ -1,13 +1,15 @@
-require_relative "../character"
-require_relative "../../helpers/customize"
-require_relative "../../helpers/inventory"
-require_relative "../../helpers/equip"
-require_relative "../../items/key"
+require_relative '../character'
+require_relative '../../helpers/customize'
+require_relative '../../helpers/inventory'
+require_relative '../../helpers/equip'
+require_relative '../../items/key'
+require_relative '../../helpers/formulas'
 
 class Hero < Character
   include Customize
   include Inventory
   include Equip
+  include Formulas::HeroHelper
 
   attr_accessor :max_hp, :current_dungeon, :treasures_found
   attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
@@ -23,7 +25,7 @@ class Hero < Character
     @skip_battle_scenes = false
     @dungeon_level = 1
     @current_dungeon = nil
-    @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
+    @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] # TODO: Remove this dummy data. For debugging purposes
     @hints = 0 # Hints found by rolling a double with the dice
     @keys = [] # keys attained when collecting all the hints
     @treasures_found = 0
@@ -31,14 +33,14 @@ class Hero < Character
 
   def find_base_class
     if CLASSES.values.flatten.include? @main_class
-      CLASSES.map { |klass, types| klass if types.include? @main_class}.compact.first
+      CLASSES.map { |klass, types| klass if types.include? @main_class }.compact.first
     else
       :soldier # default value # TODO Maybe raise an error?
     end
   end
 
   def self.create
-    puts "Inside Hero.create"
+    puts 'Inside Hero.create'
     display_hash_option CLASSES, 'What class would you like to choose your hero from? '
     choice = gets.chomp
     base_class =
@@ -57,7 +59,7 @@ class Hero < Character
   end
 
   def unlock_secret_hint
-    puts "You have found a secret hint!"
+    puts 'You have found a secret hint!'
     add_hint
     # reset hints and obtain a key
     if @hints == MAX_HINTS
@@ -91,7 +93,7 @@ class Hero < Character
   end
 
   def dungeons_conquered
-    @dungeons_conquered.sort_by { |dungeon| dungeon.level }
+    @dungeons_conquered.sort_by(&:level)
   end
 
   def conquered_dungeon?
@@ -118,46 +120,51 @@ class Hero < Character
     @current_dungeon = nil
   end
 
+  def level_up_attributes(level)
+    @level += 1
+    @max_hp = level_up_max_hp(level)
+    @attack = level_up_att(level)
+    @defense = level_up_def(level)
+    @health = @max_hp
+  end
+
   def level_up(exp)
-    case exp
-    when 0..50
-      self.level += 1
-    end
+    level_up_attributes(@level) if exp >= exp_needed(@level)
   end
 
   def experience=(exp)
     @experience = exp
-    level_up(exp)
+    level_up(@experience)
   end
 
   def buy(item)
-    if self.money >= item.price && add_to_inventory(item)
+    if money >= item.price && add_to_inventory(item)
       self.money -= item.price
-      puts "Succesfully purchased #{item.to_s}!"
+      puts "Succesfully purchased #{item}!"
     else
-      error "hero.buy() -> Error! You do not have enough money!"
+      error 'hero.buy() -> Error! You do not have enough money!'
     end
   end
 
   def sell(item)
     if remove_from_inventory(item)
       self.money += item.sell_value
-      puts "Succesfully sold #{item.to_s}!"
+      puts "Succesfully sold #{item}!"
     else
-      error "hero.sell() -> Error! Unable to sell item!"
+      error 'hero.sell() -> Error! Unable to sell item!'
     end
   end
 
-  # TODO implement me
+  # TODO: implement me
   def use_potions
   end
 
-  # TODO implement me
+  # TODO: implement me
   def sell_items
   end
 
   def check_inventory
-    puts "Inside inventory! What would you like to do?"
+    puts 'Inside inventory! What would you like to do?'
     inventory_option = choose_array_option(inventory_options, true)
     # puts "1) Check Status\n2) Equip Items\n3) Use Potions\n4) Sell Items"
     # print "To select an option, enter the number that corresponds with the option you want: "
@@ -167,14 +174,14 @@ class Hero < Character
     when 2 then equip_items
     when 3 then use_potions
     when 4 then sell_items
-    else error "check_inventory() -> Error! Invalid Option!"
+    else error 'check_inventory() -> Error! Invalid Option!'
     end
   end
 
-  # TODO Add a way to unequip items and equip more than one item
+  # TODO: Add a way to unequip items and equip more than one item
   def equip_items
     if current_inventory_weapons.empty? && current_inventory_armor.empty?
-      puts "You have nothing to equip!"
+      puts 'You have nothing to equip!'
       return
     end
     print "What would you like to equip?\n1) Weapons\n2) Armor "
@@ -182,35 +189,35 @@ class Hero < Character
     case equip_choice
     when 1
       unless items_exist? current_inventory_weapons
-        puts "You have no weapons to equip!"
+        puts 'You have no weapons to equip!'
         return
       end
       display_inventory_weapons
-      #TODO Refactor this into choose_array_option
-      print "To select a weapon to equip, enter the number that corresponds with the weapon you want: "
+      # TODO: Refactor this into choose_array_option
+      print 'To select a weapon to equip, enter the number that corresponds with the weapon you want: '
       weapon_option = gets.chomp.to_i
-      item = (current_inventory_weapons.values_at(weapon_option.pred).first) || nil
+      item = current_inventory_weapons.values_at(weapon_option.pred).first || nil
       if validate_num(weapon_option, weapon_count) && !item.nil?
-        self.equip(item)
+        equip(item)
       else
-        error "equip_items() -> Error! Unable to equip weapon!"
+        error 'equip_items() -> Error! Unable to equip weapon!'
       end
     when 2
       unless items_exist? current_inventory_armor
-        puts "You have no armor to equip!"
+        puts 'You have no armor to equip!'
         return
       end
       display_inventory_armor
-      #TODO Refactor this into choose_array_option
-      print "To select an armor to equip, enter the number that corresponds with the armor you want: "
+      # TODO: Refactor this into choose_array_option
+      print 'To select an armor to equip, enter the number that corresponds with the armor you want: '
       armor_option = gets.chomp.to_i
-      item = (current_inventory_armor.values_at(armor_option.pred).first) || nil
+      item = current_inventory_armor.values_at(armor_option.pred).first || nil
       if validate_num(armor_option, armor_count) && !item.nil?
-        self.equip(item)
+        equip(item)
       else
-        error "equip_items() -> Error! Unable to equip armor!"
+        error 'equip_items() -> Error! Unable to equip armor!'
       end
-    else error "equip_items() -> Error! Invalid Option!" #TODO change to __method__ in each error
+    else error 'equip_items() -> Error! Invalid Option!' # TODO: change to __method__ in each error
     end
   end
 
@@ -220,18 +227,17 @@ class Hero < Character
     display_equipped_items
   end
 
-  # FIXME used self here so it can call the method instead of the instance var directly,
+  # FIXME: used self here so it can call the method instead of the instance var directly,
   # just in case we have any validation in those methods
   def display_stats
-    # TODO Display the heros name and class as well here with a nice header like ~~~~
+    # TODO: Display the heros name and class as well here with a nice header like ~~~~
     puts "\nBase class: #{@base_class}"
     puts "specialization: #{@main_class}"
-    puts "Health: #{self.health}"
-    puts "Level: #{self.level}"
-    puts "Attack: #{self.attack}"
-    puts "Defense: #{self.defense}"
+    puts "Health: #{health}"
+    puts "Level: #{level}"
+    puts "Attack: #{attack}"
+    puts "Defense: #{defense}"
     puts "Money: #{self.money}"
-    puts "Experience: #{self.experience}\n"
+    puts "Experience: #{experience}\n"
   end
-
-end #end class
+end # end class

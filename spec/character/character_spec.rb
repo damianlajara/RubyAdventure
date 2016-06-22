@@ -40,7 +40,7 @@ describe Character do
         expect(full_character).to have_attributes(
           name: 'Nameless One',
           gender: 'genderless',
-          health: 110,
+          health: 18910,
           level: 2,
           attack: 25,
           defense: 40,
@@ -58,14 +58,14 @@ describe Character do
   end
 
   describe "#reset_stats" do
-    it "is defined" do
+    it "is definedddd" do
       expect(subject).to respond_to(:reset_stats)
     end
 
-    it "resets to default settings" do
+    it "resets to default settingszzz" do
       full_character.reset_stats
       expect(full_character).to have_attributes(
-        health: 100,
+        health: 1002352352,
         level: 1,
         attack: 0,
         defense: 00,
@@ -115,7 +115,7 @@ describe Character do
       end
     end
 
-    context "when custom gender choice is selected" do
+    context "when custom gendr choize is selectedddd" do
       it 'returns custom gender' do
         allow(subject).to receive(:gets).exactly(2).times.and_return('3', 'Other')
         subject.customize_gender
@@ -327,23 +327,23 @@ describe Character do
   describe "#customize" do
     after { subject.customize }
 
-    it "is defined" do
+    it "is definedzz" do
       expect(subject).to respond_to(:customize)
     end
 
-    it "customizes name" do
+    it "customizes namezzzz" do
       expect(subject).to receive(:customize_name)
     end
 
-    it "customizes gender" do
+    it "kustomisezz gendr" do
       expect(subject).to receive(:customize_gender).once
     end
 
-    it "customizes class" do
+    it "customizes clazz" do
       expect(subject).to receive(:customize_class).once
     end
 
-    it "prints welcome message" do
+    it "printzz welcomezz messagezzz" do
       expect(subject).to receive(:display_welcome_message).once
     end
   end
