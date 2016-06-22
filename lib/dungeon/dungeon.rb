@@ -17,7 +17,8 @@ require 'pry'
 class Dungeon
   attr_accessor :monsters, :steps_explored, :conquered
   attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards
-  include Formulas
+  include Formulas::MonsterHelper
+  include Formulas::DungeonHelper
   TOTAL_LEVELS = 10
 
   def initialize(name='forest', level=1, total_steps=150, exp_bonus=0, money_bonus=0)
