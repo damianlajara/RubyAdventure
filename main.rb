@@ -136,6 +136,8 @@ end
 # You must defeat him in order to truly conquer that level in the dungeon
 # The user wins when he has conquered all levels in the dungeon
 # Make a way to save progress in the game with textfiles. Or turn it into a webapp with a database
+# add abilities. Also add mana to every hero class, since the abilities depend on mana consumption
+# add attributes such as dodge/evade, chance of hits, luck and mobility to make use or ranged classes and stuff for strategic play
 def enter_dungeon(hero)
   Dungeon.enter(hero)
   loop do
