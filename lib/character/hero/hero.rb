@@ -9,7 +9,7 @@ class Hero < Character
   include Inventory
   include Equip
 
-  attr_accessor :max_hp, :current_dungeon
+  attr_accessor :max_hp, :current_dungeon, :treasures_found
   attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
 
   MAX_HINTS = 3
@@ -26,6 +26,7 @@ class Hero < Character
     @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] #TODO Remove this dummy data. For debugging purposes
     @hints = 0 # Hints found by rolling a double with the dice
     @keys = [] # keys attained when collecting all the hints
+    @treasures_found = 0
   end
 
   def find_base_class
@@ -40,7 +41,6 @@ class Hero < Character
     puts "Inside Hero.create"
     display_hash_option CLASSES, 'What class would you like to choose your hero from? '
     choice = gets.chomp
-
     base_class =
       case choice.to_i
       when 1 then :soldier
@@ -48,7 +48,7 @@ class Hero < Character
       when 3 then :ranged
       else default_option(:soldier)
       end
-      puts "Changing base_class to: #{base_class}"
+    puts "Changing base_class to: #{base_class}"
     main_class = choose_array_option CLASSES[base_class]
     puts "Changing main_class to: #{main_class}"
     new_hero = constantize(main_class).new

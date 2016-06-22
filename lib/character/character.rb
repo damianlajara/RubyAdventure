@@ -13,7 +13,7 @@ class Character
   def initialize(character_args = {})
     @name = 'Nameless One'
     @health = character_args[:health] || 100
-    @level = character_args[:level] || 1
+    @level = character_args[:level] || 1 #TODO remove. monsters dont need it
     @attack = character_args[:attack] || 10
     @defense = character_args[:defense] || 10
     @money = character_args[:money] || 0
@@ -24,7 +24,17 @@ class Character
   def alive?
     @health > 0
   end
+
   def dead?
     !alive?
   end
+
+  # hero.do_damage_to(monster)
+  # monster.do_damage_to(hero)
+  def do_damage_to(receiver)
+    damage = @attack/100 - receiver.defense
+    receiver.health -= damage
+    damage
+  end
+
 end

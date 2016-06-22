@@ -108,12 +108,12 @@ class Dungeon
     #TODO add a loop in here that gets user input on what ability he wants to attack with
     while hero.alive? && monster.alive?
       puts "The monster has attacked you!" unless hero.skip_battle_scenes
-      puts "You received #{monster.attack} damage" unless hero.skip_battle_scenes
-      hero.health = hero.attack - monster.attack
+      monster_damage = monster.do_damage_to(hero)
+      puts "You received #{monster_damage} damage" unless hero.skip_battle_scenes
       if hero.alive?
         puts "Your hp: #{hero.health}" unless hero.skip_battle_scenes
-        puts "Now you attacked! You have dealt #{hero.attack} Damage" unless hero.skip_battle_scenes
-        monster.health -= hero.attack
+        hero_damage = hero.do_damage_to(monster)
+        puts "Now you attacked! You have dealt #{hero_damage} Damage" unless hero.skip_battle_scenes
         if monster.alive?
           puts "Enemy hp: #{monster.health}" unless hero.skip_battle_scenes
         end
