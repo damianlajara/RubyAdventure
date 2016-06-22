@@ -17,6 +17,7 @@ require 'pry'
 class Dungeon
   attr_accessor :monsters, :steps_explored, :conquered
   attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards
+  include Formulas::MonsterHelper
   include Formulas::DungeonHelper
   TOTAL_LEVELS = 10
 

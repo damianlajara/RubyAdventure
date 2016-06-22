@@ -138,8 +138,8 @@ class Hero < Character
   end
 
   def buy(item)
-    if money >= item.price && add_to_inventory(item)
-      self.money -= item.price
+    if @money >= item.price && add_to_inventory(item)
+      @money -= item.price
       puts "Succesfully purchased #{item}!"
     else
       error 'hero.buy() -> Error! You do not have enough money!'
@@ -148,7 +148,7 @@ class Hero < Character
 
   def sell(item)
     if remove_from_inventory(item)
-      self.money += item.sell_value
+      @money += item.sell_value
       puts "Succesfully sold #{item}!"
     else
       error 'hero.sell() -> Error! Unable to sell item!'
@@ -233,11 +233,12 @@ class Hero < Character
     # TODO: Display the heros name and class as well here with a nice header like ~~~~
     puts "\nBase class: #{@base_class}"
     puts "specialization: #{@main_class}"
-    puts "Health: #{health}"
-    puts "Level: #{level}"
-    puts "Attack: #{attack}"
-    puts "Defense: #{defense}"
-    puts "Money: #{self.money}"
-    puts "Experience: #{experience}\n"
+    puts "Dungeon level: #{@dungeon_level}"
+    puts "Health: #{@health}"
+    puts "Level: #{@level}"
+    puts "Attack: #{@attack}"
+    puts "Defense: #{@defense}"
+    puts "Money: #{@money}"
+    puts "Experience: #{@experience}\n"
   end
 end # end class

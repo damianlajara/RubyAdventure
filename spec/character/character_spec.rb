@@ -327,23 +327,23 @@ describe Character do
   describe "#customize" do
     after { subject.customize }
 
-    it "is definedzz" do
+    it "is defined" do
       expect(subject).to respond_to(:customize)
     end
 
-    it "customizes namezzzz" do
+    it "customizes name" do
       expect(subject).to receive(:customize_name)
     end
 
-    it "kustomisezz gendr" do
+    it "Customise gender" do
       expect(subject).to receive(:customize_gender).once
     end
 
-    it "customizes clazz" do
+    it "customizes class" do
       expect(subject).to receive(:customize_class).once
     end
 
-    it "printzz welcomezz messagezzz" do
+    it "print welcome message" do
       expect(subject).to receive(:display_welcome_message).once
     end
   end
