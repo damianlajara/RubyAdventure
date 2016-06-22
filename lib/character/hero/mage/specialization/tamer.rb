@@ -1,7 +1,7 @@
 require_relative "../hero"
 # Low health, low defense, high damage. Main source of damage is magic damage.
-# A mage who deals with magic regarding the dead and the afterlife.
-class Necromancer < Hero
+# Supports team by summoning creatures that deal a lot of damage.
+class Tamer  < Hero
   def initialize
     super
   end
