@@ -4,8 +4,8 @@ module Formulas
     def init_specialization_stats(base_stats=Hash.new(0))
       stats = {}
       stats[:health] = base_stats[:max_hp].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:max_hp])
-      stats[:attack] = base_stats[:att].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:att])
-      stats[:defense] = base_stats[:def].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:def])
+      stats[:attack] = base_stats[:att].zero? ? level_up_att(1) : level_up_att(1, base_stats[:att])
+      stats[:defense] = base_stats[:def].zero? ? level_up_def(1) : level_up_def(1, base_stats[:def])
       stats
     end
 

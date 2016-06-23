@@ -1,6 +1,5 @@
 # TODO Every dungeon has a range of monsters that are only in that level
 require_relative "../helpers/formulas"
-require 'pry'
 
 # underworld
   # Zombie

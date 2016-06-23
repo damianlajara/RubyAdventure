@@ -19,7 +19,7 @@ include Formulas # DEBUG - using it for random_steps. Remove after refactoring
 $debug = true
 
 # Start the game! # TODO: Refactor into another class/module/file
-puts "Welcome! Let's create your custom character!"
+puts "\nWelcome! Let's create your custom character!"
 hero = Hero.create
 hero.customize
 
@@ -81,6 +81,7 @@ def change_level(hero)
 end
 
 def check_progress(hero)
+  print "\n"
   ProgressBar.create(title: "Hints", starting_at: hero.hints ,total: Hero::MAX_HINTS, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
   # TODO implement the treasure chest functionality
   ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found, total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
@@ -93,13 +94,6 @@ def check_stats(hero)
   total_gold = hero.current_dungeon.total_monster_rewards[:money]
   exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(0, :+)
   total_exp = hero.current_dungeon.total_monster_rewards[:experience]
-
-  if $debug
-    puts "number of monsters killed: #{hero.current_dungeon.monsters_killed.count}"
-    puts "number of total monsters: #{hero.current_dungeon.number_of_monsters}"
-    puts "gold found: #{gold_found}, total gold to be found: #{total_gold}"
-    puts "exp gained: #{exp_gained}, total exp to be gained: #{total_exp}"
-  end
 
   hero.display_stats
   puts "Weapon Bonus: + #{hero.equipped_weapons.map { |weapon| weapon.damage }.reduce(0, :+)} damage"
@@ -142,7 +136,6 @@ def enter_dungeon(hero)
   loop do
     print "\nEnter 'r' to roll dice, 'l' to change level, 's' to check stats, 'p' to check progress, or 'q' to leave the dungeon: "
     option = gets.chomp.downcase
-    puts "\n"
     case option
     when 'r' then roll_dice(hero, roll)
     when 'l' then change_level(hero)
@@ -168,4 +161,4 @@ loop do
 end
 
 #TODO save progress on exit
-puts "\nThanks for playing Ruby Adventure!!"
+puts "Thanks for playing Ruby Adventure!!"

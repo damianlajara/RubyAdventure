@@ -6,7 +6,8 @@ require_relative '../../items/key'
 require_relative '../../helpers/formulas'
 
 require "pry"
-#TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses
+# TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses,
+# http://www.giantitp.com/forums/showthread.php?204038-List-of-all-RPG-classes
 class Hero < Character
 
   class << self
@@ -19,6 +20,14 @@ class Hero < Character
       end
       hash
     end
+
+    def create
+      display_hash_option all_classes, 'What class would you like to choose your hero from? '
+      choice = gets.chomp.to_i
+      base_class = CLASSES.keys[choice.pred] ? CLASSES.keys[choice.pred] : :soldier # TODO: Mayeb use default_option(:soldier) ?
+      main_class = choose_array_option CLASSES[base_class]
+      new_hero = main_class.constantize.new
+    end
   end
 
   include Customize
@@ -30,7 +39,7 @@ class Hero < Character
   attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
 
   MAX_HINTS = 3
-  CLASSES = self.all_classes
+  CLASSES = all_classes
 
   def initialize(hero_args = {})
     super(hero_args) # make sure to initialize stuff abstracted into the character class
@@ -52,21 +61,6 @@ class Hero < Character
     else
       :soldier # default value # TODO Maybe raise an error?
     end
-  end
-
-  def self.create
-    puts 'Inside Hero.create'
-    display_hash_option CLASSES, 'What class would you like to choose your hero from? '
-    choice = gets.chomp.to_i
-    base_class = CLASSES.keys[choice.pred] ? CLASSES.keys[choice.pred] : :soldier #default_option(:soldier)
-    # TODO REMOVE THESE PUTS - only for debug
-    puts "Changing base_class to: #{base_class}"
-    main_class = choose_array_option CLASSES[base_class]
-    puts "Changing main_class to: #{main_class}"
-    new_hero = main_class.constantize.new
-    puts "Created new hero: #{new_hero}"
-    binding.pry
-    new_hero
   end
 
   def unlock_secret_hint
