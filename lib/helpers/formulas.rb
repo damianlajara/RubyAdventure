@@ -1,20 +1,28 @@
 module Formulas
   # Heroes Formulas
   module HeroHelper
-    def level_up_max_hp(level)
-        (((1200 * level) + (536 * level) / 2) / 1).ceil
+    def init_specialization_stats(base_stats=Hash.new(0))
+      stats = {}
+      stats[:health] = base_stats[:max_hp].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:max_hp])
+      stats[:attack] = base_stats[:att].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:att])
+      stats[:defense] = base_stats[:def].zero? ? level_up_max_hp(1) : level_up_max_hp(1, base_stats[:def])
+      stats
     end
 
-    def level_up_att(level)
-      (70 * (level**2)).ceil
+    def level_up_max_hp(level, base=1200)
+      (((base * level) + (536 * level) / 2) / 1).ceil
     end
 
-    def level_up_def(level)
-      (((260 * level) + (25 * level) / 15) / 14).ceil
+    def level_up_att(level, base=70)
+      (base * (level**2)).ceil
     end
 
-    def exp_needed(level)
-      ((250 * level) + (level**5) / 22).ceil
+    def level_up_def(level, base=260)
+      (((base * level) + (25 * level) / 15) / 14).ceil
+    end
+
+    def exp_needed(level, base=250)
+      ((base * level) + (level**5) / 22).ceil
     end
   end
 
@@ -62,7 +70,7 @@ module Formulas
       max = (level**1/4) + (Math.log2(level**6 + 1).to_i) + 1
       rand(min..max)
     end
-    
+
     def random_treasures(level)
       min = level/4
       max = (level / 2 - level).to_i.abs

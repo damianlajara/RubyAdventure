@@ -1,5 +1,4 @@
-# TODO Rename to something more semantic and meaningful instead of 'Mixin'
-module Mixin
+module Display
   def display_hash_option(hash, saying = '')
     print saying
     hash.each_with_index { |(key, _value), index| print "#{index.next}) #{key} " }
@@ -15,14 +14,6 @@ module Mixin
     choice = (capture = gets.chomp.match /^([#{1}-#{array_of_choices.count}])$/) ? capture[0] : "1" # Default to 1
     print "\n"
     result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
-  end
-
-  def classify(string)
-    string.split('_').collect(&:capitalize).join
-  end
-
-  def constantize(klass)
-    Object.const_get(klass)
   end
 
   def display_array_value_with_index(array)

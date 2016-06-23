@@ -1,6 +1,6 @@
 require 'pry'
 require_relative "../helpers/formatters"
-require_relative "../helpers/mixins"
+require_relative "../helpers/display"
 require_relative "../helpers/utility"
 require_relative "../items/armor"
 require_relative "../items/weapon"
@@ -9,7 +9,7 @@ require_relative "../items/potion"
 class Shop
   include Formatter
   include Utility
-  include Mixin
+  include Display
 
   # TODO Try to refactor this like the armor_names and weapon_names method
   POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir)

@@ -1,25 +1,24 @@
 #!/usr/bin/env ruby
 require 'ruby-progressbar'
+require "pry"
+
+# Monkey Patch Classes
+Dir[File.join(File.dirname(__FILE__), 'lib', 'core_extensions', '**', '*.rb')].each { |file| require file }
+String.include CoreExtensions::String# TODO: Maybe Change to refinements?
+
 # Require all files
 Dir[File.join(File.dirname(__FILE__), 'lib', 'character', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'lib', 'dungeon', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'lib', 'shop' ,'**', '*.rb')].each { |file| require file }
-require File.join(File.dirname(__FILE__), 'lib', 'helpers', 'formulas.rb')
+# require File.join(File.dirname(__FILE__), 'lib', 'helpers', 'formulas.rb')
 
-include Mixin # DEBUG - using it for choose_array_option. Remove after refactoring
+include Display # DEBUG - using it for choose_array_option. Remove after refactoring
+include Formulas # DEBUG - using it for random_steps. Remove after refactoring
+
 # Set the debug flag to make output more verbose
 $debug = true
 
-# hero = Hero.new(
-#   health: 1000000,
-#   level: 1,
-#   attack: 2500,
-#   defense: 4000,
-#   money: 210000, #TODO Change this to a very small number for release. It's only this high for debug reasons
-#   exp: 0
-# )
-
-include Formulas
+# Start the game! # TODO: Refactor into another class/module/file
 puts "Welcome! Let's create your custom character!"
 hero = Hero.create
 hero.customize

@@ -4,7 +4,7 @@ require_relative "../shop"
 class ArmorShop < Shop
   attr_reader :armor
   def initialize(class_type)
-    self.class.include Object.const_get("Attributes::Armor::#{class_type.capitalize}")
+    self.class.include "Attributes::Armor::#{class_type.capitalize}".constantize
     @armor = []
     @class_type = class_type
     @effect = BASE_EFFECT

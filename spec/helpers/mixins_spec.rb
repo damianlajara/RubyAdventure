@@ -1,6 +1,6 @@
-describe Mixin do
+describe Display do
   describe "#choose_array_option" do
-    subject { Class.new { include Mixin }.new }
+    subject { Class.new { include Display }.new }
     let(:invalid_options) { ["0", "5", "", "jhg", "100", "-5"] }
     let(:options) { %w(item1 item2 item3 item4) }
 

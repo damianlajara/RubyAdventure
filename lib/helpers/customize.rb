@@ -1,19 +1,12 @@
 module Customize
 
-  #FIXME Make this more dynamic by reading in the files from the heros directory
-  CLASSES = {
-    soldier: %w(Barbarian Knight Paladin Samurai),
-    mage: %w(Necromancer Wizard Illusionist Alchemist),
-    ranged: %w(Archer Gunner Tamer Elf)
-  }
-
   GENDER = { male: 'Male', female: 'Female', other: 'Other' }
 
   # Called when user dies. Only lose money, exp and all items
   def reset_stats_after_death
     puts "You wake up in a hospital...not knowing where you are. Life has given you a second chance. Go get em'!"
     #TODO Create validation in these methods which is why I called self insead of accessing the var directly
-    self.health = 100
+    self.health = @max_hp
     self.money = 0
     self.experience = 0
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
@@ -137,7 +130,7 @@ module Customize
   end
 
   def display_welcome_message
-    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{@main_class}!"
+    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{self.main_class}!"
   end
 
 end

@@ -40,7 +40,7 @@ class Dungeon
   end
 
   def all_monsters
-    @all_monsters.values.flatten.map { |monster| Object.const_get(monster) }
+    @all_monsters.values.flatten.map(&:constantize)
   end
 
   def self.enter(hero)
@@ -89,7 +89,7 @@ class Dungeon
   def create_monsters
     monster_count = random_monsters(@level)
     @number_of_monsters += monster_count
-    monsters = @all_monsters[@name].map { |monster| Object.const_get(monster) }
+    monsters = @all_monsters[@name].map(&:constantize)
     monster_count.times do
       random_monster = monsters.sample.new(
         health: m_health(@level),
@@ -136,7 +136,7 @@ class Dungeon
   end
 
   def create_boss(klass, level)
-    all_monsters.find { |monster| monster.to_s == classify(klass) }.new(
+    all_monsters.find { |monster| monster.to_s == klass.classify }.new(
       health: m_health(@level, boss: true),
       level: m_level(@level, boss: true),
       attack: m_attack(@level, boss: true),

@@ -5,21 +5,36 @@ require_relative '../../helpers/equip'
 require_relative '../../items/key'
 require_relative '../../helpers/formulas'
 
+require "pry"
+#TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses
 class Hero < Character
+
+  class << self
+    def all_classes
+      hash = {}
+      Dir[File.join(Dir.pwd, 'lib', 'character', 'hero', '*/')].each do |job_file|
+        job = File.basename(job_file).to_sym
+        classes = Dir[File.join(job_file, 'specialization', '*.rb')].map { |file_name| File.basename(file_name, '.rb').classify }
+        hash.store(job, classes.compact)
+      end
+      hash
+    end
+  end
+
   include Customize
   include Inventory
   include Equip
   include Formulas::HeroHelper
 
-  attr_accessor :max_hp, :current_dungeon, :treasures_found
+  attr_accessor :current_dungeon, :treasures_found
   attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
 
   MAX_HINTS = 3
+  CLASSES = self.all_classes
 
   def initialize(hero_args = {})
     super(hero_args) # make sure to initialize stuff abstracted into the character class
     @base_class = find_base_class # soldier, mage, ranged etc
-    @max_hp = 100
     @gender = 'genderless'
     @inventory = { current_potions: [], current_armor: [], current_weapons: [] }
     @skip_battle_scenes = false
@@ -42,19 +57,15 @@ class Hero < Character
   def self.create
     puts 'Inside Hero.create'
     display_hash_option CLASSES, 'What class would you like to choose your hero from? '
-    choice = gets.chomp
-    base_class =
-      case choice.to_i
-      when 1 then :soldier
-      when 2 then :mage
-      when 3 then :ranged
-      else default_option(:soldier)
-      end
+    choice = gets.chomp.to_i
+    base_class = CLASSES.keys[choice.pred] ? CLASSES.keys[choice.pred] : :soldier #default_option(:soldier)
+    # TODO REMOVE THESE PUTS - only for debug
     puts "Changing base_class to: #{base_class}"
     main_class = choose_array_option CLASSES[base_class]
     puts "Changing main_class to: #{main_class}"
-    new_hero = constantize(main_class).new
+    new_hero = main_class.constantize.new
     puts "Created new hero: #{new_hero}"
+    binding.pry
     new_hero
   end
 
@@ -125,7 +136,7 @@ class Hero < Character
     @max_hp = level_up_max_hp(level)
     @attack = level_up_att(level)
     @defense = level_up_def(level)
-    @health = @max_hp
+    @health = @max_hp # re-fill health to max_hp
   end
 
   def level_up(exp)
