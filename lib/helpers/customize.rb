@@ -105,7 +105,7 @@ module Customize
     when 2 then change_gender
     when 3 then toggle_battle_scenes
     else
-      error
+      invalid
       display_exiting_game_options
     end
   end

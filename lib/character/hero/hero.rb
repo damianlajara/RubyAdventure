@@ -6,7 +6,7 @@ require_relative '../../helpers/equip'
 require_relative '../../items/key'
 require_relative '../../helpers/formulas'
 
-require "pry"
+require 'pry'
 # TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses,
 # http://www.giantitp.com/forums/showthread.php?204038-List-of-all-RPG-classes
 class Hero < Character
@@ -33,7 +33,7 @@ class Hero < Character
     def create_new_hero
       puts "Are you sure you want to change your class?\n"
       puts "Your stats will reset and you will lose all of your current weapons, armor and dungeon accomplishments!\n"
-      case choose_array_option ["yes", "no"], true
+      case choose_array_option %w(yes no), true
       when 1
         new_hero = create
         puts "Congratulations! You're class has changed to #{new_hero.main_class}!"
@@ -42,7 +42,6 @@ class Hero < Character
         puts "Good! I thought the #{@main_class} was better anyway."
       end
     end
-
   end
 
   include Customize
@@ -72,11 +71,11 @@ class Hero < Character
   end
 
   def weapon_bonus
-    equipped_weapons.map { |weapon| weapon.damage }.reduce(0, :+)
+    equipped_weapons.map(&:damage).reduce(0, :+)
   end
 
   def armor_bonus
-    equipped_armor.map { |armor| armor.defense }.reduce(0, :+)
+    equipped_armor.map(&:defense).reduce(0, :+)
   end
 
   def attack
@@ -179,7 +178,7 @@ class Hero < Character
       @money -= item.price
       puts "Succesfully purchased #{item}!"
     else
-      error 'hero.buy() -> Error! You do not have enough money!'
+      error "Unable to buy #{item.name}. You do not have enough money!"
     end
   end
 
@@ -188,7 +187,7 @@ class Hero < Character
       @money += item.sell_value
       puts "Succesfully sold #{item}!"
     else
-      error 'hero.sell() -> Error! Unable to sell item!'
+      error "Unable to sell #{item.name}!"
     end
   end
 
@@ -196,22 +195,15 @@ class Hero < Character
   def use_potions
   end
 
-  # TODO: implement me
-  def sell_items
-  end
-
   def check_inventory
     puts 'Inside inventory! What would you like to do?'
     inventory_option = choose_array_option(inventory_options, true)
-    # puts "1) Check Status\n2) Equip Items\n3) Use Potions\n4) Sell Items"
-    # print "To select an option, enter the number that corresponds with the option you want: "
-    # inventory_option = gets.chomp.to_i
     case inventory_option
     when 1 then display_full_hero_status
     when 2 then equip_items
     when 3 then use_potions
     when 4 then sell_items
-    else error 'check_inventory() -> Error! Invalid Option!'
+    else invalid
     end
   end
 
@@ -264,11 +256,9 @@ class Hero < Character
     display_equipped_items
   end
 
-  # FIXME: used self here so it can call the method instead of the instance var directly,
-  # just in case we have any validation in those methods
   def display_stats
     # TODO: Display the heros name and class as well here with a nice header like ~~~~
-    puts "\nBase class: #{@base_class}"
+    puts "Base class: #{@base_class}"
     puts "specialization: #{@main_class}"
     puts "Dungeon level: #{@dungeon_level}"
     puts "Health: #{@health}"
@@ -281,8 +271,8 @@ class Hero < Character
 
   def change_dungeon_level
     if dungeons_conquered.any?
-      puts "What dungeon level would you like to visit?"
-      # TODO add validation for option
+      puts 'What dungeon level would you like to visit?'
+      # TODO: add validation for option
       option = choose_array_option dungeons_conquered.map { |dungeon| "Dungeon level #{dungeon.level}" }, true
       self.current_dungeon = dungeons_conquered[option.pred]
       Dungeon.enter(self)
@@ -290,5 +280,4 @@ class Hero < Character
       puts "You have not conqeuered any dungeons..yet! Go get em'!"
     end
   end
-
 end # end class

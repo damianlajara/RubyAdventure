@@ -29,7 +29,7 @@ module Attributes
       PRICE_OFFSET = 130
       SELL_VALUE_OFFSET = 50
     end
-    module Ranged
+    module Archer
       BASE_EFFECT = 14
       BASE_PRICE = 134
       BASE_SELL_VALUE = 86
@@ -56,7 +56,7 @@ module Attributes
       PRICE_OFFSET = 130
       SELL_VALUE_OFFSET = 50
     end
-    module Ranged
+    module Archer
       BASE_EFFECT = 14
       BASE_PRICE = 134
       BASE_SELL_VALUE = 86

@@ -1,25 +1,29 @@
 module Inventory
-  # TODO Make private, since only check_inventory should be using these methods
+  # TODO: Make private, since only check_inventory should be using these methods
   def display_inventory_weapons
-    "\n#{current_inventory_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)}"
+    current_inventory_weapons.empty? ? display_empty : "\n#{current_inventory_weapons.each_with_index(&Procs::DISPLAY_WEAPON_WITH_STATUS)}"
   end
 
   def display_inventory_armor
-    "\n#{current_inventory_armor.each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)}"
+    current_inventory_armor.empty? ? display_empty : "\n#{current_inventory_armor.each_with_index(&Procs::DISPLAY_ARMOR_WITH_STATUS)}"
   end
 
   def display_inventory_potions
-    "\n#{@inventory[:current_potions].each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)}"
+    current_inventory_potions.empty? ? display_empty : "\n#{current_inventory_potions.each_with_index(&Procs::DISPLAY_POTION_WITH_STATUS)}"
   end
 
   # Weapons that are not equipped
   def current_inventory_weapons
     @inventory[:current_weapons].select { |weapon| !weapon.equipped }
   end
-  
+
   # armor that is not equipped
   def current_inventory_armor
-    @inventory[:current_armor].select { |armor| !armor.equipped  }
+    @inventory[:current_armor].select { |armor| !armor.equipped }
+  end
+
+  def current_inventory_potions
+    @inventory[:current_potions]
   end
 
   def weapon_count
@@ -34,76 +38,64 @@ module Inventory
     @inventory[:current_potions].count
   end
 
-  # TODO add a way to add other items to inventory like treasure.
   def add_to_inventory(item)
-    success = true
-    if item.class == Weapon
-      # check weapon to see if hero class can use it
-      @inventory[:current_weapons].push(item)
-    elsif item.class == Armor
-      # check armor
-      @inventory[:current_armor].push(item)
-    elsif item.class == Potion
-      @inventory[:current_potions].push(item)
+    success = false
+    container = temp_inventory
+    key = item.class.name.downcase.to_sym
+    # Make sure it is a valid type from temp_inventory
+    if container.keys.include? key
+      # Do not add if item already exists in inventory
+      if container[key].select { |my_item| my_item.to_s == item.to_s }.none?
+        container[key].push(item)
+        puts "#{item.name} has been succesfully added to your inventory!"
+        success = true
+      else
+        error 'You already have this item!'
+      end
     else
-      error 'add_to_inventory() -> item has no valid type (class)'
-      success = false
+      error "Unable to identify item class of type #{key}"
     end
-    puts "Item has been succesfully added to your inventory!" if success
     success
   end
 
-  #TODO Use the StringConstants Module and replace these strings (DRY Principle)
   def remove_from_inventory(item)
     success = false
-    if item.class == Weapon
-      # Delete the weapon that matches the item passed in
-      @inventory[:current_weapons].delete_if { |weapon| weapon.to_s == item.to_s }
-      if !@inventory[:current_weapons].include? item.to_s
+    container = temp_inventory
+    key = item.class.name.downcase.to_sym
+    # Make sure it is a valid type from temp_inventory
+    if container.keys.include? key
+      container[key].delete_if { |item_to_delete| item_to_delete.to_s == item.to_s }
+      if !container[key].include? item.to_s
+        puts "#{item.name} was succesfully removed from the inventory"
         success = true
       else
-        error 'remove_from_inventory() -> Weapon could not be removed'
-        success = false
-      end
-    elsif item.class == Armor
-      # Delete the armor that matches the item passed in
-      @inventory[:current_armor].delete_if { |armor| armor.to_s == item.to_s }
-      if !@inventory[:current_armor].include? item.to_s
-        success = true
-      else
-        error 'remove_from_inventory() -> 8armor could not be removed'
-        success = false
-      end
-    elsif item.class == Potion
-    # Delete the potion that matches the item passed in
-      @inventory[:current_potions].delete_if { |potion| potion.to_s == item.to_s }
-      if !@inventory[:current_potions].include? item.to_s
-        success = true
-      else
-        error 'remove_from_inventory() -> potion could not be removed'
-        success = false
+        error 'Item could not be removed'
       end
     else
-      error 'remove_from_inventory() -> item has no valid type (class)'
-      success = false
+      error "Unable to identify item class of type #{key}"
     end
-    puts "Item was succesfully removed from the inventory" if success
     success
+  end
+
+  # TODO: add a way to add other items to inventory like treasure.
+  def temp_inventory
+    inventory_bag = Hash.new([])
+    inventory_bag.store(:weapon, @inventory[:current_weapons])
+    inventory_bag.store(:armor, @inventory[:current_armor])
+    inventory_bag.store(:potion, @inventory[:current_potions])
+    inventory_bag
   end
 
   def display_inventory_items
     print "\nWeapons In Inventory: "
-    @inventory[:current_weapons].empty? ? display_empty : display_inventory_weapons
-
-    print "Armor In Inventory:   "
-    @inventory[:current_armor].empty?   ? display_empty : display_inventory_armor
-
-    print "Potions In Inventory: "
-    @inventory[:current_potions].empty? ? display_empty : display_inventory_potions
+    display_inventory_weapons
+    print 'Armor In Inventory:   '
+    display_inventory_armor
+    print 'Potions In Inventory: '
+    display_inventory_potions
   end
 
   def inventory_options
-    ["Check Status", "Equip Items", "Use Potions", "Sell Items"]
+    ['Check Status', 'Equip Items', 'Use Potions', 'Sell Items']
   end
-
 end
