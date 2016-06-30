@@ -19,7 +19,7 @@ include Formulas # DEBUG - using it for random_steps. Remove after refactoring
 $debug = true
 
 # Start the game! # TODO: Refactor into another class/module/file
-puts "\nWelcome! Let's create your custom character!"
+puts "Welcome! Let's create your custom character!"
 hero = Hero.create
 hero.customize
 
@@ -65,18 +65,6 @@ def roll_dice(hero, roll)
     end
   else
     dungeon.battle(hero)
-  end
-end
-
-def change_level(hero)
-  if hero.dungeons_conquered.any?
-    puts "What dungeon level would you like to visit?"
-    # TODO add validation for option
-    option = choose_array_option hero.dungeons_conquered.map { |dungeon| "Dungeon level #{dungeon.level}" }, true
-    hero.current_dungeon = hero.dungeons_conquered[option.pred]
-    Dungeon.enter(hero)
-  else
-    puts "You have not conqeuered any dungeons..yet! Go get em'!"
   end
 end
 
@@ -138,7 +126,7 @@ def enter_dungeon(hero)
     option = gets.chomp.downcase
     case option
     when 'r' then roll_dice(hero, roll)
-    when 'l' then change_level(hero)
+    when 'l' then hero.change_dungeon_level
     when 'p' then check_progress(hero)
     when 's' then check_stats(hero)
     else break

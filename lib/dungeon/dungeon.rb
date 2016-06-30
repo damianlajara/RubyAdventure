@@ -44,7 +44,7 @@ class Dungeon
 
   def self.enter(hero)
     unless hero.current_dungeon
-      hero.current_dungeon = self.spawn_dungeon(hero.dungeon_level)
+      hero.current_dungeon = spawn_dungeon(hero.dungeon_level)
       puts "Welcome to Dungeon level #{hero.dungeon_level}! May luck be on your side."
     else
       puts "Welcome back to dungeon level #{hero.current_dungeon.level}. Go finish what you started!"

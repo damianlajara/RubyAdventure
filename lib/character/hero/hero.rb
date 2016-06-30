@@ -262,4 +262,17 @@ class Hero < Character
     puts "Money: #{@money}"
     puts "Experience: #{@experience}\n"
   end
+
+  def change_dungeon_level
+    if dungeons_conquered.any?
+      puts "What dungeon level would you like to visit?"
+      # TODO add validation for option
+      option = choose_array_option dungeons_conquered.map { |dungeon| "Dungeon level #{dungeon.level}" }, true
+      self.current_dungeon = dungeons_conquered[option.pred]
+      Dungeon.enter(self)
+    else
+      puts "You have not conqeuered any dungeons..yet! Go get em'!"
+    end
+  end
+
 end # end class
