@@ -12,12 +12,18 @@ module Equip
   end
 
   def equip(item)
-    if item.class == Weapon && !weapon_equipped?
+    if (item.class == Weapon && !weapon_equipped?) || (item.class == Armor && !armor_equipped?)
       item.equipped = true
       puts "Succesfully Equipped #{item}"
-    elsif item.class == Armor && !armor_equipped?
-      item.equipped = true
-      puts "Succesfully Equipped #{item}"
+    else
+      error 'You already have a weapon equipped'
+    end
+  end
+
+  def unequip(item)
+    if (item.class == Weapon && weapon_equipped?) || (item.class == Armor && armor_equipped?)
+      item.equipped = false
+      puts "Succesfully Un-equipped #{item.name}"
     else
       error 'You already have a weapon equipped'
     end
@@ -29,7 +35,7 @@ module Equip
 
   def equip_weapon
     unless items_exist? current_inventory_weapons
-      puts 'You have no weapons to equip!'
+      error 'You have no weapons to equip!'
       return
     end
     display_inventory_weapons
@@ -41,9 +47,23 @@ module Equip
     end
   end
 
+  def unequip_weapon
+    unless items_exist? equipped_weapons
+      error 'You have no weapons to un-equip!'
+      return
+    end
+    display_equipped_weapons
+    item = get_array_option_input(equipped_weapons)
+    if item
+      unequip(item)
+    else
+      error 'Unable to un-equip weapon!'
+    end
+  end
+
   def equip_armor
     unless items_exist? current_inventory_armor
-      puts 'You have no armor to equip!'
+      error 'You have no armor to equip!'
       return
     end
     display_inventory_armor
@@ -55,12 +75,30 @@ module Equip
     end
   end
 
+  def unequip_armor
+    unless items_exist? equipped_armor
+      error 'You have no armor to un-equip!'
+      return
+    end
+    display_equipped_armor
+    item = get_array_option_input(equipped_armor)
+    if item
+      unequip(item)
+    else
+      error 'Unable to un-equip armor!'
+    end
+  end
+
   def display_equipped_items
     puts "\nEquipped Items!"
     print 'Weapon: '
     weapon_equipped? ? display_equipped_weapons : display_empty
     print 'Armor: '
     armor_equipped? ? display_equipped_armor : display_empty
+  end
+
+  def equipped_items?
+    equipped_weapons.any? || equipped_armor.any?
   end
 
   def equipped_weapons

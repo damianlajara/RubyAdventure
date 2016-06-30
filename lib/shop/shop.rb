@@ -122,7 +122,7 @@ class Shop
   end
 
   def sell_items(hero)
-    if inventory_empty?
+    if hero.inventory_empty?
       error 'You have nothing to equip!'
       return
     end

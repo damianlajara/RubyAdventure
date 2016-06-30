@@ -213,12 +213,13 @@ class Hero < Character
     case inventory_option
     when 1 then display_full_hero_status
     when 2 then equip_items
-    when 3 then use_potions
+    when 3 then unequip_items
+    when 4 then use_potions
     else invalid
     end
   end
 
-  # TODO: Add a way to unequip items and equip more than one item
+  # TODO: Add a way to equip more than one item
   def equip_items
     unless equippable_items?
       error 'You have nothing to equip!'
@@ -228,6 +229,19 @@ class Hero < Character
     case choose_array_option %w(Weapons Armor), true
     when 1 then equip_weapon
     when 2 then equip_armor
+    else invalid
+    end
+  end
+
+  def unequip_items
+    unless equipped_items?
+      error 'You have nothing to un-equip!'
+      return
+    end
+    puts 'What would you like to un-equip?'
+    case choose_array_option %w(Weapons Armor), true
+    when 1 then unequip_weapon
+    when 2 then unequip_armor
     else invalid
     end
   end

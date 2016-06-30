@@ -91,15 +91,15 @@ module Inventory
   end
 
   def display_inventory_items
-    print "\nWeapons In Inventory: "
+    puts "\nWeapons In Inventory: "
     display_inventory_weapons
-    print 'Armor In Inventory:   '
+    puts "\nArmor In Inventory:   "
     display_inventory_armor
-    print 'Potions In Inventory: '
+    puts "\nPotions In Inventory: "
     display_inventory_potions
   end
 
   def inventory_options
-    ['Check Status', 'Equip Items', 'Use Potions']
+    ['Check Status', 'Equip Items', 'Un-equip Items', 'Use Potions']
   end
 end
