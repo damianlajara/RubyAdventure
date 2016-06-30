@@ -68,22 +68,6 @@ module Customize
     @skip_battle_scenes ? "disable" : "enable"
   end
 
-  def customize_class
-    puts "About to call Hero.create"
-    Hero.create
-  end
-
-  def create_new_hero
-    puts "Are you sure you want to change your class?\n"
-    puts "Your stats will reset and you will lose all of your current weapons, armor and dungeon accomplishments!\n"
-    case choose_array_option yes_or_no_option, true
-    when 1
-      customize_class
-    else
-      puts "Good! I thought the #{@main_class} was better anyway."
-    end
-  end
-
   def change_gender
     puts 'Are you sure you want to change your gender?'
     case choose_array_option yes_or_no_option, true
@@ -111,16 +95,15 @@ module Customize
   end
 
   def available_game_options
-    ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"]
+    ["Toggle Battle Scenes", "Change Gender", "Change Name"]
   end
 
   def game_options
     display_game_options_header
     case choose_array_option available_game_options, true
     when 1 then toggle_battle_scenes
-    when 2 then create_new_hero
-    when 3 then change_gender
-    when 4 then change_name
+    when 2 then change_gender
+    when 3 then change_name
     else display_exiting_game_options
     end
   end

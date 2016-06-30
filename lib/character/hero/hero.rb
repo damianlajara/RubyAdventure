@@ -1,6 +1,7 @@
 require_relative '../character'
 require_relative '../../helpers/customize'
 require_relative '../../helpers/inventory'
+require_relative '../../helpers/display'
 require_relative '../../helpers/equip'
 require_relative '../../items/key'
 require_relative '../../helpers/formulas'
@@ -9,8 +10,8 @@ require "pry"
 # TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses,
 # http://www.giantitp.com/forums/showthread.php?204038-List-of-all-RPG-classes
 class Hero < Character
-
   class << self
+    include Display
     def all_classes
       hash = {}
       Dir[File.join(Dir.pwd, 'lib', 'character', 'hero', '*/')].each do |job_file|
@@ -28,10 +29,25 @@ class Hero < Character
       main_class = choose_array_option CLASSES[base_class]
       new_hero = main_class.constantize.new
     end
+
+    def create_new_hero
+      puts "Are you sure you want to change your class?\n"
+      puts "Your stats will reset and you will lose all of your current weapons, armor and dungeon accomplishments!\n"
+      case choose_array_option ["yes", "no"], true
+      when 1
+        new_hero = create
+        puts "Congratulations! You're class has changed to #{new_hero.main_class}!"
+        new_hero
+      else
+        puts "Good! I thought the #{@main_class} was better anyway."
+      end
+    end
+
   end
 
   include Customize
   include Inventory
+  # include Display
   include Equip
   include Formulas::HeroHelper
 
