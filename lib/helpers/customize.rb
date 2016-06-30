@@ -91,20 +91,22 @@ module Customize
   end
 
   def display_game_options_header(spacer_amount=4)
-    puts "\n#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
+    puts "#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
   end
 
   def available_game_options
-    ["Toggle Battle Scenes", "Change Gender", "Change Name"]
+    ["Change Name", "Change Gender", "Toggle Battle Scenes"]
   end
 
   def game_options
     display_game_options_header
     case choose_array_option available_game_options, true
-    when 1 then toggle_battle_scenes
+    when 1 then change_name
     when 2 then change_gender
-    when 3 then change_name
-    else display_exiting_game_options
+    when 3 then toggle_battle_scenes
+    else
+      error
+      display_exiting_game_options
     end
   end
 

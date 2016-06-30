@@ -11,7 +11,7 @@ module Display
     raise "Array of choices is empty!" unless array_of_choices.any?
     display_array_value_with_index(array_of_choices)
     print "To choose a specification, enter the number that corresponds with the option you want: "
-    choice = (capture = gets.chomp.match /^([#{1}-#{array_of_choices.count}])$/) ? capture[0] : "1" # Default to 1
+    choice = (capture = gets.chomp.match /^([#{1}-#{array_of_choices.count}])$/) ? capture[0] : "N/A" # Default to 1
     print "\n"
     result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
   end
