@@ -48,15 +48,9 @@ class Character
   # hero.do_damage_to(monster)
   # monster.do_damage_to(hero)
   def do_damage_to(receiver)
-    damage = @attack%100 - receiver.defense
+    damage = (attack/100.0 * receiver.defense + attack%100.abs * level).ceil
     receiver.health -= damage
     damage
   end
-
-  # TODO: Experiment with the following flavor of formulas, for the do_damage_to method
-  # 173 percent of 488
-  # ((488/100) * 173) - 488 - 173
-  # 173/100 - 488
-  # monster.attack/100 - hero.defense
 
 end

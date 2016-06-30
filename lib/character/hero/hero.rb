@@ -55,6 +55,22 @@ class Hero < Character
     @treasures_found = 0
   end
 
+  def weapon_bonus
+    equipped_weapons.map { |weapon| weapon.damage }.reduce(0, :+)
+  end
+
+  def armor_bonus
+    equipped_armor.map { |armor| armor.defense }.reduce(0, :+)
+  end
+
+  def attack
+    @attack + weapon_bonus
+  end
+
+  def defense
+    @defense + armor_bonus
+  end
+
   def find_base_class
     if CLASSES.values.flatten.include? @main_class
       CLASSES.map { |klass, types| klass if types.include? @main_class }.compact.first

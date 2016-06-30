@@ -105,6 +105,8 @@ class Dungeon
   end
 
   def commence_attack(hero, monster)
+    puts "Hero - lvl: #{hero.level},  hp: #{hero.health},  att: #{hero.attack},  def: #{hero.defense}" if $debug
+    puts "Mons - lvl: #{monster.level},  hp: #{monster.health},  att: #{monster.attack},  def: #{monster.defense}" if $debug
     #TODO add a loop in here that gets user input on what ability he wants to attack with
     while hero.alive? && monster.alive?
       puts "The monster has attacked you!" unless hero.skip_battle_scenes
@@ -112,6 +114,8 @@ class Dungeon
       puts "You received #{monster_damage} damage" unless hero.skip_battle_scenes
       if hero.alive?
         puts "Your hp: #{hero.health}" unless hero.skip_battle_scenes
+        # TODO: Add a way for the hero to check their inventory here in order to change weapons, take potions, etc
+        # Also make it where the user can choose what ability to use (Depending on the class they chose)
         hero_damage = hero.do_damage_to(monster)
         puts "Now you attacked! You have dealt #{hero_damage} Damage" unless hero.skip_battle_scenes
         if monster.alive?
