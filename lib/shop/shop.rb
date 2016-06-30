@@ -122,6 +122,10 @@ class Shop
   end
 
   def sell_items(hero)
+    if inventory_empty?
+      error 'You have nothing to equip!'
+      return
+    end
     puts 'What type of item are you looking to sell?'
     case choose_array_option(shop_item_options, true)
     when 1 then display_weapon_choice(hero, 'sell')

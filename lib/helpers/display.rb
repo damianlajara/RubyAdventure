@@ -17,6 +17,7 @@ module Display
     print 'To choose a specification, enter the number that corresponds with the option you want: '
     choice = (capture = gets.chomp.match /^([#{1}-#{array_of_choices.count}])$/) ? capture[0] : 'N/A'
     print "\n"
+    # TODO: Add validation here. What happens if choice is 'N/A' ? What will get returned?
     result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
   end
 

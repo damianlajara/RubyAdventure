@@ -38,6 +38,10 @@ module Inventory
     @inventory[:current_potions].count
   end
 
+  def inventory_empty?
+    current_inventory_weapons.empty? && current_inventory_armor.empty? && current_inventory_potions.empty?
+  end
+
   def add_to_inventory(item)
     success = false
     container = temp_inventory
@@ -96,6 +100,6 @@ module Inventory
   end
 
   def inventory_options
-    ['Check Status', 'Equip Items', 'Use Potions', 'Sell Items']
+    ['Check Status', 'Equip Items', 'Use Potions']
   end
 end

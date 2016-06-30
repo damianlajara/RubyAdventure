@@ -191,8 +191,20 @@ class Hero < Character
     end
   end
 
-  # TODO: implement me
   def use_potions
+    if current_inventory_potions.any?
+      puts "Which potion would you like to consume?"
+      index = choose_array_option(current_inventory_potions, true).pred
+      potion = current_inventory_potions.delete_at(index)
+      if potion
+        self.health += potion.health
+        puts "You are feeling refreshed. +#{potion.health} hp"
+      else
+        error 'Unable to consume potion.'
+      end
+    else
+      error 'You do not have any potions available!'
+    end
   end
 
   def check_inventory
@@ -202,51 +214,21 @@ class Hero < Character
     when 1 then display_full_hero_status
     when 2 then equip_items
     when 3 then use_potions
-    when 4 then sell_items
     else invalid
     end
   end
 
   # TODO: Add a way to unequip items and equip more than one item
   def equip_items
-    if current_inventory_weapons.empty? && current_inventory_armor.empty?
-      puts 'You have nothing to equip!'
+    unless equippable_items?
+      error 'You have nothing to equip!'
       return
     end
-    print "What would you like to equip?\n1) Weapons\n2) Armor "
-    equip_choice = gets.chomp.to_i
-    case equip_choice
-    when 1
-      unless items_exist? current_inventory_weapons
-        puts 'You have no weapons to equip!'
-        return
-      end
-      display_inventory_weapons
-      # TODO: Refactor this into choose_array_option
-      print 'To select a weapon to equip, enter the number that corresponds with the weapon you want: '
-      weapon_option = gets.chomp.to_i
-      item = current_inventory_weapons.values_at(weapon_option.pred).first || nil
-      if validate_num(weapon_option, weapon_count) && !item.nil?
-        equip(item)
-      else
-        error 'equip_items() -> Error! Unable to equip weapon!'
-      end
-    when 2
-      unless items_exist? current_inventory_armor
-        puts 'You have no armor to equip!'
-        return
-      end
-      display_inventory_armor
-      # TODO: Refactor this into choose_array_option
-      print 'To select an armor to equip, enter the number that corresponds with the armor you want: '
-      armor_option = gets.chomp.to_i
-      item = current_inventory_armor.values_at(armor_option.pred).first || nil
-      if validate_num(armor_option, armor_count) && !item.nil?
-        equip(item)
-      else
-        error 'equip_items() -> Error! Unable to equip armor!'
-      end
-    else error 'equip_items() -> Error! Invalid Option!' # TODO: change to __method__ in each error
+    puts 'What would you like to equip?'
+    case choose_array_option %w(Weapons Armor), true
+    when 1 then equip_weapon
+    when 2 then equip_armor
+    else invalid
     end
   end
 
