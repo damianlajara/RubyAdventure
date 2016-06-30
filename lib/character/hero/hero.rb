@@ -46,7 +46,6 @@ class Hero < Character
 
   include Customize
   include Inventory
-  # include Display
   include Equip
   include Formulas::HeroHelper
 
