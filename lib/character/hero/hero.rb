@@ -63,10 +63,10 @@ class Hero < Character
     @skip_battle_scenes = false
     @dungeon_level = 1
     @current_dungeon = nil
-    @dungeons_conquered = [Dungeon.new('mountain', 3), Dungeon.new('underworld', 1), Dungeon.new('forest', 2)] # TODO: Remove this dummy data. For debugging purposes
+    @dungeons_conquered = []
     @hints = 0 # Hints found by rolling a double with the dice
-    @keys = [] # keys attained when collecting all the hints
-    @treasures_found = 0
+    @keys = [] # keys obtained when collecting all the hints
+    @treasures_found = []
   end
 
   def weapon_bonus
@@ -102,6 +102,36 @@ class Hero < Character
       key = obtain_key(Key.unlock_with_hints)
       puts "Congratulations! You found all #{MAX_HINTS} hints, and have now obtained a #{key.name} key"
     end
+  end
+
+  def unlock_treasure_chests
+    5.times { @keys.push Key.new } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
+    if @keys.any?
+      display_key_status
+      current_dungeon.treasures
+      sorted_keys_by_type = @keys.sort_by(&:name).slice_when { |key1, key2| key1.name != key2.name }
+      sorted_keys_by_type.each do |array_of_types|
+        amount_of_openable_chests = array_of_types.count/3
+        next if amount_of_openable_chests.zero?
+        puts "You can open #{amount_of_openable_chests} #{array_of_types.first.type} treasure chests with your current set of keys."
+        # TODO: Make the user choose which treasure chest he wants to open.
+        # Once opened, mark the treasure as found, push to users treasured_found array,
+        # and delete the treasure from available treasures in the dungeon
+        # Also add to the inventory, w.e reward the treasure chest has
+        # Also, make sure to ammend this commit once finished implementing it
+      end
+    else
+      error 'You do not have any keys! Go explore the Dungeon a little more and come back.'
+    end
+  end
+
+  def get_keys_of_type(type)
+    @keys.select { |key| key.type == type }
+  end
+
+  def display_key_status
+    puts "You are currently in possession of #{@keys.count} keys."
+    puts "#{get_keys_of_type(:bronze).count} Bronze keys\n#{get_keys_of_type(:silver).count} Silver keys\n#{get_keys_of_type(:gold).count} Gold keys"
   end
 
   def add_hint
@@ -192,7 +222,7 @@ class Hero < Character
 
   def use_potions
     if current_inventory_potions.any?
-      puts "Which potion would you like to consume?"
+      puts 'Which potion would you like to consume?'
       index = choose_array_option(current_inventory_potions, true).pred
       potion = current_inventory_potions.delete_at(index)
       if potion

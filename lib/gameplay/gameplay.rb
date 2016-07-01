@@ -30,7 +30,7 @@ class GamePlay
   def play_game
     display_welcome_message
     loop do
-      print "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, 'c' to change hero(new class), or 'q' to exit game: "
+      print "\nEnter 'd' to enter dungeon, 's' to shop, 'i' for inventory, 'o' for options menu, 'c' to create new hero, or 'q' to exit game: "
       option = gets.chomp.downcase
       puts "\n"
       case option
@@ -111,8 +111,7 @@ class GamePlay
   def check_progress
     print "\n"
     ProgressBar.create(title: "Hints", starting_at: hero.hints ,total: Hero::MAX_HINTS, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
-    # TODO implement the treasure chest functionality
-    ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found, total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
+    ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found.map(&:count), total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
     ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)").stop
     puts "Keys Obtained: #{hero.keys.count}"
   end
@@ -141,39 +140,17 @@ class GamePlay
     hero
   end
 
-  # Dungeon ideas:
-  # roll dice. If even, walk a rand number of steps depending on the num u rolled
-  # if odd, you battle a random monster from that level
-  # If you roll a double you will get a hint. if you collect all 3 hints, you will
-  # get a key (bronze, silver, or gold - decided at random as well as by the rarity)
-  # You can then use the key to unlock various treasures laying around in the dungeon
-  # The treasures rareness will be decided by a formula
-  # There can be multiple treasure chests in a dungeon
-  # Every dungeon also has a specified number of steps. Once you clear all the steps you conquer the dungeon.
-  # And can move on to the next level.
-  # TODO make a way where the user can choose what level to go to. For instace, if he conquered dungeon levels 1-4,
-  # He should be able to choose what level he wants to go to from those four.
-  # You can take advantage of this by battling weak enemies in order to level up.
-  # While in the dungeon the user can choose to roll, check level, check progress((user_steps/dungeon_total_steps)*100),
-  # check how many monsters defeated, treasures collected and hints left until the next key
-  # He can also choose to exit and go back to the main menu where you can resupply and visit the shop
-  # Every level has a boss that you can find at the entrance to the next dungeon level. (a.k.a completed all the steps)
-  # You must defeat him in order to truly conquer that level in the dungeon
-  # The user wins when he has conquered all levels in the dungeon
-  # Make a way to save progress in the game with textfiles. Or turn it into a webapp with a database
-  # add abilities. Also add mana to every hero class, since the abilities depend on mana consumption
-  # add attributes such as dodge/evade, chance of hits, luck and mobility to make use or ranged classes and stuff for strategic play
-
   def enter_dungeon
     Dungeon.enter(hero)
     loop do
-      print "\nEnter 'r' to roll dice, 'l' to change level, 's' to check stats, 'p' to check progress, or 'q' to leave the dungeon: "
+      print "\nEnter 'r' to roll dice, 'l' to change level, 's' to check stats, 'p' to check progress, 'u' to unlock treasures, or 'q' to leave the dungeon: "
       option = gets.chomp.downcase
       case option
       when 'r' then roll_dice(roll)
       when 'l' then hero.change_dungeon_level
       when 'p' then check_progress
       when 's' then check_stats
+      when 'u' then hero.unlock_treasure_chests
       else break
       end
     end

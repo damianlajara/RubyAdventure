@@ -1,23 +1,13 @@
-# TODO Every dungeon has a range of monsters that are only in that level
 require_relative "../helpers/formulas"
-
-# underworld
-  # Zombie
-  # Vampire
-  # Ghost
-# mountains
-  # Dragon
-  # Golem
-# forest
-  # Goblin
-  # Ogre
-  # Wolf
+require_relative "../items/treasure"
 
 class Dungeon
   attr_accessor :monsters, :steps_explored, :conquered
-  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards
+  attr_reader :total_treasure_chests, :total_steps, :level, :number_of_monsters, :monsters_killed, :total_monster_rewards, :treasures
+
   include Formulas::MonsterHelper
   include Formulas::DungeonHelper
+
   TOTAL_LEVELS = 10
 
   def initialize(name='forest', level=1, total_steps=150, exp_bonus=0, money_bonus=0)
@@ -33,6 +23,7 @@ class Dungeon
     @total_monster_rewards = { money: 0, experience: 0 } # Used for the progress bars in the dungeon menu. Keeps track of rewards of monsters before they are killed by the hero
     @monsters_killed = []
     @total_treasure_chests = random_treasures(level)
+    @treasures = create_treasures
     @number_of_monsters = 0
     create_monsters
     @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
@@ -83,6 +74,10 @@ class Dungeon
   def call_reinforcements
     puts "Oh No! Those bastards called for reinforcements!"
     create_monsters
+  end
+
+  def create_treasures
+    @total_treasure_chests.times.map { Treasure.new }
   end
 
   def create_monsters
