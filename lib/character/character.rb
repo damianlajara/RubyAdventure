@@ -20,7 +20,7 @@ class Character
     @max_hp = @health # max_hp and health should be the same when initialized
     @attack = character_args[:attack] || 10
     @defense = character_args[:defense] || 10
-    @money = 100000#character_args[:money] || 0
+    @money = character_args[:money] || 0
     @experience = character_args[:experience] || 0
     @description = character_args[:description] || ''
     @main_class = self.to_s.match(/^#<(\w+):.*/).captures.first

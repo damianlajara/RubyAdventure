@@ -1,5 +1,3 @@
-#item2 = Weapon.new("Item 3 (Weapon)", { damage: 150 }, price: 150, sell_value: 100)
-#p item2
 require_relative "item"
 class Weapon < Item
   attr_reader :damage

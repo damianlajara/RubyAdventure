@@ -104,34 +104,108 @@ class Hero < Character
     end
   end
 
+  # def unlock_treasure_chests
+  #   5.times { @keys.push Key.new } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
+  #   if @keys.any?
+  #     display_key_status
+  #     # current_dungeon.treasures
+  #     sorted_keys_by_type = @keys.sort_by(&:name).slice_when { |key1, key2| key1.name != key2.name }
+  #     binding.pry
+  #     sorted_keys_by_type.each do |array_of_types|
+  #       # amount_of_openable_chests = array_of_types.count/3
+  #       # next if amount_of_openable_chests.zero?
+  #       if treasures_found.count == current_dungeon.total_treasure_chests
+  #         puts "You have already found all the treasures in this dungeon."
+  #       elsif current_dungeon.treasures.count.zero?
+  #         puts "There are no treasures in this dungeon."
+  #       else
+  #         puts "\nYou can open #{amount_of_openable_chests} #{array_of_types.first.type} treasure chest(s) with your current set of keys."
+  #         puts "\nDo you want to proceed with opening the treasure chests?"
+  #         case choose_array_option yes_or_no_option, true
+  #         when 1 then open_treasures(array_of_types)
+  #         when 2 then puts "How are you going to pass on the treasures?! Oh well, Come back soon."
+  #         else invalid
+  #         end
+  #       end
+  #
+  #       # TODO: Make the user choose whsich treasure chest he wants to open.
+  #       # Once opened, mark the treasure as found, push to users treasured_found array,
+  #       # and delete the treasure from available treasures in the dungeon
+  #       # Also add to the inventory, w.e reward the treasure chest has
+  #       # Also, make sure to ammend this commit once finished implementing it
+  #     end
+  #   else
+  #     error 'You do not have any keys! Go explore the Dungeon a little more and come back.'
+  #   end
+  # end
+
   def unlock_treasure_chests
-    5.times { @keys.push Key.new } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
-    if @keys.any?
-      display_key_status
-      current_dungeon.treasures
-      sorted_keys_by_type = @keys.sort_by(&:name).slice_when { |key1, key2| key1.name != key2.name }
-      sorted_keys_by_type.each do |array_of_types|
-        amount_of_openable_chests = array_of_types.count/3
-        next if amount_of_openable_chests.zero?
-        puts "You can open #{amount_of_openable_chests} #{array_of_types.first.type} treasure chests with your current set of keys."
-        # TODO: Make the user choose which treasure chest he wants to open.
-        # Once opened, mark the treasure as found, push to users treasured_found array,
-        # and delete the treasure from available treasures in the dungeon
-        # Also add to the inventory, w.e reward the treasure chest has
-        # Also, make sure to ammend this commit once finished implementing it
-      end
+    # 9.times { @keys.push Key.unlock_with_hints } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
+    if treasures_found.count == current_dungeon.total_treasure_chests
+      puts "\nYou have already found all the treasures in this dungeon."
+    elsif current_dungeon.treasures.count.zero?
+      puts "\nThere are no treasures in this dungeon."
     else
-      error 'You do not have any keys! Go explore the Dungeon a little more and come back.'
+      if @keys.any?
+        puts "\nThere are a total of #{current_dungeon.treasures.count} treasures to be found in this dungeon\n"
+        puts current_dungeon.treasures.map(&:type).inspect if $debug
+        display_key_status
+        sorted_keys_by_type = @keys.sort_by(&:name).slice_when { |key1, key2| key1.name != key2.name }
+        display_amount_of_openable_chests_by_type
+        sorted_keys_by_type.each do |array_of_types|
+          type = array_of_types.first.type
+          puts "\nDo you want to proceed with opening all #{type} treasure chests?"
+          case choose_array_option yes_or_no_option, true
+          when 1 then open_treasures(array_of_types)
+          when 2 then puts "How are you going to pass on the #{type} treasures?! Oh well, Come back soon."
+          else invalid
+          end
+        end
+      else
+        error 'You do not have any keys! Go explore the Dungeon a little more and come back.'
+      end
     end
+  end
+
+  # Takes in an array of same keys
+  def open_treasures(keys)
+    key_type = keys.first.type
+    treasures = current_dungeon.treasures.select { |treasure| treasure.type == key_type }.first(keys.count)
+    while treasure = treasures.shift
+      used_key = @keys.delete(keys.shift)
+      if used_key
+        found_treasure = current_dungeon.treasures.delete(treasure)
+        if found_treasure
+          found_treasure.open
+          @treasures_found << found_treasure
+          puts "Succesfully opened a #{treasure.type} treasure chest!"
+        else
+          error 'Unable to open treasure chest.'
+        end
+      else
+        error 'Unable to unlock treasure chest with key.'
+      end
+    end
+  end
+
+  def display_amount_of_openable_chests_by_type
+    print "\n"
+    array_of_types = current_dungeon.treasures.map(&:type).sort.slice_when { |key1, key2| key1 != key2 }
+    whitelisted_types = array_of_types.select { |array| @keys.select { |key| key.type == array.first }.count >= array.count }
+    amount_of_openable_chests = whitelisted_types.inject(0) { |sum, type_array| sum + type_array.count }
+    puts "You can currently open #{ amount_of_openable_chests == current_dungeon.treasures.count ? amount_of_openable_chests : "all" } treasure chests with your keys."
+    array_of_types.each do |type_array|
+      puts "#{ type_array.count } #{type_array.first} treasure chest"
+    end
+  end
+
+  def display_key_status
+    puts "\nYou are currently in possession of #{@keys.count} keys."
+    puts "#{get_keys_of_type(:bronze).count} Bronze keys\n#{get_keys_of_type(:silver).count} Silver keys\n#{get_keys_of_type(:gold).count} Gold keys\n"
   end
 
   def get_keys_of_type(type)
     @keys.select { |key| key.type == type }
-  end
-
-  def display_key_status
-    puts "You are currently in possession of #{@keys.count} keys."
-    puts "#{get_keys_of_type(:bronze).count} Bronze keys\n#{get_keys_of_type(:silver).count} Silver keys\n#{get_keys_of_type(:gold).count} Gold keys"
   end
 
   def add_hint

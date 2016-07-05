@@ -7,6 +7,18 @@ require_relative '../items/weapon'
 require_relative '../items/potion'
 
 class Shop
+  def self.weapons(hero)
+    WeaponShop.new(hero.base_class.downcase).weapons
+  end
+
+  def self.armor(hero)
+    ArmorShop.new(hero.base_class.downcase).armor
+  end
+
+  def self.potions
+    PotionShop.new.potions
+  end
+
   include Formatter
   include Utility
   include Display
