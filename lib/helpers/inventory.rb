@@ -81,7 +81,6 @@ module Inventory
     success
   end
 
-  # TODO: add a way to add other items to inventory like treasure.
   def temp_inventory
     inventory_bag = Hash.new([])
     inventory_bag.store(:weapon, @inventory[:current_weapons])

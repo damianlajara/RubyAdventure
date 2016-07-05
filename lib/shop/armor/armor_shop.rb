@@ -7,7 +7,6 @@ class ArmorShop < Shop
     @armor = armor
   end
 
-  # TODO use the proc from mods.rb with DISPLAY_WITH_STATUS for this
   def display_formatted_armor
     armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf("%-23s", armor)} #{sprintf("%-10d", armor.defense)} #{sprintf("%-10d", armor.price)} #{sprintf("%-5d", armor.sell_value)} #{armor.description}" }
   end
