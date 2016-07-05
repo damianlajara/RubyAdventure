@@ -98,4 +98,11 @@ module AllItems
       item[:klass].new(name, item[:specialty] => effect, price: price, sell_value: sell_value)
     end
   end
+
+  def all_items(class_type)
+    [ get_items_of_type(:weapon, class_type), get_items_of_type(:armor, class_type), get_items_of_type(:potion, class_type) ]
+  end
+
+  module_function :all_items, :get_items_of_type
+
 end

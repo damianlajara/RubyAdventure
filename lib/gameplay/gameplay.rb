@@ -111,7 +111,7 @@ class GamePlay
   def check_progress
     print "\n"
     ProgressBar.create(title: "Hints", starting_at: hero.hints ,total: Hero::MAX_HINTS, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
-    ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found.map(&:count), total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
+    ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found.count, total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
     ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)").stop
     puts "Keys Obtained: #{hero.keys.count}"
   end
@@ -122,9 +122,10 @@ class GamePlay
     exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(0, :+)
     total_exp = hero.current_dungeon.total_monster_rewards[:experience]
 
+    print "\n"
     hero.display_stats
-    puts "Weapon Bonus: + #{hero.weapon_bonus} damage"
-    puts "Armor bonus: + #{hero.armor_bonus} defense"
+    puts "\nWeapon Bonus: + #{hero.weapon_bonus} damage"
+    puts "Armor bonus: + #{hero.armor_bonus} defense\n\n"
     ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)").stop
     ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)").stop
     ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)").stop

@@ -9,9 +9,11 @@ require_relative '../../helpers/formulas'
 require 'pry'
 # TODO: Add More Hero Classes -> http://tvtropes.org/pmwiki/pmwiki.php/Main/FantasyCharacterClasses,
 # http://www.giantitp.com/forums/showthread.php?204038-List-of-all-RPG-classes
+
 class Hero < Character
   class << self
     include Display
+    # Dynamically read the dir structure and get a list of all the hero jobs and classes
     def all_classes
       hash = {}
       Dir[File.join(Dir.pwd, 'lib', 'character', 'hero', '*/')].each do |job_file|
@@ -22,6 +24,7 @@ class Hero < Character
       hash
     end
 
+    # Create and instantiate a new hero. Using a kind of Factory pattern here since it seems to make a lot of sense
     def create
       display_hash_option all_classes, 'What class would you like to choose your hero from? '
       choice = gets.chomp.to_i
@@ -30,6 +33,7 @@ class Hero < Character
       new_hero = main_class.constantize.new
     end
 
+    # Create the hero for the first time, or change the class and create a new one if called subsequently
     def create_new_hero
       puts "Are you sure you want to change your class?\n"
       puts "Your stats will reset and you will lose all of your current weapons, armor and dungeon accomplishments!\n"
@@ -69,22 +73,27 @@ class Hero < Character
     @treasures_found = []
   end
 
+  # Calculate the added attack from equipping weapons
   def weapon_bonus
     equipped_weapons.map(&:damage).reduce(0, :+)
   end
 
+  # Calculate the added defense from wearing armor
   def armor_bonus
     equipped_armor.map(&:defense).reduce(0, :+)
   end
 
+  # Make sure the attack has the damage done by equipped weapons as well
   def attack
     @attack + weapon_bonus
   end
 
+  # Make sure the defense has the added defense provided by the equipped armor as well
   def defense
     @defense + armor_bonus
   end
 
+  # Very useful to have. Finds the base class of the hero. Ex: (:soldier, :mage, :archer)
   def find_base_class
     if CLASSES.values.flatten.include? @main_class
       CLASSES.map { |klass, types| klass if types.include? @main_class }.compact.first
@@ -93,6 +102,7 @@ class Hero < Character
     end
   end
 
+  # A secret hint has been found by rolling a double. Reward the hero with a key
   def unlock_secret_hint
     puts 'You have found a secret hint!'
     add_hint
@@ -104,8 +114,8 @@ class Hero < Character
     end
   end
 
+  # If the user has valid keys, then proceed to opening the treasure chests
   def unlock_treasure_chests
-    9.times { @keys.push Key.unlock_with_hints } if $debug #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
     if treasures_found.count == current_dungeon.total_treasure_chests
       puts "\nYou have already found all the treasures in this dungeon."
     elsif current_dungeon.treasures.count.zero?
@@ -132,7 +142,7 @@ class Hero < Character
     end
   end
 
-  # Takes in an array of same keys
+  # Takes in an array of same keys and attempts to open the treasure chests which match the key type
   def open_treasures(keys)
     key_type = keys.first.type
     treasures = current_dungeon.treasures.select { |treasure| treasure.type == key_type }.first(keys.count)
@@ -141,9 +151,9 @@ class Hero < Character
       if used_key
         found_treasure = current_dungeon.treasures.delete(treasure)
         if found_treasure
-          found_treasure.open
+          puts "Succesfully opened a #{treasure.type} treasure chest!\n"
+          loot_treasure(found_treasure)
           @treasures_found << found_treasure
-          puts "Succesfully opened a #{treasure.type} treasure chest!"
         else
           error 'Unable to open treasure chest.'
         end
@@ -153,6 +163,22 @@ class Hero < Character
     end
   end
 
+  # Open the treasure chest and get the reward!
+  def loot_treasure(treasure)
+    treasure.open
+    loot = treasure.get_reward_for(self)
+    case loot[:type]
+    when 'money'
+      puts "Congratulations! You have found #{loot[:reward]} gold"
+      @money += loot[:reward]
+    when 'item'
+      puts "Congratulations! You have found the #{ loot[:reward].class.to_s }, #{ loot[:reward].name }"
+      add_to_inventory(loot[:reward])
+    else invalid
+    end
+  end
+
+  # Show the user how many chests he/she can open with the current set of keys
   def display_amount_of_openable_chests_by_type
     print "\n"
     array_of_types = current_dungeon.treasures.map(&:type).sort.slice_when { |key1, key2| key1 != key2 }
@@ -164,46 +190,58 @@ class Hero < Character
     end
   end
 
+  # Show the user how many keys they currently possess and of what type
   def display_key_status
     puts "\nYou are currently in possession of #{@keys.count} keys."
     puts "#{get_keys_of_type(:bronze).count} Bronze keys\n#{get_keys_of_type(:silver).count} Silver keys\n#{get_keys_of_type(:gold).count} Gold keys\n"
   end
 
+  # Filter keys by type
   def get_keys_of_type(type)
     @keys.select { |key| key.type == type }
   end
 
+  # Keep track of how many hints the user has unlocked so far
   def add_hint
     @hints += 1
   end
 
+  # Reset the hints back to 0 once they have already reached their limit (In this case, it's 3)
   def reset_hints
     @hints = 0
   end
 
+  # The hero has obtained a new key! Add it to the list of keys already found
   def obtain_key(key)
     @keys.push(key)
     key
   end
 
+  # The monster has been slain! Reap the benefits from the battlefield!
   def loot(monster)
     @money += monster.reward_money
     @experience += monster.reward_experience
     puts "You found #{monster.reward_money} gold and got #{monster.reward_experience} experience from slaying the enemy!"
   end
 
+  # Proxy functions in order to make accessing the current_dungeon easier
+  # The dungeon can only be completly explored if the hero has reached the total number of steps
   def dungeon_explored?
     @current_dungeon.steps_explored == @current_dungeon.total_steps
   end
 
+  # Keep track of all the dungeons conquered by the hero
   def dungeons_conquered
     @dungeons_conquered.sort_by(&:level)
   end
 
+  # Check if the current dungeon has been conquered or not
   def conquered_dungeon?
     @current_dungeon.conquered
   end
 
+  # The hero has killed the dungeon gate keeper and can now advance to the next dungeon.
+  # Make sure to keep track of the dungeon which was conquered as well
   def conquer_dungeon
     @current_dungeon.conquered = true
     @dungeons_conquered.push(@current_dungeon)
@@ -212,18 +250,37 @@ class Hero < Character
     puts "Congratulations! You succesfully completed dungeon level #{@current_dungeon.level}"
   end
 
+  # Check how many steps the hero has explored already in the dungeon. Defaults to 0
   def steps_walked
     @current_dungeon.steps_explored || 0
   end
 
+  # Actually increase the steps taken in order to simulate the hero exploring the dungeon
   def walk(amount_of_steps)
     @current_dungeon.steps_explored += amount_of_steps
   end
 
+  # Reset the current dungeon once completed, in order to gain access to the next one
   def reset_current_dungeon
     @current_dungeon = nil
   end
 
+  # Give the hero the option to re-visit an already conquered dungeon.
+  # However, the steps taken will not count since the dungeon has already been 100% explored.
+  # Really good to just go back and battle monsters in order to level up.
+  def change_dungeon_level
+    if dungeons_conquered.any?
+      puts 'What dungeon level would you like to visit?'
+      # TODO: add validation for option
+      option = choose_array_option dungeons_conquered.map { |dungeon| "Dungeon level #{dungeon.level}" }, true
+      self.current_dungeon = dungeons_conquered[option.pred]
+      Dungeon.enter(self)
+    else
+      puts "You have not conqeuered any dungeons..yet! Go get em'!"
+    end
+  end
+
+  # Using the formulas module, make the hero level up according to his experience gained so far
   def level_up_attributes(level)
     @level += 1
     @max_hp = level_up_max_hp(level)
@@ -232,15 +289,18 @@ class Hero < Character
     @health = @max_hp # re-fill health to max_hp
   end
 
+  # Only make sure the hero levels up if he has reached the exp limit of that specific level
   def level_up(exp)
     level_up_attributes(@level) if exp >= exp_needed(@level)
   end
 
+  # Keep track of the exp gained. Also check if leveld up everytime exp is gained.
   def experience=(exp)
     @experience = exp
     level_up(@experience)
   end
 
+  # Simulate a way for the hero to actually buy an item from the shop
   def buy(item)
     if @money >= item.price && add_to_inventory(item)
       @money -= item.price
@@ -250,6 +310,7 @@ class Hero < Character
     end
   end
 
+  # Simulate a way for the hero to actually sell an item from the inventory back to the shop
   def sell(item)
     if remove_from_inventory(item)
       @money += item.sell_value
@@ -259,6 +320,7 @@ class Hero < Character
     end
   end
 
+  # Check inventory for potions, and it they exist give the hero the option of choosing which one to consume
   def use_potions
     if current_inventory_potions.any?
       puts 'Which potion would you like to consume?'
@@ -275,6 +337,7 @@ class Hero < Character
     end
   end
 
+  # Inventory main menu.
   def check_inventory
     puts 'Inside inventory! What would you like to do?'
     inventory_option = choose_array_option(inventory_options, true)
@@ -288,6 +351,7 @@ class Hero < Character
   end
 
   # TODO: Add a way to equip more than one item
+  # Equip items from the hero's inventory
   def equip_items
     unless equippable_items?
       error 'You have nothing to equip!'
@@ -301,6 +365,7 @@ class Hero < Character
     end
   end
 
+  # Un-equip items from the hero's inventory
   def unequip_items
     unless equipped_items?
       error 'You have nothing to un-equip!'
@@ -314,12 +379,14 @@ class Hero < Character
     end
   end
 
+  # Nice little graphical way of representing the hero's progress thus far
   def display_full_hero_status
     display_stats
     display_inventory_items
     display_equipped_items
   end
 
+  # Keep track of the hero's basic stats. Very important and handy to have especially before battles.
   def display_stats
     # TODO: Display the heros name and class as well here with a nice header like ~~~~
     puts "Base class: #{@base_class}"
@@ -331,17 +398,5 @@ class Hero < Character
     puts "Defense: #{@defense}"
     puts "Money: #{@money}"
     puts "Experience: #{@experience}\n"
-  end
-
-  def change_dungeon_level
-    if dungeons_conquered.any?
-      puts 'What dungeon level would you like to visit?'
-      # TODO: add validation for option
-      option = choose_array_option dungeons_conquered.map { |dungeon| "Dungeon level #{dungeon.level}" }, true
-      self.current_dungeon = dungeons_conquered[option.pred]
-      Dungeon.enter(self)
-    else
-      puts "You have not conqeuered any dungeons..yet! Go get em'!"
-    end
   end
 end # end class
