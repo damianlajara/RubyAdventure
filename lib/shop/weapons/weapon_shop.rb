@@ -1,16 +1,9 @@
-require_relative "../../helpers/attributes"
 require_relative "../shop"
 
 class WeaponShop < Shop
   attr_reader :weapons
-  def initialize(class_type)
-    self.class.include "Attributes::Weapon::#{class_type.capitalize}".constantize
-    @weapons = []
-    @class_type = class_type
-    @effect = BASE_EFFECT
-    @price = BASE_PRICE
-    @sell_value = BASE_SELL_VALUE
-    initialize_weapon_values
+  def initialize(weapons)
+    @weapons = weapons
   end
 
   def display_formatted_weapons
@@ -24,18 +17,6 @@ class WeaponShop < Shop
 
   def display_weapons
     weapons.each_with_index(&Procs::DISPLAY)
-  end
-
-  private
-  attr_reader :class_type
-
-  def initialize_weapon_values
-    weapon_names[class_type].each do |name|
-      @effect += EFFECT_OFFSET
-      @price += PRICE_OFFSET
-      @sell_value += SELL_VALUE_OFFSET
-      weapons.push(Weapon.new(name, { damage: @effect }, price: @price, sell_value: @sell_value))
-    end
   end
 
 end

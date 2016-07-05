@@ -2,53 +2,24 @@ require 'pry'
 require_relative '../helpers/formatters'
 require_relative '../helpers/display'
 require_relative '../helpers/utility'
+require_relative '../helpers/all_items'
 require_relative '../items/armor'
 require_relative '../items/weapon'
 require_relative '../items/potion'
 
 class Shop
-  def self.weapons(hero)
-    WeaponShop.new(hero.base_class.downcase).weapons
-  end
-
-  def self.armor(hero)
-    ArmorShop.new(hero.base_class.downcase).armor
-  end
-
-  def self.potions
-    PotionShop.new.potions
-  end
-
   include Formatter
   include Utility
   include Display
-
-  # TODO: Try to refactor this like the armor_names and weapon_names method
-  POTION_NAMES = %w(Mommys_Tea Antidote_of_Life Red_Potion Imperial_Regeneration Oil_of_Health Holy_Light Serum_of_Rejuvination Elixir).freeze
+  include AllItems
 
   def initialize
-  end
-
-  def armor_names
-    {
-      soldier: %w(Calcite Mirage Djinn Shape_Shifter Dark_Prism Fatal_Sith Devastator Override),
-      mage: %w(Colossus Eternal_Vanguard Prism Valkyrie Trident Eclipse Lunar_Spirit Astral_Inducer),
-      archer: %w(Nightmare Ashura Ichimonji Lionheart Ascalon Nirvana Chaotic_Axis Ominous_Judgement)
-    }
-  end
-
-  def weapon_names
-    {
-      soldier: %w(Meito Ichimonji Shusui Apocalypse Blade_of_Scars Ragnarok Eternal_Darkness Masamune Soul_Calibur),
-      mage: %w(Neil_Vajra Brionac Claimh_Solais Durandal Kusanagi Tizona Zulfiqar Orcrist),
-      archer: %w(Arondight Gugnir Susanoo Longinus Hrunting Clarent Shinigami Caliburn)
-    }
   end
 
   # TODO: Try to refactor these choice methods - they have a lot of similar functionality
   def display_weapon_choice(hero, type = 'purchase')
     if type == 'purchase'
-      shop = WeaponShop.new(hero.base_class.downcase)
+      shop = WeaponShop.new get_items_of_type(:weapon, hero.base_class.downcase)
       display_formatted_weapon_choice_header(hero.base_class.capitalize)
       shop.display_formatted_weapons
       item = select_item(shop.weapons)
@@ -68,7 +39,7 @@ class Shop
 
   def display_armor_choice(hero, type = 'purchase')
     if type == 'purchase'
-      shop = ArmorShop.new(hero.base_class.downcase)
+      shop = ArmorShop.new get_items_of_type(:armor, hero.base_class.downcase)
       display_formatted_armor_choice_header(hero.base_class.capitalize)
       shop.display_formatted_armor
       item = select_item(shop.armor)
@@ -88,7 +59,7 @@ class Shop
 
   def display_potion_choice(hero, type = 'purchase')
     if type == 'purchase'
-      shop = PotionShop.new
+      shop = PotionShop.new(get_items_of_type :potion)
       display_formatted_potion_choice_header
       shop.display_formatted_potions
       item = select_item(shop.potions)

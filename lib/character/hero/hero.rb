@@ -104,43 +104,8 @@ class Hero < Character
     end
   end
 
-  # def unlock_treasure_chests
-  #   5.times { @keys.push Key.new } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
-  #   if @keys.any?
-  #     display_key_status
-  #     # current_dungeon.treasures
-  #     sorted_keys_by_type = @keys.sort_by(&:name).slice_when { |key1, key2| key1.name != key2.name }
-  #     binding.pry
-  #     sorted_keys_by_type.each do |array_of_types|
-  #       # amount_of_openable_chests = array_of_types.count/3
-  #       # next if amount_of_openable_chests.zero?
-  #       if treasures_found.count == current_dungeon.total_treasure_chests
-  #         puts "You have already found all the treasures in this dungeon."
-  #       elsif current_dungeon.treasures.count.zero?
-  #         puts "There are no treasures in this dungeon."
-  #       else
-  #         puts "\nYou can open #{amount_of_openable_chests} #{array_of_types.first.type} treasure chest(s) with your current set of keys."
-  #         puts "\nDo you want to proceed with opening the treasure chests?"
-  #         case choose_array_option yes_or_no_option, true
-  #         when 1 then open_treasures(array_of_types)
-  #         when 2 then puts "How are you going to pass on the treasures?! Oh well, Come back soon."
-  #         else invalid
-  #         end
-  #       end
-  #
-  #       # TODO: Make the user choose whsich treasure chest he wants to open.
-  #       # Once opened, mark the treasure as found, push to users treasured_found array,
-  #       # and delete the treasure from available treasures in the dungeon
-  #       # Also add to the inventory, w.e reward the treasure chest has
-  #       # Also, make sure to ammend this commit once finished implementing it
-  #     end
-  #   else
-  #     error 'You do not have any keys! Go explore the Dungeon a little more and come back.'
-  #   end
-  # end
-
   def unlock_treasure_chests
-    # 9.times { @keys.push Key.unlock_with_hints } #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
+    9.times { @keys.push Key.unlock_with_hints } if $debug #DEBUG TODO: REMOVE AFTER FINISHING THIS METHOD!
     if treasures_found.count == current_dungeon.total_treasure_chests
       puts "\nYou have already found all the treasures in this dungeon."
     elsif current_dungeon.treasures.count.zero?
