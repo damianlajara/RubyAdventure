@@ -100,9 +100,8 @@ module AllItems
   end
 
   def all_items(class_type)
-    [ get_items_of_type(:weapon, class_type), get_items_of_type(:armor, class_type), get_items_of_type(:potion, class_type) ]
+    [get_items_of_type(:weapon, class_type), get_items_of_type(:armor, class_type), get_items_of_type(:potion, class_type)]
   end
 
   module_function :all_items, :get_items_of_type
-
 end

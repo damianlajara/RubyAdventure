@@ -1,7 +1,6 @@
-require_relative "../character"
-require_relative "../../helpers/display"
-require "pry"
-
+require_relative '../character'
+require_relative '../../helpers/display'
+require 'pry'
 
 class Monster < Character
   alias_method :reward_money, :money

@@ -1,11 +1,10 @@
 module Customize
-
-  GENDER = { male: 'Male', female: 'Female', other: 'Other' }
+  GENDER = { male: 'Male', female: 'Female', other: 'Other' }.freeze
 
   # Called when user dies. Only lose money, exp and all items
   def reset_stats_after_death
     puts "You wake up in a hospital...not knowing where you are. Life has given you a second chance. Go get em'!"
-    #TODO Create validation in these methods which is why I called self insead of accessing the var directly
+    # TODO: Create validation in these methods which is why I called self insead of accessing the var directly
     self.health = @max_hp
     self.money = 0
     self.experience = 0
@@ -45,7 +44,7 @@ module Customize
   end
 
   def yes_or_no_option
-    ["yes", "no"]
+    %w(yes no)
   end
 
   def toggle_battle_scenes
@@ -53,7 +52,7 @@ module Customize
     puts "Do you want to #{toggle} all of the battle scenes?"
     case choose_array_option yes_or_no_option, true
     when 1
-    puts "Battle scenes have been #{toggle}d."
+      puts "Battle scenes have been #{toggle}d."
       @skip_battle_scenes = !@skip_battle_scenes
     else
       puts "Battle scenes will stay #{disable_toggle_skip}d."
@@ -61,11 +60,11 @@ module Customize
   end
 
   def enable_toggle_skip
-    !@skip_battle_scenes ? "disable" : "enable"
+    !@skip_battle_scenes ? 'disable' : 'enable'
   end
 
   def disable_toggle_skip
-    @skip_battle_scenes ? "disable" : "enable"
+    @skip_battle_scenes ? 'disable' : 'enable'
   end
 
   def change_gender
@@ -90,12 +89,12 @@ module Customize
     end
   end
 
-  def display_game_options_header(spacer_amount=4)
+  def display_game_options_header(spacer_amount = 4)
     puts "#{'*' * spacer_amount} Game Options #{'*' * spacer_amount}\n"
   end
 
   def available_game_options
-    ["Change Name", "Change Gender", "Toggle Battle Scenes"]
+    ['Change Name', 'Change Gender', 'Toggle Battle Scenes']
   end
 
   def game_options
@@ -115,7 +114,6 @@ module Customize
   end
 
   def display_welcome_message
-    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{self.main_class}!"
+    puts "#{@name}, welcome to Ruby Adventure! I see you are a #{@gender}, with a class of #{main_class}!"
   end
-
 end

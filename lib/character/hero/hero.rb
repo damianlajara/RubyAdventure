@@ -172,7 +172,7 @@ class Hero < Character
       puts "Congratulations! You have found #{loot[:reward]} gold"
       @money += loot[:reward]
     when 'item'
-      puts "Congratulations! You have found the #{ loot[:reward].class.to_s }, #{ loot[:reward].name }"
+      puts "Congratulations! You have found the #{loot[:reward].class}, #{loot[:reward].name}"
       add_to_inventory(loot[:reward])
     else invalid
     end
@@ -184,9 +184,9 @@ class Hero < Character
     array_of_types = current_dungeon.treasures.map(&:type).sort.slice_when { |key1, key2| key1 != key2 }
     whitelisted_types = array_of_types.select { |array| @keys.select { |key| key.type == array.first }.count >= array.count }
     amount_of_openable_chests = whitelisted_types.inject(0) { |sum, type_array| sum + type_array.count }
-    puts "You can currently open #{ amount_of_openable_chests == current_dungeon.treasures.count ? amount_of_openable_chests : "all" } treasure chests with your keys."
+    puts "You can currently open #{amount_of_openable_chests == current_dungeon.treasures.count ? amount_of_openable_chests : 'all'} treasure chests with your keys."
     array_of_types.each do |type_array|
-      puts "#{ type_array.count } #{type_array.first} treasure chest"
+      puts "#{type_array.count} #{type_array.first} treasure chest"
     end
   end
 

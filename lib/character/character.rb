@@ -1,7 +1,7 @@
-require_relative "../helpers/validator"
-require_relative "../helpers/display"
-require_relative "../helpers/utility"
-require "pry"
+require_relative '../helpers/validator'
+require_relative '../helpers/display'
+require_relative '../helpers/utility'
+require 'pry'
 
 class Character
   include Validator
@@ -23,7 +23,7 @@ class Character
     @money = character_args[:money] || 0
     @experience = character_args[:experience] || 0
     @description = character_args[:description] || ''
-    @main_class = self.to_s.match(/^#<(\w+):.*/).captures.first
+    @main_class = to_s.match(/^#<(\w+):.*/).captures.first
   end
 
   def health=(new_health)
@@ -48,9 +48,8 @@ class Character
   # hero.do_damage_to(monster)
   # monster.do_damage_to(hero)
   def do_damage_to(receiver)
-    damage = (attack/100.0 * receiver.defense + attack%100.abs * level).ceil
+    damage = (attack / 100.0 * receiver.defense + attack % 100.abs * level).ceil
     receiver.health -= damage
     damage
   end
-
 end

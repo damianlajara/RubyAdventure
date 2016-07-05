@@ -27,16 +27,16 @@ class Treasure
 
   def money_reward(hero)
     money_for = {
-      bronze: 2 ** hero.level + rand(120..385),
-      silver: 2 ** hero.level + rand(390..740),
-      gold: 2 ** hero.level + rand(745..1050)
+      bronze: 2**hero.level + rand(120..385),
+      silver: 2**hero.level + rand(390..740),
+      gold: 2**hero.level + rand(745..1050)
     }
     { reward: money_for[type], type: 'money' }
   end
 
   # TODO: If a level is added to every item, then sample a level here based on rarity
   def item_reward(hero)
-    hero_items = AllItems::all_items(hero.base_class.downcase) # Mix of armor, weapons, and potions baed on hero class
+    hero_items = AllItems.all_items(hero.base_class.downcase) # Mix of armor, weapons, and potions based on hero class
     item =
       case rand(0..100)
       when 0..9 then hero_items.map { |items| items.last(3) }.flatten.sample # One of the last 3 items # 10% chance
@@ -53,5 +53,4 @@ class Treasure
     when 18..100 then :bronze # 82% chance
     end
   end
-
 end

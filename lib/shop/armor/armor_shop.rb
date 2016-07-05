@@ -1,4 +1,4 @@
-require_relative "../shop"
+require_relative '../shop'
 
 class ArmorShop < Shop
   attr_reader :armor
@@ -8,7 +8,7 @@ class ArmorShop < Shop
   end
 
   def display_formatted_armor
-    armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf("%-23s", armor)} #{sprintf("%-10d", armor.defense)} #{sprintf("%-10d", armor.price)} #{sprintf("%-5d", armor.sell_value)} #{armor.description}" }
+    armor.each_with_index { |armor, index| puts "#{index.next}) #{sprintf('%-23s', armor)} #{sprintf('%-10d', armor.defense)} #{sprintf('%-10d', armor.price)} #{sprintf('%-5d', armor.sell_value)} #{armor.description}" }
   end
 
   def armor_count
@@ -18,5 +18,4 @@ class ArmorShop < Shop
   def display_armor
     armor.each_with_index(&Procs::DISPLAY)
   end
-
 end

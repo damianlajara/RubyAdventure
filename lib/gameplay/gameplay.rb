@@ -1,14 +1,14 @@
 require 'ruby-progressbar'
-require "pry"
+require 'pry'
 
 # Monkey Patch Classes
 Dir[File.join(File.dirname(__FILE__), '../', 'core_extensions', '**', '*.rb')].each { |file| require file }
-String.include CoreExtensions::String# TODO: Maybe Change to refinements?
+String.include CoreExtensions::String # TODO: Maybe Change to refinements?
 
 # Require all files
 Dir[File.join(File.dirname(__FILE__), '../', 'character', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), '../', 'dungeon', '**', '*.rb')].each { |file| require file }
-Dir[File.join(File.dirname(__FILE__), '../', 'shop' ,'**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), '../', 'shop', '**', '*.rb')].each { |file| require file }
 
 class GamePlay
   attr_accessor :hero
@@ -24,7 +24,7 @@ class GamePlay
   end
 
   def self.start
-    self.new
+    new
   end
 
   def play_game
@@ -56,8 +56,8 @@ class GamePlay
   end
 
   def display_exit_message
-    #TODO save progress on exit
-    puts "Thanks for playing Ruby Adventure!!"
+    # TODO: save progress on exit
+    puts 'Thanks for playing Ruby Adventure!!'
   end
 
   def roll
@@ -93,8 +93,8 @@ class GamePlay
       unless hero.conquered_dungeon?
         hero.walk(steps) unless hero.dungeon_explored?
         if hero.steps_walked >= dungeon.total_steps
-          puts "Congratulations! You have succesfully explored the whole dungeon!"
-          puts "However, you have awoken the beast with your victory cry! Prepare for battle!"
+          puts 'Congratulations! You have succesfully explored the whole dungeon!'
+          puts 'However, you have awoken the beast with your victory cry! Prepare for battle!'
           dungeon.battle_boss(hero)
         end
       end
@@ -110,25 +110,25 @@ class GamePlay
 
   def check_progress
     print "\n"
-    ProgressBar.create(title: "Hints", starting_at: hero.hints ,total: Hero::MAX_HINTS, length: 85, format: "%t: |%B| %c/%C Hints Found (%P%%)").stop
-    ProgressBar.create(title: "Treasures", starting_at: hero.treasures_found.count, total: hero.current_dungeon.total_treasure_chests, length: 85, format: "%t: |%B| %c/%C Treasures Found (%P%%)").stop
-    ProgressBar.create(title: "Steps", starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: "%t: |%B| %c/%C Steps Walked (%P%%)").stop
+    ProgressBar.create(title: 'Hints', starting_at: hero.hints, total: Hero::MAX_HINTS, length: 85, format: '%t: |%B| %c/%C Hints Found (%P%%)').stop
+    ProgressBar.create(title: 'Treasures', starting_at: hero.treasures_found.count, total: hero.current_dungeon.total_treasure_chests, length: 85, format: '%t: |%B| %c/%C Treasures Found (%P%%)').stop
+    ProgressBar.create(title: 'Steps', starting_at: hero.steps_walked, total: hero.current_dungeon.total_steps, length: 85, format: '%t: |%B| %c/%C Steps Walked (%P%%)').stop
     puts "Keys Obtained: #{hero.keys.count}"
   end
 
   def check_stats
-    gold_found = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_money }.reduce(0, :+)
+    gold_found = hero.current_dungeon.monsters_killed.map(&:reward_money).reduce(0, :+)
     total_gold = hero.current_dungeon.total_monster_rewards[:money]
-    exp_gained = hero.current_dungeon.monsters_killed.map { |monster| monster.reward_experience }.reduce(0, :+)
+    exp_gained = hero.current_dungeon.monsters_killed.map(&:reward_experience).reduce(0, :+)
     total_exp = hero.current_dungeon.total_monster_rewards[:experience]
 
     print "\n"
     hero.display_stats
     puts "\nWeapon Bonus: + #{hero.weapon_bonus} damage"
     puts "Armor bonus: + #{hero.armor_bonus} defense\n\n"
-    ProgressBar.create(title: "Gold", starting_at: gold_found, total: total_gold, length: 85, format: "%t: |%B| %c/%C Total Gold Found (%P%%)").stop
-    ProgressBar.create(title: "Experience", starting_at: exp_gained, total: total_exp, length: 85, format: "%t: |%B| %c/%C Total Exp Gained (%P%%)").stop
-    ProgressBar.create(title: "Monsters killed", starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: "%t: |%B| %c/%C Monsters Killed (%P%%)").stop
+    ProgressBar.create(title: 'Gold', starting_at: gold_found, total: total_gold, length: 85, format: '%t: |%B| %c/%C Total Gold Found (%P%%)').stop
+    ProgressBar.create(title: 'Experience', starting_at: exp_gained, total: total_exp, length: 85, format: '%t: |%B| %c/%C Total Exp Gained (%P%%)').stop
+    ProgressBar.create(title: 'Monsters killed', starting_at: hero.current_dungeon.monsters_killed.count, total: hero.current_dungeon.number_of_monsters, length: 85, format: '%t: |%B| %c/%C Monsters Killed (%P%%)').stop
   end
 
   def setup_shop

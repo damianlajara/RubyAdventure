@@ -1,5 +1,5 @@
-require_relative "../helpers/formulas"
-require_relative "../items/treasure"
+require_relative '../helpers/formulas'
+require_relative '../items/treasure'
 
 class Dungeon
   attr_accessor :monsters, :steps_explored, :conquered
@@ -10,12 +10,12 @@ class Dungeon
 
   TOTAL_LEVELS = 10
 
-  def initialize(name='forest', level=1, total_steps=150, exp_bonus=0, money_bonus=0)
+  def initialize(name = 'forest', level = 1, total_steps = 150, exp_bonus = 0, money_bonus = 0)
     @name = name
     @level = level
     @all_monsters = Monster.all
     @total_steps = total_steps
-    @steps_explored = 0 #The number of steps the user has taken in this dungeon
+    @steps_explored = 0 # The number of steps the user has taken in this dungeon
     @exp_bonus = exp_bonus
     @money_bonus = money_bonus
     @conquered = false
@@ -26,7 +26,7 @@ class Dungeon
     @treasures = create_treasures
     @number_of_monsters = 0
     create_monsters
-    @boss = create_boss('Dragon', level) # TODO Every dungeon, has a boss. Should be created based on the level of the user
+    @boss = create_boss # Every dungeon, has a boss. Should be created based on the level of the dungeon
   end
 
   def all_monsters
@@ -34,24 +34,24 @@ class Dungeon
   end
 
   def self.enter(hero)
-    unless hero.current_dungeon
+    if hero.current_dungeon
+      puts "Welcome back to dungeon level #{hero.current_dungeon.level}. Go finish what you started!"
+    else
       hero.current_dungeon = spawn_dungeon(hero.dungeon_level)
       puts "Welcome to Dungeon level #{hero.dungeon_level}! May luck be on your side."
-    else
-      puts "Welcome back to dungeon level #{hero.current_dungeon.level}. Go finish what you started!"
     end
   end
 
   def self.spawn_dungeon(level)
     case level
     when 1..4 then Dungeon.new('forest', level)
-    when 5..9  then Dungeon.new('underworld', level)
+    when 5..9 then Dungeon.new('underworld', level)
     when 10..12 then Dungeon.new('mountain', level)
     end
   end
 
   def battle(hero)
-    puts "You hear footsteps..."
+    puts 'You hear footsteps...'
     if @monsters.any?
       puts "It's a monster! Prepare for battle!"
       monster = @monsters.shift
@@ -72,7 +72,7 @@ class Dungeon
   private
 
   def call_reinforcements
-    puts "Oh No! Those bastards called for reinforcements!"
+    puts 'Oh No! Those bastards called for reinforcements!'
     create_monsters
   end
 
@@ -95,45 +95,44 @@ class Dungeon
       )
       @monsters.push(random_monster)
     end
-    @total_monster_rewards[:money] += @monsters.map { |monster| monster.reward_money }.reduce(0, :+)
-    @total_monster_rewards[:experience] += @monsters.map { |monster| monster.reward_experience }.reduce(0, :+)
+    @total_monster_rewards[:money] += @monsters.map(&:reward_money).reduce(0, :+)
+    @total_monster_rewards[:experience] += @monsters.map(&:reward_experience).reduce(0, :+)
   end
 
   def commence_attack(hero, monster)
     puts "Hero - lvl: #{hero.level},  hp: #{hero.health},  att: #{hero.attack},  def: #{hero.defense}" if $debug
     puts "Mons - lvl: #{monster.level},  hp: #{monster.health},  att: #{monster.attack},  def: #{monster.defense}" if $debug
-    #TODO add a loop in here that gets user input on what ability he wants to attack with
+    # TODO: add a loop in here that gets user input on what ability he wants to attack with
     while hero.alive? && monster.alive?
-      puts "The monster has attacked you!" unless hero.skip_battle_scenes
+      puts 'The monster has attacked you!' unless hero.skip_battle_scenes
       monster_damage = monster.do_damage_to(hero)
       puts "You received #{monster_damage} damage" unless hero.skip_battle_scenes
-      if hero.alive?
-        puts "Your hp: #{hero.health}" unless hero.skip_battle_scenes
-        # TODO: Add a way for the hero to check their inventory here in order to change weapons, take potions, etc
-        # Also make it where the user can choose what ability to use (Depending on the class they chose)
-        hero_damage = hero.do_damage_to(monster)
-        puts "Now you attacked! You have dealt #{hero_damage} Damage" unless hero.skip_battle_scenes
-        if monster.alive?
-          puts "Enemy hp: #{monster.health}" unless hero.skip_battle_scenes
-        end
+      next unless hero.alive?
+      puts "Your hp: #{hero.health}" unless hero.skip_battle_scenes
+      # TODO: Add a way for the hero to check their inventory here in order to change weapons, take potions, etc
+      # Also make it where the user can choose what ability to use (Depending on the class they chose)
+      hero_damage = hero.do_damage_to(monster)
+      puts "Now you attacked! You have dealt #{hero_damage} Damage" unless hero.skip_battle_scenes
+      if monster.alive?
+        puts "Enemy hp: #{monster.health}" unless hero.skip_battle_scenes
       end
     end
   end
 
   def battle_result(hero, monster)
     if hero.alive? && monster.dead?
-      puts "Congratulations! You killed the enemy!"
+      puts 'Congratulations! You killed the enemy!'
       hero.loot(monster)
       @monsters_killed.push(monster)
       true
     elsif hero.dead? && monster.alive?
-      puts "You have died!"
+      puts 'You have died!'
       hero.reset_stats_after_death
       false
     end
   end
 
-  def create_boss(klass, level)
+  def create_boss(klass='Dragon')
     all_monsters.find { |monster| monster.to_s == klass.classify }.new(
       health: m_health(@level, boss: true),
       level: m_level(@level, boss: true),
@@ -143,5 +142,4 @@ class Dungeon
       experience: m_experience(@level, boss: true)
     )
   end
-
 end

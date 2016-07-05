@@ -1,4 +1,4 @@
-require_relative "../shop"
+require_relative '../shop'
 
 class PotionShop < Shop
   attr_reader :potions
@@ -16,7 +16,6 @@ class PotionShop < Shop
   end
 
   def display_formatted_potions
-    potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf("%-23s", potion)} #{sprintf("%-10d", potion.health)} #{sprintf("%-10d", potion.price)} #{sprintf("%-5d", potion.sell_value)} #{potion.description}" }
+    potions.each_with_index { |potion, index| puts "#{index.next}) #{sprintf('%-23s', potion)} #{sprintf('%-10d', potion.health)} #{sprintf('%-10d', potion.price)} #{sprintf('%-5d', potion.sell_value)} #{potion.description}" }
   end
-
 end
