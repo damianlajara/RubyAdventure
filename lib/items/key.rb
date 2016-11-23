@@ -49,7 +49,7 @@ class Key < Item
         end.concat(gold_keys).flatten
       else
         puts 'You do not have enough of the same type of keys to forge new ones.'
-    end
+      end
     end
   end
 

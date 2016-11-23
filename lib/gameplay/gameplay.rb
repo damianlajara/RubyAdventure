@@ -1,10 +1,6 @@
 require 'ruby-progressbar'
 require 'pry'
 
-# Monkey Patch Classes
-Dir[File.join(File.dirname(__FILE__), '../', 'core_extensions', '**', '*.rb')].each { |file| require file }
-String.include CoreExtensions::String # TODO: Maybe Change to refinements?
-
 # Require all files
 Dir[File.join(File.dirname(__FILE__), '../', 'character', '**', '*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), '../', 'dungeon', '**', '*.rb')].each { |file| require file }

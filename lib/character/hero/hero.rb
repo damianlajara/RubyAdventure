@@ -30,7 +30,7 @@ class Hero < Character
       choice = gets.chomp.to_i
       base_class = CLASSES.keys[choice.pred] ? CLASSES.keys[choice.pred] : :soldier # TODO: Mayeb use default_option(:soldier) ?
       main_class = choose_array_option CLASSES[base_class]
-      new_hero = main_class.constantize.new
+      main_class.constantize.new # new hero
     end
 
     # Create the hero for the first time, or change the class and create a new one if called subsequently
