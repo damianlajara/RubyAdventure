@@ -9,7 +9,7 @@ class Character
   include Procs
   include Utility
   attr_accessor :attack, :defense, :level, :money, :experience, :max_hp
-  attr_reader :name, :class, :main_class, :health
+  attr_reader :name, :class, :main_class, :health, :description
 
   def initialize(character_args = {})
     # Monsters don't need it, since we are using the dungeon levels to initialize them,

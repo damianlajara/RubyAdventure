@@ -1,64 +1,72 @@
 require "pry"
-
 # TODO add validation for subject attributes. Ex: Health cannot go over 100 etc
 
 describe Character do
-  # subject { Character.new }
-  # let(:full_character) do
-  #   Character.new(
-  #     health: 110,
-  #     level: 2,
-  #     attack: 25,
-  #     defense: 40,
-  #     money: 100,
-  #     experience: 10
-  #   )
-  # end
+  subject { Character.new }
+  let(:full_character) do
+    Character.new(
+      health: 110,
+      level: 2,
+      attack: 25,
+      defense: 40,
+      money: 100,
+      experience: 10,
+      description: 'My custom character'
+    )
+  end
 
-  # describe "#initialize" do
-  #   context "when no arguments passed in" do
-  #     it "has default values" do
-  #       expect(subject).to have_attributes(
-  #         name: 'Nameless One',
-  #         gender: 'genderless',
-  #         health: 100,
-  #         level: 1,
-  #         attack: 10,
-  #         defense: 10,
-  #         money: 0,
-  #         experience: 0,
-  #         equipped_weapons: [],
-  #         equipped_armor: [],
-  #         weapon_count: 0,
-  #         armor_count: 0,
-  #         potion_count: 0,
-  #         skip_battle_scenes: false
-  #       )
-  #     end
-  #   end
-  #
-  #   context "when arguments passed in" do
-  #     it "has passed in values" do
-  #       expect(full_character).to have_attributes(
-  #         name: 'Nameless One',
-  #         gender: 'genderless',
-  #         health: 110,
-  #         level: 2,
-  #         attack: 25,
-  #         defense: 40,
-  #         money: 100,
-  #         experience: 10,
-  #         equipped_weapons: [],
-  #         equipped_armor: [],
-  #         weapon_count: 0,
-  #         armor_count: 0,
-  #         potion_count: 0,
-  #         skip_battle_scenes: false
-  #       )
-  #     end
-  #   end
-  # end
-  #
+  describe "#initialize" do
+    context "when no arguments passed in" do
+      it "has default values" do
+        expect(subject).to have_attributes(
+          name: 'Nameless One',
+          health: 100,
+          level: 1,
+          attack: 10,
+          defense: 10,
+          money: 0,
+          experience: 0,
+          description: ''
+        )
+      end
+    end
+
+    context "when arguments passed in" do
+      it "has passed in values" do
+        expect(full_character).to have_attributes(
+          name: 'Nameless One',
+          health: 110,
+          level: 2,
+          attack: 25,
+          defense: 40,
+          money: 100,
+          experience: 10,
+          description: 'My custom character'
+        )
+      end
+    end
+  end
+
+  describe "included modules" do
+    context "when base class is created" do
+      it 'include Validator module' do
+        extended_class = class Bar; include Validator; end
+        expect(extended_class.included_modules).to include Validator
+      end
+      it 'include Display module' do
+        extended_class = class Bar; include Display; end
+        expect(extended_class.included_modules).to include Display
+      end
+      it 'include Procs module' do
+        extended_class = class Bar; include Procs; end
+        expect(extended_class.included_modules).to include Procs
+      end
+      it 'include Utility module' do
+        extended_class = class Bar; include Utility; end
+        expect(extended_class.included_modules).to include Utility
+      end
+    end
+  end
   # describe "#reset_stats" do
   #   it "is defined" do
   #     expect(subject).to respond_to(:reset_stats)
