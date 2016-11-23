@@ -1,7 +1,6 @@
 require_relative '../helpers/validator'
 require_relative '../helpers/display'
 require_relative '../helpers/utility'
-require 'pry'
 
 class Character
   include Validator
