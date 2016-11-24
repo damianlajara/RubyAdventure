@@ -54,7 +54,7 @@ class Hero < Character
   include Formulas::HeroHelper
 
   attr_accessor :current_dungeon, :treasures_found
-  attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class
+  attr_reader :inventory, :dungeon_level, :hints, :keys, :skip_battle_scenes, :base_class, :dungeons_conquered, :gender
 
   MAX_HINTS = 3
   CLASSES = all_classes
