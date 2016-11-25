@@ -451,8 +451,99 @@ describe Hero do
     end
 
     context "#game_options" do
-      xit
-    end
+      it 'is defined' do
+        expect(subject).to respond_to(:game_options)
+      end
 
+      it 'displays header message' do
+        allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+        allow(subject).to receive(:gets).and_return('')
+        expect(subject).to receive(:puts).with(a_string_matching(/game options/i))
+        subject.game_options
+      end
+
+      context "when 1 (change name) is selected" do
+        it 'calls change_name' do
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('1')
+          expect(subject).to receive(:change_name).once
+          subject.game_options
+        end
+      end
+
+      context "when 2 (change gender) is selected" do
+        it 'calls change_gender' do
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('2')
+          expect(subject).to receive(:change_gender).once
+          subject.game_options
+        end
+      end
+
+      context "when 3 (toggle battle scenes) is selected" do
+        it 'calls toggle_battle_scenes' do
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('3')
+          expect(subject).to receive(:toggle_battle_scenes).once
+          subject.game_options
+        end
+      end
+
+      context "when invalid option is entered" do
+        it 'displays error message' do
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('')
+          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('123')
+          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('!@#$')
+          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('something')
+          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('invalid options')
+          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
+          subject.game_options
+        end
+
+        it 'displays exiting menu message' do
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('')
+          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('123')
+          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('!@#$')
+          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('something')
+          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
+          subject.game_options
+
+          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
+          allow(subject).to receive(:gets).and_return('invalid options')
+          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
+          subject.game_options
+        end
+      end
+    end
   end
 end
