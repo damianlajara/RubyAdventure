@@ -1,4 +1,8 @@
+require_relative 'validator'
+
 module Customize
+  include Validator
+
   GENDER = { male: 'Male', female: 'Female', other: 'Other' }.freeze
 
   # Called when user dies. Only lose money, exp and all items
@@ -16,22 +20,23 @@ module Customize
   def customize_name
     print 'What would you like your character to be called? '
     name = gets.chomp.strip
-    @name = !(name =~ /^[a-z\s]+$/i) || name.empty? ? @name : capitalize_words(name)
+    @name = invalid_answer?(name) ? @name : capitalize_words(name)
   end
 
   def customize_gender
     display_hash_option GENDER, 'What is your gender? '
-    choice = gets.chomp.to_i
+    choice = gets.chomp.strip
+    gender_choice = valid_num?(choice, 3, 1) ? choice.to_i : choice
     @gender =
-      case choice
+      case gender_choice
       when 1
         GENDER[:male]
       when 2
         GENDER[:female]
       when 3
         print 'Enter your preferred gender: '
-        second_choice = gets.chomp
-        second_choice.empty? ? GENDER[:other] : second_choice
+        preferred_gender = gets.chomp.strip
+        invalid_answer?(preferred_gender) ? GENDER[:other] : preferred_gender
       else
         'Genderless'
       end
