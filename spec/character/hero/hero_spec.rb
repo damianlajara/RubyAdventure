@@ -272,193 +272,187 @@ describe Hero do
       end
     end
 
-  end
+    context "#change_name" do
+      it 'is defined' do
+        expect(subject).to respond_to(:change_name)
+      end
 
-  #
-  # describe "#customize_class" do
-  #   it "is defined" do
-  #     expect(subject).to respond_to(:customize_class)
-  #   end
-  #
-  #   context "when soldier is selected" do
-  #     let(:soldiers) { %w(Barbarian Knight Paladin Samurai) }
-  #
-  #     it "sets base class to soldier" do
-  #       allow(subject).to receive(:gets).and_return("1")
-  #       subject.customize_class
-  #       expect(subject.base_class).to eq(:soldier)
-  #     end
-  #
-  #     it "sets main_class to a valid specification of soldier" do
-  #       soldiers.count.times do |choice|
-  #         allow(subject).to receive(:gets).exactly(2).times.and_return("1", choice.next.to_s)
-  #         subject.customize_class
-  #         expect(subject.main_class).to eq(soldiers[choice])
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when mage is selected" do
-  #     let(:mages) { %w(Necromancer Wizard Illusionist Alchemist) }
-  #
-  #     it "sets base class to mage" do
-  #       allow(subject).to receive(:gets).and_return("2")
-  #       subject.customize_class
-  #       expect(subject.base_class).to eq(:mage)
-  #     end
-  #
-  #     it "sets main_class to a valid specification of mage" do
-  #       mages.count.times do |choice|
-  #         allow(subject).to receive(:gets).exactly(2).times.and_return("2", choice.next.to_s)
-  #         subject.customize_class
-  #         expect(subject.main_class).to eq(mages[choice])
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when ranged is selected" do
-  #     let(:ranged) { %w(Archer Gunner Tamer Elf) }
-  #
-  #     it "sets base class to ranged" do
-  #       allow(subject).to receive(:gets).and_return("3")
-  #       subject.customize_class
-  #       expect(subject.base_class).to eq(:ranged)
-  #     end
-  #
-  #     it "sets main_class to a valid specification of ranged" do
-  #       ranged.count.times do |choice|
-  #         allow(subject).to receive(:gets).exactly(2).times.and_return("3", choice.next.to_s)
-  #         subject.customize_class
-  #         expect(subject.main_class).to eq(ranged[choice])
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when invalid option is entered" do
-  #     it "defaults to soldier" do
-  #       ["4", "k", "", "hi"].each do |result|
-  #         allow(subject).to receive(:gets).and_return(result)
-  #         subject.customize_class
-  #         expect(subject.base_class).to eq(:soldier)
-  #       end
-  #     end
-  #   end
-  # end
-  #
-  # describe "#display_game_options_header" do
-  #   it "is defined" do
-  #     expect(subject).to respond_to(:display_game_options_header).with(1).argument
-  #   end
-  #
-  #   it "displays a message containing Game Options" do
-  #     expect(subject).to receive(:puts).with(a_string_matching(/Game Options/i))
-  #     subject.display_game_options_header(1)
-  #   end
-  # end
-  #
-  # describe "#game_options" do
-  #   let(:options) { ["Toggle Battle Scenes", "Change Class", "Change Gender", "Change Name"] }
-  #   after { subject.game_options }
-  #
-  #   it "displays a header message" do
-  #     expect(subject).to receive(:display_game_options_header).once
-  #   end
-  #
-  #   context "when Toggle Battle Scenes is selected" do
-  #     it "toggles battle scenes" do
-  #       allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(1)
-  #       expect(subject).to receive(:toggle_battle_scenes).once
-  #     end
-  #   end
-  #
-  #   context "when change class is selected" do
-  #     context "when it asks user for confirmation" do
-  #       context "when user selects to proceed" do
-  #         it "changes class" do
-  #           allow(subject).to receive(:choose_array_option).with(options, true).and_return(2)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
-  #           expect(subject).to receive(:reset_stats).once
-  #           expect(subject).to receive(:customize_class).once
-  #         end
-  #       end
-  #
-  #       context "when user selects to stop" do
-  #         it "class stays the same" do
-  #           allow(subject).to receive(:gets).and_return("1", "2")
-  #           subject.customize_class
-  #           main_class = subject.main_class
-  #           allow(subject).to receive(:choose_array_option).with(options, true).and_return(2)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
-  #           expect(subject.main_class).to eq main_class
-  #         end
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when change gender is selected" do
-  #     context "when it asks user for confirmation" do
-  #       context "when user selects to proceed" do
-  #         it "changes gender" do
-  #           allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(3)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
-  #           expect(subject).to receive(:customize_gender).once
-  #         end
-  #       end
-  #
-  #       context "when user selects to stop" do
-  #         it "gender stays the same" do
-  #           allow(subject).to receive(:gets).and_return("1", "2")
-  #           subject.customize_gender
-  #           gender = subject.gender
-  #           allow(subject).to receive(:choose_array_option).with(options, true).and_return(3)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
-  #           expect(subject.gender).to eq gender
-  #         end
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when change name is selected" do
-  #     context "when it asks user for confirmation" do
-  #       context "when user selects to proceed" do
-  #         it "changes name" do
-  #           allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(4)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(1)
-  #           expect(subject).to receive(:customize_name).once
-  #         end
-  #       end
-  #
-  #       context "when user selects to stop" do
-  #         it "name stays the same" do
-  #           allow(subject).to receive(:gets).and_return("Damian")
-  #           subject.customize_name
-  #           name = subject.name
-  #           allow(subject).to receive(:choose_array_option).with(options, true).and_return(4)
-  #           allow(subject).to receive(:choose_array_option).with(["yes","no"], true).and_return(2)
-  #           expect(subject.name).to eq name
-  #         end
-  #       end
-  #     end
-  #   end
-  #
-  #   context "when any other type of input is entered" do
-  #     it "displays exiting message and returns to main menu" do
-  #       allow(subject).to receive(:choose_array_option).once.with(options, true).and_return(5)
-  #       allow(subject).to receive(:puts).with(a_string_matching(/Game Options/i))
-  #       expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-  #     end
-  #   end
-  # end
-  #
-  # describe "#display_welcome_message" do
-  #   it "should be defined" do
-  #     expect(subject).to respond_to(:display_welcome_message)
-  #   end
-  #
-  #   it "welcomes user" do
-  #     expect(subject).to receive(:puts).with(a_string_matching(/Welcome/i)).once
-  #     subject.display_welcome_message
-  #   end
-  # end
-  #
+      context "when invoked" do
+        before(:example) do
+          allow(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your name?/i)).ordered
+          allow(subject).to receive(:puts).with(a_string_matching(/yes/i)).ordered
+          allow(subject).to receive(:puts).with(a_string_matching(/no/i)).ordered
+        end
+
+        it 'displays confirmation message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your name?/i))
+          subject.change_name
+        end
+      end
+
+      context "when 1 (yes) is selected" do
+        it 'calls #customize_name' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('1')
+          expect(subject).to receive(:customize_name).once
+          subject.change_name
+        end
+        it 'displays success message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('1')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/congratulations/i))
+          subject.change_name
+        end
+      end
+      context "when 2 (no) or invalid option is selected" do
+        it 'displays error message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('2')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
+          subject.change_name
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('90')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
+          subject.change_name
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
+          subject.change_name
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('!@#$')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
+          subject.change_name
+        end
+      end
+    end
+
+    context "#change_gender" do
+      it 'is defined' do
+        expect(subject).to respond_to(:change_gender)
+      end
+
+      context "when invoked" do
+        before(:example) do
+          allow(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your gender?/i)).ordered
+          allow(subject).to receive(:puts).with(a_string_matching(/yes/i)).ordered
+          allow(subject).to receive(:puts).with(a_string_matching(/no/i)).ordered
+        end
+
+        it 'displays confirmation message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your gender?/i))
+          subject.change_gender
+        end
+      end
+
+      context "when 1 (yes) is selected" do
+        it 'calls #customize_gender' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('1')
+          expect(subject).to receive(:customize_gender).once
+          subject.change_gender
+        end
+        it 'displays success message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('1')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/congratulations/i))
+          subject.change_gender
+        end
+      end
+      context "when 2 (no) or invalid option is selected" do
+        it 'displays error message' do
+          allow(subject).to receive(:gets).at_least(:once).and_return('2')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
+          subject.change_gender
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('90')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
+          subject.change_gender
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
+          subject.change_gender
+
+          allow(subject).to receive(:gets).at_least(:once).and_return('!@#$')
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
+          subject.change_gender
+        end
+      end
+    end
+
+    context "#toggle_battle_scenes" do
+      it 'is defined' do
+        expect(subject).to respond_to(:toggle_battle_scenes)
+      end
+
+      context 'when 1 (yes) is selected' do
+        it 'displays confirmation message' do
+          toggle = !subject.skip_battle_scenes ? 'disable' : 'enable'
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:gets).and_return('1')
+          expect(subject).to receive(:puts).with(a_string_matching(/Battle scenes have been #{toggle}d./i))
+          subject.toggle_battle_scenes
+        end
+
+        context 'when invoked for the first time' do
+          it 'skips battle scenes' do
+            expect(subject).to receive(:gets).and_return('1')
+            subject.toggle_battle_scenes
+            expect(subject.skip_battle_scenes).to eq(true)
+          end
+        end
+
+        context 'when invoked multiple times' do
+          it 'remembers previous state and toggles battle scenes' do
+            allow(subject).to receive(:gets).and_return('1')
+            subject.toggle_battle_scenes
+            expect(subject).to receive(:gets).and_return('1')
+            subject.toggle_battle_scenes
+            expect(subject.skip_battle_scenes).to eq(false)
+          end
+        end
+      end
+
+      context 'when 2 (no) is selected' do
+        it 'displays confirmation message' do
+          toggle = subject.skip_battle_scenes ? 'disable' : 'enable'
+          allow(subject).to receive(:puts).with(a_kind_of(String))
+          expect(subject).to receive(:gets).and_return('2')
+          expect(subject).to receive(:puts).with(a_string_matching(/Battle scenes will stay #{toggle}d./i))
+          subject.toggle_battle_scenes
+        end
+
+        context "when invoked for the first time" do
+          it 'stays with default value' do
+            expect(subject).to receive(:gets).and_return('2')
+            subject.toggle_battle_scenes
+            expect(subject.skip_battle_scenes).to eq(false)
+          end
+        end
+
+        context "when invoked multiple times" do
+          it 'reverts to previous state' do
+            allow(subject).to receive(:gets).and_return('1')
+            subject.toggle_battle_scenes
+            expect(subject).to receive(:gets).and_return('2')
+            subject.toggle_battle_scenes
+            expect(subject.skip_battle_scenes).to eq(true)
+          end
+        end
+      end
+    end
+
+    context "#game_options" do
+      xit
+    end
+
+  end
 end

@@ -45,6 +45,8 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
+  config.warnings = true
+
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|
@@ -108,14 +110,18 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
   # Suppress the ouput during tests by redirecting it to a null file which does nothing
   # before every test and revert it back to it's original afterwards
+
   original_stderr = $stderr
   original_stdout = $stdout
   config.before(:all) do
     # Redirect stderr and stdout
     $stderr = File.open(File::NULL, "w")
     $stdout = File.open(File::NULL, "w")
+    # $stderr = File.new(File.join(__dir__, 'log.txt'), 'w')
+    # $stdout = File.new(File.join(__dir__, 'log.txt'), 'w')
   end
   config.after(:all) do
     $stderr = original_stderr
