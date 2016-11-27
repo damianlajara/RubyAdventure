@@ -1,4 +1,4 @@
-# require "pry"
+require "pry"
 # # TODO add validation for subject attributes. Ex: Health cannot go over 100 etc
 
 describe Hero do
@@ -15,7 +15,7 @@ describe Hero do
     )
   end
 
-  describe "includes base modules" do
+  describe "includes base mixin modules" do
     it 'includes Customize module' do
       extended_class = class Bar; include Customize; end
       expect(extended_class.included_modules).to include Customize
@@ -546,6 +546,7 @@ describe Hero do
       end
     end
   end
+
   describe "Inventory" do
 
     let(:weapon) { Weapon.new('a knife') }
@@ -861,19 +862,93 @@ describe Hero do
     end
 
     context "#display_inventory_weapons" do
-      xit
+      let(:first_weapon_display_format) { /1\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:second_weapon_display_format) { /2\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:third_weapon_display_format) { /3\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+
+      context "when inventory is empty" do
+        it 'prints out empty' do
+          expect { subject.display_inventory_weapons }.to output(/empty/i).to_stdout
+        end
+      end
+      context "when inventory has one item" do
+        it 'prints out current weapon' do
+          subject.add_to_inventory(weapon)
+          expect { subject.display_inventory_weapons }.to output(first_weapon_display_format).to_stdout
+        end
+      end
+      context "when inventory has multiple items" do
+        it 'prints out all weapons in inventory' do
+          subject.add_to_inventory(weapon)
+          subject.add_to_inventory(Weapon.new('a scissor'))
+          expect { subject.display_inventory_weapons }.to output(first_weapon_display_format).to_stdout
+          expect { subject.display_inventory_weapons }.to output(second_weapon_display_format).to_stdout
+          expect { subject.display_inventory_weapons }.not_to output(third_weapon_display_format).to_stdout
+        end
+      end
     end
 
     context "#display_inventory_armor" do
-      xit
+      let(:first_armor_display_format) { /1\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:second_armor_display_format) { /2\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:third_armor_display_format) { /3\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+
+      context "when inventory is empty" do
+        it 'prints out empty' do
+          expect { subject.display_inventory_armor }.to output(/empty/i).to_stdout
+        end
+      end
+      context "when inventory has one item" do
+        it 'prints out current armor' do
+          subject.add_to_inventory(armor)
+          expect { subject.display_inventory_armor }.to output(first_armor_display_format).to_stdout
+        end
+      end
+      context "when inventory has multiple items" do
+        it 'prints out all armor in inventory' do
+          subject.add_to_inventory(armor)
+          subject.add_to_inventory(Armor.new('a coat'))
+          expect { subject.display_inventory_armor }.to output(first_armor_display_format).to_stdout
+          expect { subject.display_inventory_armor }.to output(second_armor_display_format).to_stdout
+          expect { subject.display_inventory_armor }.not_to output(third_armor_display_format).to_stdout
+        end
+      end
     end
 
     context "#display_inventory_potions" do
-      xit
+      let(:first_potion_display_format) { /1\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:second_potion_display_format) { /2\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+      let(:third_potion_display_format) { /3\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
+
+      context "when inventory is empty" do
+        it 'prints out empty' do
+          expect { subject.display_inventory_potions }.to output(/empty/i).to_stdout
+        end
+      end
+      context "when inventory has one item" do
+        it 'prints out current potion' do
+          subject.add_to_inventory(potion)
+          expect { subject.display_inventory_potions }.to output(first_potion_display_format).to_stdout
+        end
+      end
+      context "when inventory has multiple items" do
+        it 'prints out all potions in inventory' do
+          subject.add_to_inventory(potion)
+          subject.add_to_inventory(Potion.new('a water bottle'))
+          expect { subject.display_inventory_potions }.to output(first_potion_display_format).to_stdout
+          expect { subject.display_inventory_potions }.to output(second_potion_display_format).to_stdout
+          expect { subject.display_inventory_potions }.not_to output(third_potion_display_format).to_stdout
+        end
+      end
     end
 
     context "#display_inventory_items" do
-      xit
+      it 'calls display_inventory_weapons, display_inventory_armor and display_inventory_potions' do
+        expect(subject).to receive(:display_inventory_weapons)
+        expect(subject).to receive(:display_inventory_armor)
+        expect(subject).to receive(:display_inventory_potions)
+        subject.display_inventory_items
+      end
     end
   end
 end
