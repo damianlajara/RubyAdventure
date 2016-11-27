@@ -1,10 +1,13 @@
 require 'ruby-progressbar'
 require 'pry'
 
+# Require monkey-patches
+Dir[File.join(File.dirname(__FILE__), '..', '..' ,'core_extensions', '**', '*.rb')].each { |file| require file }
+
 # Require all files
-Dir[File.join(File.dirname(__FILE__), '../', 'character', '**', '*.rb')].each { |file| require file }
-Dir[File.join(File.dirname(__FILE__), '../', 'dungeon', '**', '*.rb')].each { |file| require file }
-Dir[File.join(File.dirname(__FILE__), '../', 'shop', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), '..', 'character', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), '..', 'dungeon', '**', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), '..', 'shop', '**', '*.rb')].each { |file| require file }
 
 class GamePlay
   attr_accessor :hero
