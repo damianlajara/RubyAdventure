@@ -1,5 +1,4 @@
-require "pry"
-# # TODO add validation for subject attributes. Ex: Health cannot go over 100 etc
+# TODO add validation for subject attributes. Ex: Health cannot go over 100 etc
 
 describe Hero do
   subject { Hero.new }
@@ -15,7 +14,7 @@ describe Hero do
     )
   end
 
-  describe "includes base mixin modules" do
+  describe 'includes base mixin modules' do
     it 'includes Customize module' do
       extended_class = class Bar; include Customize; end
       expect(extended_class.included_modules).to include Customize
@@ -34,9 +33,9 @@ describe Hero do
     end
   end
 
-  describe "#initialize" do
-    context "when no arguments are passed in" do
-      it "has inherited default values" do
+  describe '#initialize' do
+    context 'when no arguments are passed in' do
+      it 'has inherited default values' do
         expect(subject).to have_attributes(
           name: 'Nameless One',
           health: 100,
@@ -49,7 +48,7 @@ describe Hero do
           main_class: 'Hero'
         )
       end
-      it "has default values" do
+      it 'has default values' do
         expect(subject).to have_attributes(
           gender: 'genderless',
           inventory: { current_potions: [], current_armor: [], current_weapons: [] },
@@ -65,8 +64,8 @@ describe Hero do
       end
     end
 
-    context "when arguments are passed in" do
-      it "calls super and initializes with passed in values" do
+    context 'when arguments are passed in' do
+      it 'calls super and initializes with passed in values' do
         expect(full_hero).to have_attributes(
           name: 'Nameless One',
           health: 110,
@@ -82,9 +81,9 @@ describe Hero do
     end
   end
 
-  describe "customization" do
-    context "#customize" do
-      it "is defined" do
+  describe 'customization' do
+    context '#customize' do
+      it 'is defined' do
         expect(subject).to respond_to(:customize)
       end
       it 'calls #customize_name' do
@@ -103,17 +102,17 @@ describe Hero do
       end
     end
 
-    context "#customize_name" do
-      it "is defined" do
+    context '#customize_name' do
+      it 'is defined' do
         expect(subject).to respond_to(:customize_name)
       end
-      context "when invoked" do
+      context 'when invoked' do
         it 'displays message asking to choose name' do
           expect(subject).to receive(:gets).at_least(:once).and_return('')
           expect { subject.customize_name }.to output(/what would you like your character to be called/i).to_stdout
         end
       end
-      context "when invalid option is entered" do
+      context 'when invalid option is entered' do
         it 'reverts to default name' do
           expect(subject).to receive(:gets).exactly(1).times.and_return('')
           subject.customize_name
@@ -137,8 +136,8 @@ describe Hero do
         end
       end
 
-      context "when valid option is entered" do
-        it "updates name" do
+      context 'when valid option is entered' do
+        it 'updates name' do
           expect(subject).to receive(:gets).exactly(1).times.and_return('Damian')
           subject.customize_name
           expect(subject.name).to eq('Damian')
@@ -146,19 +145,19 @@ describe Hero do
       end
     end
 
-    context "#customize_gender" do
-      it "is defined" do
+    context '#customize_gender' do
+      it 'is defined' do
         expect(subject).to respond_to(:customize_gender)
       end
 
-      context "when invoked" do
+      context 'when invoked' do
         it 'displays message asking to choose gender' do
           expect(subject).to receive(:gets).at_least(:once).and_return('')
           expect { subject.customize }.to output(/what is your gender/i).to_stdout
         end
       end
 
-      context "when 1 (male gender) is selected" do
+      context 'when 1 (male gender) is selected' do
         it 'returns Male' do
           expect(subject).to receive(:gets).exactly(1).times.and_return('1')
           subject.customize_gender
@@ -166,7 +165,7 @@ describe Hero do
         end
       end
 
-      context "when 2 (female gender) is selected" do
+      context 'when 2 (female gender) is selected' do
         it 'returns Female' do
           expect(subject).to receive(:gets).exactly(1).times.and_return('2')
           subject.customize_gender
@@ -174,7 +173,7 @@ describe Hero do
         end
       end
 
-      context "when 3 (custom gender) is selected" do
+      context 'when 3 (custom gender) is selected' do
         it 'returns custom gender' do
           expect(subject).to receive(:gets).exactly(2).times.and_return('3', 'Genderfluid')
           subject.customize_gender
@@ -182,7 +181,7 @@ describe Hero do
         end
       end
 
-      context "when invalid custom gender is entered" do
+      context 'when invalid custom gender is entered' do
         it 'defaults to Other' do
           expect(subject).to receive(:gets).exactly(2).times.and_return('3', '')
           subject.customize_gender
@@ -206,7 +205,7 @@ describe Hero do
         end
       end
 
-      context "when invalid option is entered" do
+      context 'when invalid option is entered' do
         it 'defaults to Genderless' do
           expect(subject).to receive(:gets).exactly(1).times.and_return('')
           subject.customize_gender
@@ -231,12 +230,13 @@ describe Hero do
       end
     end
 
-    context "#reset_stats_after_death" do
-      it "is defined" do
+    context '#reset_stats_after_death' do
+      it 'is defined' do
         expect(subject).to respond_to(:reset_stats_after_death)
       end
-      context "when hero dies" do
-        it "resets to default attributes" do
+
+      context 'when hero dies' do
+        it 'resets to default attributes' do
           full_hero.reset_stats_after_death
           expect(full_hero).to have_attributes(
             health: 110,
@@ -252,14 +252,14 @@ describe Hero do
             equipped_armor: []
           )
         end
-        it "resets health to max_hp" do
+        it 'resets health to max_hp' do
           full_hero.max_hp = 150
           full_hero.reset_stats_after_death
           expect(full_hero).to have_attributes(
-            health: 150,
+            health: 150
           )
         end
-        it "still retains base attributes" do
+        it 'still retains base attributes' do
           full_hero.reset_stats_after_death
           expect(full_hero).to have_attributes(
             health: 110,
@@ -272,12 +272,12 @@ describe Hero do
       end
     end
 
-    context "#change_name" do
+    context '#change_name' do
       it 'is defined' do
         expect(subject).to respond_to(:change_name)
       end
 
-      context "when invoked" do
+      context 'when invoked' do
         it 'displays confirmation message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('')
           expect { subject.change_name }.to output(/Are you sure you want to change your name?/i).to_stdout
@@ -286,7 +286,7 @@ describe Hero do
         end
       end
 
-      context "when 1 (yes) is selected" do
+      context 'when 1 (yes) is selected' do
         it 'calls #customize_name' do
           allow(subject).to receive(:gets).at_least(:once).and_return('1')
           expect(subject).to receive(:customize_name).once
@@ -297,7 +297,7 @@ describe Hero do
           expect { subject.change_name }.to output(/congratulations/i).to_stdout
         end
       end
-      context "when 2 (no) or invalid option is selected" do
+      context 'when 2 (no) or invalid option is selected' do
         let(:awww_man) { /awww man/i }
         it 'displays error message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('2')
@@ -315,12 +315,12 @@ describe Hero do
       end
     end
 
-    context "#change_gender" do
+    context '#change_gender' do
       it 'is defined' do
         expect(subject).to respond_to(:change_gender)
       end
 
-      context "when invoked" do
+      context 'when invoked' do
         it 'displays confirmation message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('')
           expect { subject.change_gender }.to output(/Are you sure you want to change your gender?/i).to_stdout
@@ -329,7 +329,7 @@ describe Hero do
         end
       end
 
-      context "when 1 (yes) is selected" do
+      context 'when 1 (yes) is selected' do
         it 'calls #customize_gender' do
           allow(subject).to receive(:gets).at_least(:once).and_return('1')
           expect(subject).to receive(:customize_gender).once
@@ -340,7 +340,8 @@ describe Hero do
           expect { subject.change_gender }.to output(/congratulations/i).to_stdout
         end
       end
-      context "when 2 (no) or invalid option is selected" do
+
+      context 'when 2 (no) or invalid option is selected' do
         let(:hmmm) { /hmmm/i }
         it 'displays error message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('2')
@@ -358,7 +359,7 @@ describe Hero do
       end
     end
 
-    context "#toggle_battle_scenes" do
+    context '#toggle_battle_scenes' do
       let(:toggle) { !subject.skip_battle_scenes ? 'disable' : 'enable' }
       let(:untoggled) { subject.skip_battle_scenes ? 'disable' : 'enable' }
 
@@ -402,7 +403,7 @@ describe Hero do
           expect { subject.toggle_battle_scenes }.to output(/Battle scenes will stay #{untoggled}d./i).to_stdout
         end
 
-        context "when invoked for the first time" do
+        context 'when invoked for the first time' do
           it 'stays with default value' do
             expect(subject).to receive(:gets).and_return('2')
             subject.toggle_battle_scenes
@@ -410,7 +411,7 @@ describe Hero do
           end
         end
 
-        context "when invoked multiple times" do
+        context 'when invoked multiple times' do
           it 'reverts to previous state' do
             allow(subject).to receive(:gets).and_return('1')
             subject.toggle_battle_scenes
@@ -422,11 +423,10 @@ describe Hero do
       end
     end
 
-    context "#game_options" do
+    context '#game_options' do
       it 'is defined' do
         expect(subject).to respond_to(:game_options)
       end
-
       it 'displays header message' do
         allow(subject).to receive(:gets).and_return('')
         expect { subject.game_options }.to output(/game options/i).to_stdout
@@ -438,7 +438,7 @@ describe Hero do
         expect { subject.game_options }.to output(/3\) toggle battle scenes/i).to_stdout
       end
 
-      context "when 1 (change name) is selected" do
+      context 'when 1 (change name) is selected' do
         it 'calls change_name' do
           allow(subject).to receive(:gets).and_return('1')
           expect(subject).to receive(:change_name).once
@@ -446,7 +446,7 @@ describe Hero do
         end
       end
 
-      context "when 2 (change gender) is selected" do
+      context 'when 2 (change gender) is selected' do
         it 'calls change_gender' do
           allow(subject).to receive(:gets).and_return('2')
           expect(subject).to receive(:change_gender).once
@@ -454,7 +454,7 @@ describe Hero do
         end
       end
 
-      context "when 3 (toggle battle scenes) is selected" do
+      context 'when 3 (toggle battle scenes) is selected' do
         it 'calls toggle_battle_scenes' do
           allow(subject).to receive(:gets).and_return('3')
           expect(subject).to receive(:toggle_battle_scenes).once
@@ -462,7 +462,7 @@ describe Hero do
         end
       end
 
-      context "when invalid option is entered" do
+      context 'when invalid option is entered' do
         let(:invalid) { /invalid option/i }
         let(:exiting) { /exiting/i }
 
@@ -482,7 +482,6 @@ describe Hero do
           allow(subject).to receive(:gets).and_return('invalid options')
           expect { subject.game_options }.to output(invalid).to_stdout
         end
-
         it 'displays exiting menu message' do
           allow(subject).to receive(:gets).and_return('')
           expect { subject.game_options }.to output(exiting).to_stdout
@@ -503,29 +502,30 @@ describe Hero do
     end
   end
 
-  describe "Inventory" do
-
+  describe 'Inventory' do
     let(:weapon) { Weapon.new('a knife') }
     let(:armor) { Armor.new('a helmet') }
     let(:potion) { Potion.new('a potion') }
 
-    context "#add_to_inventory" do
+    context '#add_to_inventory' do
       it 'is defined' do
         expect(subject).to respond_to(:add_to_inventory)
       end
-      context "when passed an item" do
-        context "when invalid" do
+
+      context 'when passed an item' do
+        context 'when invalid' do
           it 'returns false' do
             expect(subject.add_to_inventory({})).to eq(false)
             expect(subject.add_to_inventory('')).to eq(false)
             expect(subject.add_to_inventory('123412')).to eq(false)
             expect(subject.add_to_inventory('!@#%#')).to eq(false)
             expect(subject.add_to_inventory(9876)).to eq(false)
-            expect(subject.add_to_inventory({not_valid: 'hi'})).to eq(false)
+            expect(subject.add_to_inventory(not_valid: 'hi')).to eq(false)
             expect(subject.add_to_inventory([])).to eq(false)
           end
         end
-        context "when valid" do
+
+        context 'when valid' do
           context "when item doesn't already exist (new item)" do
             it 'adds item to inventory' do
               expect(subject.inventory[:current_weapons]).to be_empty
@@ -577,7 +577,8 @@ describe Hero do
               expect(subject.add_to_inventory(Potion.new('lemonade'))).to eq(true)
             end
           end
-          context "when item already exists (duplicate item)" do
+
+          context 'when item already exists (duplicate item)' do
             it 'does not add to inventory' do
               subject.add_to_inventory(weapon)
               expect(subject.inventory[:current_weapons]).not_to be_empty
@@ -614,24 +615,26 @@ describe Hero do
       end
     end
 
-    context "#remove_from_inventory" do
+    context '#remove_from_inventory' do
       it 'is defined' do
         expect(subject).to respond_to(:remove_from_inventory)
       end
-      context "when passed an item" do
-        context "when invalid" do
+
+      context 'when passed an item' do
+        context 'when invalid' do
           it 'returns false' do
             expect(subject.remove_from_inventory({})).to eq(false)
             expect(subject.remove_from_inventory('')).to eq(false)
             expect(subject.remove_from_inventory('123412')).to eq(false)
             expect(subject.remove_from_inventory('!@#%#')).to eq(false)
             expect(subject.remove_from_inventory(9876)).to eq(false)
-            expect(subject.remove_from_inventory({not_valid: 'hi'})).to eq(false)
+            expect(subject.remove_from_inventory(not_valid: 'hi')).to eq(false)
             expect(subject.remove_from_inventory([])).to eq(false)
           end
         end
-        context "when valid" do
-          context "when item already exists" do
+
+        context 'when valid' do
+          context 'when item already exists' do
             it 'removes item from inventory' do
               subject.add_to_inventory(weapon)
 
@@ -694,6 +697,7 @@ describe Hero do
               expect(subject.remove_from_inventory(potion)).to eq(true)
             end
           end
+
           context "when item doesn't already exist (new item)" do
             it 'does not add to inventory' do
               expect(subject.remove_from_inventory(weapon)).to eq(false)
@@ -715,10 +719,11 @@ describe Hero do
       end
     end
 
-    context "#current_inventory_weapons" do
-      let(:broom) { Weapon.new('a broom').tap {|i| i.equipped = true} }
-      let(:bat) { Weapon.new('a bat').tap {|i| i.equipped = true} }
-      let(:hangar) { Weapon.new('a hangar')}
+    context '#current_inventory_weapons' do
+      let(:broom) { Weapon.new('a broom').tap { |i| i.equipped = true } }
+      let(:bat) { Weapon.new('a bat').tap { |i| i.equipped = true } }
+      let(:hangar) { Weapon.new('a hangar') }
+
       it 'is defined' do
         expect(subject).to respond_to(:current_inventory_weapons)
       end
@@ -730,7 +735,7 @@ describe Hero do
 
         expect(subject.current_inventory_weapons).not_to be_empty
         expect(subject.current_inventory_weapons.count).to eq(2)
-        expect(subject.current_inventory_weapons.map { |w| w.name }).to include('a hangar', 'a knife')
+        expect(subject.current_inventory_weapons.map(&:name)).to include('a hangar', 'a knife')
       end
       it 'returns an empty array when inventory is empty' do
         subject.add_to_inventory(broom)
@@ -739,10 +744,11 @@ describe Hero do
       end
     end
 
-    context "#current_inventory_armor" do
-      let(:jacket) { Armor.new('a jacket').tap {|i| i.equipped = true} }
-      let(:hat) { Armor.new('a hat').tap {|i| i.equipped = true} }
-      let(:ring) { Armor.new('a ring')}
+    context '#current_inventory_armor' do
+      let(:jacket) { Armor.new('a jacket').tap { |i| i.equipped = true } }
+      let(:hat) { Armor.new('a hat').tap { |i| i.equipped = true } }
+      let(:ring) { Armor.new('a ring') }
+
       it 'is defined' do
         expect(subject).to respond_to(:current_inventory_armor)
       end
@@ -754,7 +760,7 @@ describe Hero do
 
         expect(subject.current_inventory_armor).not_to be_empty
         expect(subject.current_inventory_armor.count).to eq(2)
-        expect(subject.current_inventory_armor.map { |w| w.name }).to include('a ring', 'a helmet')
+        expect(subject.current_inventory_armor.map(&:name)).to include('a ring', 'a helmet')
       end
       it 'returns an empty array when inventory is empty' do
         subject.add_to_inventory(jacket)
@@ -763,10 +769,11 @@ describe Hero do
       end
     end
 
-    context "#current_inventory_potions" do
+    context '#current_inventory_potions' do
       let(:soup) { Potion.new('chicken noodle soup') }
       let(:empanada) { Potion.new('crispy empanada') }
-      let(:quipe) { Potion.new('se nota que soy dominicano')}
+      let(:quipe) { Potion.new('se nota que soy dominicano') }
+
       it 'is defined' do
         expect(subject).to respond_to(:current_inventory_potions)
       end
@@ -778,23 +785,25 @@ describe Hero do
 
         expect(subject.current_inventory_potions).not_to be_empty
         expect(subject.current_inventory_potions.count).to eq(4)
-        expect(subject.current_inventory_potions.map { |w| w.name }).to include('a potion', 'chicken noodle soup', 'crispy empanada', 'se nota que soy dominicano')
+        expect(subject.current_inventory_potions.map(&:name)).to include('a potion', 'chicken noodle soup', 'crispy empanada', 'se nota que soy dominicano')
       end
       it 'returns an empty array when inventory is empty' do
         expect(subject.current_inventory_potions).to be_empty
       end
     end
 
-    context "#inventory_empty?" do
+    context '#inventory_empty?' do
       it 'is defined' do
         expect(subject).to respond_to(:inventory_empty?)
       end
-      context "when all inventory weapons, armor and potions are empty" do
+
+      context 'when all inventory weapons, armor and potions are empty' do
         it 'returns true' do
           expect(subject.inventory_empty?).to eq(true)
         end
       end
-      context "when any inventory weapons, armor and potions have items" do
+
+      context 'when any inventory weapons, armor and potions have items' do
         it 'returns false' do
           subject.add_to_inventory(weapon)
           expect(subject.inventory_empty?).to eq(false)
@@ -817,23 +826,25 @@ describe Hero do
       end
     end
 
-    context "#display_inventory_weapons" do
+    context '#display_inventory_weapons' do
       let(:first_weapon_display_format) { /1\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:second_weapon_display_format) { /2\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:third_weapon_display_format) { /3\) \w+[\s\w]+damage: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
 
-      context "when inventory is empty" do
+      context 'when inventory is empty' do
         it 'prints out empty' do
           expect { subject.display_inventory_weapons }.to output(/empty/i).to_stdout
         end
       end
-      context "when inventory has one item" do
+
+      context 'when inventory has one item' do
         it 'prints out current weapon' do
           subject.add_to_inventory(weapon)
           expect { subject.display_inventory_weapons }.to output(first_weapon_display_format).to_stdout
         end
       end
-      context "when inventory has multiple items" do
+
+      context 'when inventory has multiple items' do
         it 'prints out all weapons in inventory' do
           subject.add_to_inventory(weapon)
           subject.add_to_inventory(Weapon.new('a scissor'))
@@ -844,23 +855,25 @@ describe Hero do
       end
     end
 
-    context "#display_inventory_armor" do
+    context '#display_inventory_armor' do
       let(:first_armor_display_format) { /1\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:second_armor_display_format) { /2\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:third_armor_display_format) { /3\) \w+[\s\w]+defense: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
 
-      context "when inventory is empty" do
+      context 'when inventory is empty' do
         it 'prints out empty' do
           expect { subject.display_inventory_armor }.to output(/empty/i).to_stdout
         end
       end
-      context "when inventory has one item" do
+
+      context 'when inventory has one item' do
         it 'prints out current armor' do
           subject.add_to_inventory(armor)
           expect { subject.display_inventory_armor }.to output(first_armor_display_format).to_stdout
         end
       end
-      context "when inventory has multiple items" do
+
+      context 'when inventory has multiple items' do
         it 'prints out all armor in inventory' do
           subject.add_to_inventory(armor)
           subject.add_to_inventory(Armor.new('a coat'))
@@ -871,23 +884,25 @@ describe Hero do
       end
     end
 
-    context "#display_inventory_potions" do
+    context '#display_inventory_potions' do
       let(:first_potion_display_format) { /1\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:second_potion_display_format) { /2\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
       let(:third_potion_display_format) { /3\) \w+[\s\w]+health: \d+\s+price: \d+\s+sell_value: \d+\s+description:[\s\w]+/i }
 
-      context "when inventory is empty" do
+      context 'when inventory is empty' do
         it 'prints out empty' do
           expect { subject.display_inventory_potions }.to output(/empty/i).to_stdout
         end
       end
-      context "when inventory has one item" do
+
+      context 'when inventory has one item' do
         it 'prints out current potion' do
           subject.add_to_inventory(potion)
           expect { subject.display_inventory_potions }.to output(first_potion_display_format).to_stdout
         end
       end
-      context "when inventory has multiple items" do
+
+      context 'when inventory has multiple items' do
         it 'prints out all potions in inventory' do
           subject.add_to_inventory(potion)
           subject.add_to_inventory(Potion.new('a water bottle'))
@@ -898,7 +913,7 @@ describe Hero do
       end
     end
 
-    context "#display_inventory_items" do
+    context '#display_inventory_items' do
       it 'calls display_inventory_weapons, display_inventory_armor and display_inventory_potions' do
         expect(subject).to receive(:display_inventory_weapons)
         expect(subject).to receive(:display_inventory_armor)
