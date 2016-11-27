@@ -278,17 +278,11 @@ describe Hero do
       end
 
       context "when invoked" do
-        before(:example) do
-          allow(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your name?/i)).ordered
-          allow(subject).to receive(:puts).with(a_string_matching(/yes/i)).ordered
-          allow(subject).to receive(:puts).with(a_string_matching(/no/i)).ordered
-        end
-
         it 'displays confirmation message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your name?/i))
-          subject.change_name
+          expect { subject.change_name }.to output(/Are you sure you want to change your name?/i).to_stdout
+          expect { subject.change_name }.to output(/1\) yes/i).to_stdout
+          expect { subject.change_name }.to output(/2\) no/i).to_stdout
         end
       end
 
@@ -300,32 +294,23 @@ describe Hero do
         end
         it 'displays success message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('1')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/congratulations/i))
-          subject.change_name
+          expect { subject.change_name }.to output(/congratulations/i).to_stdout
         end
       end
       context "when 2 (no) or invalid option is selected" do
+        let(:awww_man) { /awww man/i }
         it 'displays error message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('2')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
-          subject.change_name
+          expect { subject.change_name }.to output(awww_man).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('90')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
-          subject.change_name
+          expect { subject.change_name }.to output(awww_man).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
-          subject.change_name
+          expect { subject.change_name }.to output(awww_man).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('!@#$')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/awww man/i))
-          subject.change_name
+          expect { subject.change_name }.to output(awww_man).to_stdout
         end
       end
     end
@@ -336,17 +321,11 @@ describe Hero do
       end
 
       context "when invoked" do
-        before(:example) do
-          allow(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your gender?/i)).ordered
-          allow(subject).to receive(:puts).with(a_string_matching(/yes/i)).ordered
-          allow(subject).to receive(:puts).with(a_string_matching(/no/i)).ordered
-        end
-
         it 'displays confirmation message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/Are you sure you want to change your gender?/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(/Are you sure you want to change your gender?/i).to_stdout
+          expect { subject.change_gender }.to output(/1\) yes/i).to_stdout
+          expect { subject.change_gender }.to output(/2\) no/i).to_stdout
         end
       end
 
@@ -358,48 +337,44 @@ describe Hero do
         end
         it 'displays success message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('1')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/congratulations/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(/congratulations/i).to_stdout
         end
       end
       context "when 2 (no) or invalid option is selected" do
+        let(:hmmm) { /hmmm/i }
         it 'displays error message' do
           allow(subject).to receive(:gets).at_least(:once).and_return('2')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(hmmm).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('90')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(hmmm).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(hmmm).to_stdout
 
           allow(subject).to receive(:gets).at_least(:once).and_return('!@#$')
-          allow(subject).to receive(:puts).with(a_kind_of(String))
-          expect(subject).to receive(:puts).with(a_string_matching(/hmmm/i))
-          subject.change_gender
+          expect { subject.change_gender }.to output(hmmm).to_stdout
         end
       end
     end
 
     context "#toggle_battle_scenes" do
+      let(:toggle) { !subject.skip_battle_scenes ? 'disable' : 'enable' }
+      let(:untoggled) { subject.skip_battle_scenes ? 'disable' : 'enable' }
+
       it 'is defined' do
         expect(subject).to respond_to(:toggle_battle_scenes)
       end
 
+      it 'displays confirmation message' do
+        allow(subject).to receive(:gets).and_return('')
+        expect { subject.toggle_battle_scenes }.to output(/Do you want to #{toggle} all of the battle scenes?/i).to_stdout
+      end
+
       context 'when 1 (yes) is selected' do
         it 'displays confirmation message' do
-          toggle = !subject.skip_battle_scenes ? 'disable' : 'enable'
-          allow(subject).to receive(:puts).with(a_kind_of(String))
           expect(subject).to receive(:gets).and_return('1')
-          expect(subject).to receive(:puts).with(a_string_matching(/Battle scenes have been #{toggle}d./i))
-          subject.toggle_battle_scenes
+          expect { subject.toggle_battle_scenes }.to output(/Battle scenes have been #{toggle}d./i).to_stdout
         end
 
         context 'when invoked for the first time' do
@@ -423,11 +398,8 @@ describe Hero do
 
       context 'when 2 (no) is selected' do
         it 'displays confirmation message' do
-          toggle = subject.skip_battle_scenes ? 'disable' : 'enable'
-          allow(subject).to receive(:puts).with(a_kind_of(String))
           expect(subject).to receive(:gets).and_return('2')
-          expect(subject).to receive(:puts).with(a_string_matching(/Battle scenes will stay #{toggle}d./i))
-          subject.toggle_battle_scenes
+          expect { subject.toggle_battle_scenes }.to output(/Battle scenes will stay #{untoggled}d./i).to_stdout
         end
 
         context "when invoked for the first time" do
@@ -456,15 +428,18 @@ describe Hero do
       end
 
       it 'displays header message' do
-        allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
         allow(subject).to receive(:gets).and_return('')
-        expect(subject).to receive(:puts).with(a_string_matching(/game options/i))
-        subject.game_options
+        expect { subject.game_options }.to output(/game options/i).to_stdout
+      end
+      it 'displays game options' do
+        allow(subject).to receive(:gets).and_return('')
+        expect { subject.game_options }.to output(/1\) change name/i).to_stdout
+        expect { subject.game_options }.to output(/2\) change gender/i).to_stdout
+        expect { subject.game_options }.to output(/3\) toggle battle scenes/i).to_stdout
       end
 
       context "when 1 (change name) is selected" do
         it 'calls change_name' do
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('1')
           expect(subject).to receive(:change_name).once
           subject.game_options
@@ -473,7 +448,6 @@ describe Hero do
 
       context "when 2 (change gender) is selected" do
         it 'calls change_gender' do
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('2')
           expect(subject).to receive(:change_gender).once
           subject.game_options
@@ -482,7 +456,6 @@ describe Hero do
 
       context "when 3 (toggle battle scenes) is selected" do
         it 'calls toggle_battle_scenes' do
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('3')
           expect(subject).to receive(:toggle_battle_scenes).once
           subject.game_options
@@ -490,58 +463,41 @@ describe Hero do
       end
 
       context "when invalid option is entered" do
+        let(:invalid) { /invalid option/i }
+        let(:exiting) { /exiting/i }
+
         it 'displays error message' do
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('')
-          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
-          subject.game_options
+          expect { subject.game_options }.to output(invalid).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('123')
-          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
-          subject.game_options
+          expect { subject.game_options }.to output(invalid).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('!@#$')
-          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
-          subject.game_options
+          expect { subject.game_options }.to output(invalid).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('something')
-          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
-          subject.game_options
+          expect { subject.game_options }.to output(invalid).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('invalid options')
-          expect(subject).to receive(:puts).with(a_string_matching(/invalid option/i))
-          subject.game_options
+          expect { subject.game_options }.to output(invalid).to_stdout
         end
 
         it 'displays exiting menu message' do
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('')
-          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-          subject.game_options
+          expect { subject.game_options }.to output(exiting).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('123')
-          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-          subject.game_options
+          expect { subject.game_options }.to output(exiting).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('!@#$')
-          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-          subject.game_options
+          expect { subject.game_options }.to output(exiting).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('something')
-          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-          subject.game_options
+          expect { subject.game_options }.to output(exiting).to_stdout
 
-          allow(subject).to receive(:puts).at_least(:once).with(a_kind_of(String))
           allow(subject).to receive(:gets).and_return('invalid options')
-          expect(subject).to receive(:puts).with(a_string_matching(/exiting/i))
-          subject.game_options
+          expect { subject.game_options }.to output(exiting).to_stdout
         end
       end
     end
