@@ -51,7 +51,7 @@ module Inventory
       # Do not add if item already exists in inventory
       if container[key].select { |my_item| my_item.to_s == item.to_s }.none?
         container[key].push(item)
-        puts "#{item.name} has been succesfully added to your inventory!"
+        puts "#{item} has been succesfully added to your inventory!"
         success = true
       else
         error 'You already have this item!'
@@ -68,12 +68,16 @@ module Inventory
     key = item.class.name.downcase.to_sym
     # Make sure it is a valid type from temp_inventory
     if container.keys.include? key
-      container[key].delete_if { |item_to_delete| item_to_delete.to_s == item.to_s }
-      if !container[key].include? item.to_s
-        puts "#{item.name} was succesfully removed from the inventory"
-        success = true
+      if !container[key].empty?
+        container[key].delete_if { |item_to_delete| item_to_delete.to_s == item.to_s }
+        if !container[key].include?(item.to_s) && container[key].empty?
+          puts "#{item} was succesfully removed from the inventory"
+          success = true
+        else
+          error 'Item could not be removed'
+        end
       else
-        error 'Item could not be removed'
+        error "The item '#{item}' does not exist. Could not be deleted"
       end
     else
       error "Unable to identify item class of type #{key}"
