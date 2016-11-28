@@ -40,11 +40,7 @@ module Equip
     end
     display_inventory_weapons
     item = get_array_option_input(current_inventory_weapons)
-    if item
-      equip(item)
-    else
-      error 'Unable to equip weapon!'
-    end
+    item ? equip(item) : error('Unable to equip weapon!')
   end
 
   def unequip_weapon
@@ -54,11 +50,7 @@ module Equip
     end
     display_equipped_weapons
     item = get_array_option_input(equipped_weapons)
-    if item
-      unequip(item)
-    else
-      error 'Unable to un-equip weapon!'
-    end
+    item ? unequip(item) : error('Unable to un-equip weapon!')
   end
 
   def equip_armor
@@ -68,11 +60,7 @@ module Equip
     end
     display_inventory_armor
     item = get_array_option_input(current_inventory_armor)
-    if item
-      equip(item)
-    else
-      error 'Unable to equip armor!'
-    end
+    item ? equip(item) : error('Unable to equip armor!')
   end
 
   def unequip_armor
@@ -82,11 +70,7 @@ module Equip
     end
     display_equipped_armor
     item = get_array_option_input(equipped_armor)
-    if item
-      unequip(item)
-    else
-      error 'Unable to un-equip armor!'
-    end
+    item ? unequip(item) : error('Unable to un-equip armor!')
   end
 
   def display_equipped_items

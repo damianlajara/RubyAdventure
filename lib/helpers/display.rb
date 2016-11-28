@@ -15,10 +15,9 @@ module Display
 
   def get_array_option_input(array_of_choices, result_as_num = false)
     print 'To choose a specification, enter the number that corresponds with the option you want: '
-    choice = (capture = gets.chomp.match(/^([#{1}-#{array_of_choices.count}])$/)) ? capture[0] : 'N/A'
+    choice = (capture = gets.chomp.strip.match(/^([#{1}-#{array_of_choices.count}])$/)) ? capture[0] : ''
     print "\n"
-    # TODO: Add validation here. What happens if choice is 'N/A' ? What will get returned?
-    result_as_num ? choice.to_i : array_of_choices[choice.to_i.pred]
+    result_as_num ? choice.to_i : (choice.empty? ? nil : array_of_choices[choice.to_i.pred])
   end
 
   def display_array_value_with_index(array)
