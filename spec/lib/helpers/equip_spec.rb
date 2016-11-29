@@ -141,7 +141,34 @@ describe "Equip mixin" do
     it 'is defined' do
       expect(subject).to respond_to(:equippable_items?)
     end
-    
+
+    context "when inventory has weapons available" do
+      it 'returns true' do
+        subject.add_to_inventory(armor)
+        expect(subject.equippable_items?).to eq(true)
+      end
+    end
+
+    context "when inventory has armor available" do
+      it 'returns true' do
+        subject.add_to_inventory(weapon)
+        expect(subject.equippable_items?).to eq(true)
+      end
+    end
+
+    context "when inventory has both armor weapons available" do
+      it 'returns true' do
+        subject.add_to_inventory(weapon)
+        subject.add_to_inventory(armor)
+        expect(subject.equippable_items?).to eq(true)
+      end
+    end
+
+    context "when both armor and weapon inventory are empty" do
+      it 'returns false' do
+        expect(subject.equippable_items?).to eq(false)
+      end
+    end
   end
 
   describe "#equip_weapon" do

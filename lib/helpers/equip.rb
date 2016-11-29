@@ -1,7 +1,7 @@
 module Equip
 
   # TODO: Make these methods private
-  
+
   def weapon_equipped?
     items_exist? equipped_weapons
   end
@@ -55,6 +55,7 @@ module Equip
   end
 
   def equippable_items?
+    # !(A && B) == !A || !B (De Morgan's law)
     !(current_inventory_weapons.empty? && current_inventory_armor.empty?)
   end
 
